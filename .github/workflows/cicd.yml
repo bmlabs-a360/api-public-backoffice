@@ -1,0 +1,37 @@
+﻿name: Build MicroNetCore
+on:
+  push:
+    branches: [develop]
+  pull_request:
+    branches: [develop]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: git checkout 
+        uses: actions/checkout@v2
+
+      - name: Setup netcore
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '5.0.100'
+
+      #- name: Install dependencies
+      #  run: dotnet restore
+
+      #- name: Build netcore
+      #  run: dotnet build --configuration Release --no-restore
+
+      #- name: Test
+      #  run: dotnet test --no-restore --verbosity normal
+      
+      - name: Docker Login            
+        uses: docker/login-action@v1.10.0
+        with:
+          registry: registry.digitalocean.com
+          username: ce7b790b048dc502fe59ae4b577a1ad22b6810f96b303ca0b10b42addaac1b5e
+          password: ${{ secrets.REGISTRY_SECRET }}    
+      - run: |
+          docker build . -t  registry.digitalocean.com/bmlabs/api_public_backOffice:develop-lastest
+          docker push registry.digitalocean.com/bmlabs/api_public_backOffice:develop-lastest      

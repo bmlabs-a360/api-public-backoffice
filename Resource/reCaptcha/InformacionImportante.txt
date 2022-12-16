@@ -1,0 +1,5 @@
+reCAPTCHA v3
+
+Ruta google de panel de administracion: https://www.google.com/recaptcha/admin/site/592093789
+
+Documentacion reCaptcha v3: https://developers.google.com/recaptcha/docs/v3

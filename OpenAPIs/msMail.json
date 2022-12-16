@@ -1,0 +1,227 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "ms-mail",
+    "description": "Micro Servicio Email",
+    "version": "v1"
+  },
+  "basePath": "/ms-mail",
+  "paths": {
+    "/api/v1/MailService/Send": {
+      "post": {
+        "tags": [
+          "MailService"
+        ],
+        "consumes": [
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/MailDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/OutputMail"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ProblemDetails"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/NotFoundResult"
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "$ref": "#/definitions/ProblemDetails"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/MailService/SendFormated": {
+      "post": {
+        "tags": [
+          "MailService"
+        ],
+        "consumes": [
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/MailDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/OutputMail"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ProblemDetails"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/NotFoundResult"
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "$ref": "#/definitions/ProblemDetails"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "MailDTO": {
+      "type": "object",
+      "properties": {
+        "from": {
+          "type": "string"
+        },
+        "fromAlias": {
+          "type": "string"
+        },
+        "to": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "toAlias": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "bcc": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "cc": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "isHtml": {
+          "type": "boolean"
+        },
+        "atachados": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "atachadosNombres": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ccAlias": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "subject": {
+          "type": "string"
+        },
+        "body": {
+          "type": "string"
+        }
+      }
+    },
+    "OutputMail": {
+      "type": "object",
+      "properties": {
+        "codigoretorno": {
+          "type": "string"
+        },
+        "descriRetorno": {
+          "type": "string"
+        },
+        "logRetorno": {
+          "type": "string"
+        }
+      }
+    },
+    "ProblemDetails": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "status": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "detail": {
+          "type": "string"
+        },
+        "instance": {
+          "type": "string"
+        },
+        "additionalProperties": {
+          "type": "object",
+          "additionalProperties": { }
+        }
+      }
+    },
+    "NotFoundResult": {
+      "type": "object",
+      "properties": {
+        "statusCode": {
+          "format": "int32",
+          "type": "integer"
+        }
+      }
+    }
+  }
+}
