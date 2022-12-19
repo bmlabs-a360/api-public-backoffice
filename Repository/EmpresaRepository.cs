@@ -50,7 +50,7 @@ namespace api_public_backOffice.Repository
         public async Task<IEnumerable<Empresa>> GetEmpresas()
         {
             var retorno = await Context()
-                            .Empresas.Include(x => x.UsuarioEvaluacions)
+                            .Empresas.Include(x => x.EvaluacionEmpresas)
                             .AsNoTracking().Where(x => x.Activo.Value).ToListAsync();
 
             await maperEvaluacionArea(retorno);
@@ -63,7 +63,7 @@ namespace api_public_backOffice.Repository
         {
             foreach (var re in retorno)
             {
-                foreach (var ue in re.UsuarioEvaluacions)
+                foreach (var ue in re.EvaluacionEmpresas)
                 {
                     ue.Evaluacion = await Context().Evaluacions
                         .Include(x => x.SegmentacionAreas)// <-

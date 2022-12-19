@@ -12,6 +12,9 @@ namespace api_public_backOffice.Service
 {
     public interface ITipoSubRubroService
     {
+        Task<List<TipoSubRubroModel>> GetTipoSubRubroByIdRubro(Guid TipoRubroId);
+
+
         Task<TipoSubRubroModel> GetTipoSubRubroById(TipoSubRubroModel TipoSubRubroModel);
         Task<List<TipoSubRubroModel>> GetTipoSubRubros();
 
@@ -31,10 +34,17 @@ namespace api_public_backOffice.Service
             _TipoSubRubroRepository = TipoSubRubroRepository;
             _securityHelper = securityHelper;
         }
+        public async Task<List<TipoSubRubroModel>> GetTipoSubRubroByIdRubro(Guid TipoRubroId)
+        {
+            if (string.IsNullOrEmpty(TipoRubroId.ToString())) throw new ArgumentNullException("TipoRubroId");
+            var miTipoSubRubro = await _TipoSubRubroRepository.GetTipoSubRubroByIdRubro(TipoRubroId);
+            return _mapper.Map<List<TipoSubRubroModel>>(miTipoSubRubro);
+        }
+
         public async Task<TipoSubRubroModel> GetTipoSubRubroById(TipoSubRubroModel TipoSubRubroModel)
         {
             if (string.IsNullOrEmpty(TipoSubRubroModel.Id.ToString())) throw new ArgumentNullException("Id");
-            var miTipoSubRubro = await _TipoSubRubroRepository.GetTipoSubRubroById(_mapper.Map<TipoSubRubro>( TipoSubRubroModel));
+            var miTipoSubRubro = await _TipoSubRubroRepository.GetTipoSubRubroById(_mapper.Map<TipoSubRubro>(TipoSubRubroModel));
             return _mapper.Map<TipoSubRubroModel>(miTipoSubRubro);
         }
         public async Task<List<TipoSubRubroModel>> GetTipoSubRubros()
@@ -51,8 +61,8 @@ namespace api_public_backOffice.Service
             var retorno = await _TipoSubRubroRepository.InsertOrUpdate(_mapper.Map<TipoSubRubro>(TipoSubRubroModel));
             return _mapper.Map<TipoSubRubroModel>(retorno);
         }
-        public void Dispose() 
-        { 
+        public void Dispose()
+        {
             if (_TipoSubRubroRepository != null)
             {
                 _TipoSubRubroRepository.Dispose();

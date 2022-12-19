@@ -110,7 +110,6 @@ namespace api_public_backOffice.Repository
             await maperPerfil(retorno);
             return retorno;
         }
-
         public async Task<List<Usuario>> GetAll()
         {
             var retorno = await Context()
@@ -122,7 +121,19 @@ namespace api_public_backOffice.Repository
                                 .Where(x =>  x.Activo.Value)
                                 .ToListAsync();
 
-            //return  await maperUserSingle(retorno);
+            return await maperUsuarioAreas(retorno);
+        }
+        private async Task<List<Usuario>> maperUsuarioAreas(List<Usuario> retorno)
+        {
+            foreach (var re in retorno)
+            {
+                foreach (var item in re.UsuarioEvaluacions)
+                {
+                    item.UsuarioAreas = await Context()
+                        .UsuarioAreas
+                        .Where(x => x.UsuarioEvaluacionId == item.Id && x.Activo.Value).ToArrayAsync();
+                }
+            }
             return retorno;
         }
 

@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <RootNamespace>api_public_backOffice</RootNamespace>
     <ServerGarbageCollection>true</ServerGarbageCollection>
     <ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
@@ -43,10 +43,10 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="cl.bms.neva.core">
-      <HintPath>..\..\cl.bms.neva.core\cl.bms.neva.core\bin\Debug\net5.0\cl.bms.neva.core.dll</HintPath>
+      <HintPath>..\cl.bms.neva.core\bin\Debug\net5.0\cl.bms.neva.core.dll</HintPath>
     </Reference>
     <Reference Include="cl.bms.neva.entitylayer">
-      <HintPath>..\..\cl.bms.neva.entitylayer\cl.bms.neva.entitylayer\bin\Debug\net5.0\cl.bms.neva.entitylayer.dll</HintPath>
+      <HintPath>..\cl.bms.neva.entitylayer\bin\Debug\net5.0\cl.bms.neva.entitylayer.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ProjectExtensions>
