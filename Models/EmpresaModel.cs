@@ -1,4 +1,5 @@
-﻿using System;
+﻿using neva.entities;
+using System;
 using System.Collections.Generic;
 
 namespace api_public_backOffice.Models
@@ -7,7 +8,7 @@ namespace api_public_backOffice.Models
     {
        public EmpresaModel()
         {
-            //EvaluacionEmpresas = new HashSet<EvaluacionEmpresa>();
+            EvaluacionEmpresas = new HashSet<EvaluacionEmpresaModel>();
             //Seguimientos = new HashSet<Seguimiento>();
             //UsuarioEmpresas = new HashSet<UsuarioEmpresa>();
             UsuarioEvaluacions = new HashSet<UsuarioEvaluacionModel>();
@@ -33,9 +34,8 @@ namespace api_public_backOffice.Models
          public virtual TipoRubro TipoRubro { get; set; }
          public virtual TipoSubRubro TipoSubRubro { get; set; }
          public virtual TipoTamanoEmpresa TipoTamanoEmpresa { get; set; }
-         public virtual ICollection<EvaluacionEmpresa> EvaluacionEmpresas { get; set; }
          public virtual ICollection<Seguimiento> Seguimientos { get; set; }*/
-
+        public virtual ICollection<EvaluacionEmpresaModel> EvaluacionEmpresas { get; set; }
         public virtual ICollection<UsuarioEvaluacionModel> UsuarioEvaluacions { get; set; }
         // public virtual ICollection<Usuario> Usuarios { get; set; }
 

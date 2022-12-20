@@ -66,10 +66,10 @@ namespace api_public_backOffice.Repository
                 foreach (var ue in re.EvaluacionEmpresas)
                 {
                     ue.Evaluacion = await Context().Evaluacions
-                        .Include(x => x.SegmentacionAreas)// <-
+                       // .Include(x => x.SegmentacionAreas)// <-
                         .FirstOrDefaultAsync(x => x.Id == ue.EvaluacionId);
 
-                    // <- ue.Evaluacion.SegmentacionAreas = await Context().SegmentacionAreas.Where(x => x.EvaluacionId == ue.EvaluacionId).ToListAsync();
+                     //ue.Evaluacion.SegmentacionAreas = await Context().SegmentacionAreas.Where(x => x.EvaluacionId == ue.EvaluacionId).ToListAsync();
                 }
             }
         }

@@ -1,13 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace api_public_backOffice.Models
 {
     public class UsuarioEvaluacionModel
     {
-        /*public UsuarioEvaluacion()
+        public UsuarioEvaluacionModel()
         {
-            UsuarioAreas = new HashSet<UsuarioArea>();
-        }*/
+            UsuarioAreas = new HashSet<UsuarioAreaModel>();
+        }
 
         public Guid Id { get; set; }
         public Guid UsuarioId { get; set; }
@@ -19,6 +20,6 @@ namespace api_public_backOffice.Models
         //public virtual Empresa Empresa { get; set; }
         public virtual EvaluacionModel Evaluacion { get; set; }
         //public virtual Usuario Usuario { get; set; }
-        //public virtual ICollection<UsuarioArea> UsuarioAreas { get; set; }
+        public virtual ICollection<UsuarioAreaModel> UsuarioAreas { get; set; }
     }
 }
