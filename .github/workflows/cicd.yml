@@ -33,5 +33,5 @@ jobs:
           username: ce7b790b048dc502fe59ae4b577a1ad22b6810f96b303ca0b10b42addaac1b5e
           password: ${{ secrets.REGISTRY_SECRET }}    
       - run: |
-          docker build . -t  registry.digitalocean.com/bmlabs/api_public_backOffice:develop-lastest
-          docker push registry.digitalocean.com/bmlabs/api_public_backOffice:develop-lastest      
+          docker build . -t  registry.digitalocean.com/bmlabs/neva/api-public-backoffice:dev-latest
+          docker push registry.digitalocean.com/bmlabs/neva/api-public-backoffice:dev-latest      
