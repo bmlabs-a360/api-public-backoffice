@@ -41,14 +41,6 @@
   <ItemGroup>
     <Folder Include="Enums\" />
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="cl.bms.neva.core">
-      <HintPath>..\cl.bms.neva.core\bin\Debug\net5.0\cl.bms.neva.core.dll</HintPath>
-    </Reference>
-    <Reference Include="cl.bms.neva.entitylayer">
-      <HintPath>..\cl.bms.neva.entitylayer\bin\Debug\net5.0\cl.bms.neva.entitylayer.dll</HintPath>
-    </Reference>
-  </ItemGroup>
   <ProjectExtensions>
     <VisualStudio>
       <UserProperties appsettings_1json__JsonSchema="" />
