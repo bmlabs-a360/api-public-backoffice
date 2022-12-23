@@ -1,8 +1,8 @@
 [submodule "cl.bms.neva.entitylayer"]
 	path = cl.bms.neva.entitylayer
-	url = https://bmgantero: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@github.com/bmlabs-a360/cl.bms.neva.entitylayer
+	url = https://github.com/bmlabs-a360/cl.bms.neva.entitylayer
 	branch = develop
 [submodule "cl.bms.neva.core"]
 	path = cl.bms.neva.core
-	url = https://bmgantero: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@github.com/bmlabs-a360/cl.bms.neva.core
+	url = https://github.com/bmlabs-a360/cl.bms.neva.core
 	branch = develop
