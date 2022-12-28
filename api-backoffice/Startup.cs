@@ -36,6 +36,7 @@ namespace api_public_backOffice
 
         public void ConfigureServices(IServiceCollection services)
         {
+            
             services.AddCors();
             services.AddControllers();
             services.AddDbContext<neva.entities.Context>(
@@ -185,8 +186,9 @@ namespace api_public_backOffice
             }
 
             var context = $"/{tenant}/{_SERVICENAME}";
-            Console.WriteLine($"context: {context}");
-            app.UsePathBase($"{context}");
+            //Console.WriteLine($"context: {context}");
+            //app.UsePathBase($"{context}");
+            app.UsePathBase("/api-public-backoffice");
 
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
@@ -198,7 +200,7 @@ namespace api_public_backOffice
             app.UseSwagger(c => { c.SerializeAsV2 = true; c.RouteTemplate = "swagger/{documentName}/swagger.json"; });
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("v1/swagger.json", context);
+                c.SwaggerEndpoint("v1/swagger.json", _SERVICENAME);
                 c.RoutePrefix = "swagger";
                 c.DefaultModelsExpandDepth(-1);  //desactiva models de swagger
             });
