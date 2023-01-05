@@ -28,7 +28,7 @@ namespace api_public_backOffice.Repository
             var retorno = await Context()
                             .ImportanciaRelativas
                             .AsNoTracking()
-                            .FirstOrDefaultAsync(x => x.Id == ImportanciaRelativa.Id  && x.Activo.Value);
+                            .FirstOrDefaultAsync(x => x.Id == ImportanciaRelativa.Id   );
 
             if (retorno == null) return null;
             return retorno; 

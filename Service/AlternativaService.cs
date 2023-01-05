@@ -14,7 +14,8 @@ namespace api_public_backOffice.Service
     {
         Task<AlternativaModel> GetAlternativaById(AlternativaModel AlternativaModel);
         Task<AlternativaModel> InsertOrUpdate(AlternativaModel alternativaModel);
-        Task<AlternativaModel> GetAlternativaByPreguntaId(AlternativaModel alternativaModel);
+        Task<List<AlternativaModel>> GetAlternativaByPreguntaId(PreguntaModel preguntaModel);
+
         Task<List<AlternativaModel>> GetAlternativaByEvaluacionId(AlternativaModel alternativaMode);
 
        void Dispose();
@@ -39,11 +40,11 @@ namespace api_public_backOffice.Service
             var miAlternativa = await _alternativaRepository.GetAlternativaById(_mapper.Map<Alternativa>( alternativaModel));
             return _mapper.Map<AlternativaModel>(miAlternativa);
         }
-        public async Task<AlternativaModel> GetAlternativaByPreguntaId(AlternativaModel alternativaModel)
+        public async Task<List<AlternativaModel>> GetAlternativaByPreguntaId(PreguntaModel preguntaModel)
         {
-            if (string.IsNullOrEmpty(alternativaModel.Id.ToString())) throw new ArgumentNullException("Id");
-            var miAlternativa = await _alternativaRepository.GetAlternativaByPreguntaId(_mapper.Map<Alternativa>(alternativaModel));
-            return _mapper.Map<AlternativaModel>(miAlternativa);
+            if (string.IsNullOrEmpty(preguntaModel.Id.ToString())) throw new ArgumentNullException("PreguntaId");
+            var miAlternativa = await _alternativaRepository.GetAlternativaByPreguntaId(_mapper.Map<Pregunta>(preguntaModel));
+            return _mapper.Map<List<AlternativaModel>>(miAlternativa);
         }
         public async Task<List<AlternativaModel>> GetAlternativaByEvaluacionId(AlternativaModel alternativaMode)
         {

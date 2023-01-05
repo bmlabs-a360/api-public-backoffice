@@ -10,7 +10,7 @@ namespace api_public_backOffice.Mappers
         {
 
             CreateMap<AlternativaModel, Alternativa>().ReverseMap();
-            CreateMap<Bitacora, BitacoraModel>().ReverseMap();
+            CreateMap<BitacoraModel, Bitacora>().ReverseMap();
             CreateMap<ControlTokenModel, ControlToken>().ReverseMap();
             CreateMap<EmpresaModel, Empresa>().ReverseMap();
             CreateMap<EvaluacionModel, Evaluacion>().ReverseMap();

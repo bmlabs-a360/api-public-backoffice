@@ -184,7 +184,59 @@ namespace api_public_backOffice.Controllers
             }
         }
 
+        [HttpPost("DeleteList")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundResult))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+        public async Task<ActionResult<bool>> DeleteList(List<EvaluacionEmpresaModel> c)
+        {
+            try
+            {
 
+
+                await _EvaluacionEmpresaService.DeleteList(c);
+
+                return Ok(true);
+            }
+            catch (Exception e)
+            {
+                while (e.InnerException != null) e = e.InnerException;
+                _logger.LogError("Error  Source:{0}, Trace:{1} ", e.Source, e);
+                return Problem(detail: e.Message, title: "ERROR");
+            }
+            finally
+            {
+                _EvaluacionEmpresaService.Dispose();
+            }
+        }
+
+        [HttpPost("InsertOrUpdateList")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundResult))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+        public async Task<ActionResult<bool>> InsertOrUpdateList(List<EvaluacionEmpresaModel> c)
+        {
+            try
+            {
+
+
+                await _EvaluacionEmpresaService.InsertOrUpdateList(c);
+
+                return Ok(true);
+            }
+            catch (Exception e)
+            {
+                while (e.InnerException != null) e = e.InnerException;
+                _logger.LogError("Error  Source:{0}, Trace:{1} ", e.Source, e);
+                return Problem(detail: e.Message, title: "ERROR");
+            }
+            finally
+            {
+                _EvaluacionEmpresaService.Dispose();
+            }
+        }
     }
 
 

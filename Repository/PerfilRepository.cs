@@ -53,7 +53,7 @@ namespace api_public_backOffice.Repository
             var retorno = await Context()
                             .Perfils
                             .AsNoTracking()
-                            .FirstOrDefaultAsync(x => x.Id == Perfil.Id  && x.Activo.Value);
+                            .FirstOrDefaultAsync(x => x.Id == Perfil.Id   );
 
             if (retorno == null) return null;
             return retorno; 

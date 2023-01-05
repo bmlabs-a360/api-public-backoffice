@@ -27,7 +27,7 @@ namespace api_public_backOffice.Repository
             var retorno = await Context()
                             .TipoSubRubros
                             .AsNoTracking()
-                            .Where(x => x.TipoRubroId == TipoRubroId && x.Activo.Value).ToListAsync();
+                            .Where(x => x.TipoRubroId == TipoRubroId  ).ToListAsync();
 
             if (retorno == null) return null;
             return retorno;
@@ -38,7 +38,7 @@ namespace api_public_backOffice.Repository
             var retorno = await Context()
                             .TipoSubRubros
                             .AsNoTracking()
-                            .FirstOrDefaultAsync(x => x.Id == TipoSubRubro.Id && x.Activo.Value);
+                            .FirstOrDefaultAsync(x => x.Id == TipoSubRubro.Id  );
 
             if (retorno == null) return null;
             return retorno;

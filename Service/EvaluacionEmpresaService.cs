@@ -17,6 +17,11 @@ namespace api_public_backOffice.Service
         Task<EvaluacionEmpresaModel> GetEvaluacionEmpresasByEvaluacionId(EvaluacionModel EvaluacionModel);
         Task<List<EvaluacionEmpresaModel>> GetEvaluacionEmpresasByEmpresaId(EmpresaModel EmpresaMode);
         Task<EvaluacionEmpresaModel> InsertOrUpdate(EvaluacionEmpresaModel EvaluacionEmpresaModel);
+
+          Task DeleteList(List<EvaluacionEmpresaModel> c);
+          Task InsertOrUpdateList(List<EvaluacionEmpresaModel> c);
+
+
         void Dispose();
     }
     public class EvaluacionEmpresaService : IEvaluacionEmpresaService, IDisposable
@@ -65,6 +70,19 @@ namespace api_public_backOffice.Service
 
             var retorno = await _EvaluacionEmpresaRepository.InsertOrUpdate(_mapper.Map<EvaluacionEmpresa>(EvaluacionEmpresaModel));
             return _mapper.Map<EvaluacionEmpresaModel>(retorno);
+        }
+
+        public async Task DeleteList(List<EvaluacionEmpresaModel> c)
+        {
+             await _EvaluacionEmpresaRepository.DeleteList(_mapper.Map<List<EvaluacionEmpresa>>(c));
+        }
+        public async Task InsertOrUpdateList(List<EvaluacionEmpresaModel> c)
+        {
+            //await _EvaluacionEmpresaRepository.InsertOrUpdateList(_mapper.Map<List<EvaluacionEmpresa>>(c));
+            foreach (EvaluacionEmpresaModel item in c)
+            {
+                await _EvaluacionEmpresaRepository.InsertOrUpdate(_mapper.Map<EvaluacionEmpresa>(item));
+            }
         }
         public void Dispose() 
         { 

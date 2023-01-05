@@ -16,7 +16,7 @@ namespace api_public_backOffice.Repository
     {
         Task<Alternativa> GetAlternativaById(Alternativa Alternativa);
         Task<IEnumerable<Alternativa>> GetAlternativaByEvaluacionId(Alternativa alternativa);
-        Task<IEnumerable<Alternativa>> GetAlternativaByPreguntaId(Alternativa alternativa);
+        Task<IEnumerable<Alternativa>> GetAlternativaByPreguntaId(Pregunta pregunta);
     }
     public class AlternativaRepository : Repository<Alternativa, Context>, IAlternativaRepository
     {
@@ -27,7 +27,7 @@ namespace api_public_backOffice.Repository
             var retorno = await Context()
                             .Alternativas
                             .AsNoTracking()
-                            .FirstOrDefaultAsync(x => x.Id == alternativa.Id  && x.Activo.Value);
+                            .FirstOrDefaultAsync(x => x.Id == alternativa.Id   );
 
             if (retorno == null) return null;
             return retorno; 
@@ -38,18 +38,18 @@ namespace api_public_backOffice.Repository
             var retorno = await Context()
                             .Alternativas
                             .AsNoTracking()
-                            .Where(x => x.EvaluacionId == alternativa.EvaluacionId && x.Activo.Value).ToListAsync();
+                            .Where(x => x.EvaluacionId == alternativa.EvaluacionId  ).ToListAsync();
 
             if (retorno == null) return null;
             return retorno;
         }
-        public async Task<IEnumerable<Alternativa>> GetAlternativaByPreguntaId(Alternativa alternativa)
+        public async Task<IEnumerable<Alternativa>> GetAlternativaByPreguntaId(Pregunta pregunta)
         {
-            if (string.IsNullOrEmpty(alternativa.PreguntaId.ToString())) throw new ArgumentNullException("PreguntaId");
+            if (string.IsNullOrEmpty(pregunta.Id.ToString())) throw new ArgumentNullException("PreguntaId");
             var retorno = await Context()
                             .Alternativas
                             .AsNoTracking()
-                            .Where(x => x.PreguntaId == alternativa.PreguntaId && x.Activo.Value).ToListAsync();
+                            .Where(x => x.PreguntaId == pregunta.Id  ).ToListAsync();
 
             if (retorno == null) return null;
             return retorno;

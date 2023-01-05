@@ -101,6 +101,40 @@ namespace api_public_backOffice.Controllers
             }
         }
 
+
+
+        //[ApiKeyAuth]
+        [HttpPost("DeleteSegmentacionArea")]
+        [ProducesResponseType(StatusCodes.Status200OK,Type = typeof(int))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundResult))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+        public async Task<ActionResult<int>> DeleteSegmentacionArea([FromBody] SegmentacionAreaModel SegmentacionAreaModel)
+
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(SegmentacionAreaModel.Id.ToString())) return BadRequest("Debe indicar SegmentacionArea.Id");
+               return  await _SegmentacionAreaService.DeleteSegmentacionArea(SegmentacionAreaModel);
+             
+                //return NoContent();
+            }
+            catch (Exception e)
+            {
+                while (e.InnerException != null) e = e.InnerException;
+                _logger.LogError("Error  Source:{0}, Trace:{1} ", e.Source, e);
+                return Problem(detail: e.Message, title: "ERROR");
+            }
+            finally
+            {
+                _SegmentacionAreaService.Dispose();
+                // _controlTokenService.Dispose();
+            }
+        }
+
+
+
+
         //[ApiKeyAuth]
         [HttpPost("GetSegmentacionAreas")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<SegmentacionAreaModel>))]

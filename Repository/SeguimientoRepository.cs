@@ -29,7 +29,7 @@ namespace api_public_backOffice.Repository
             var retorno = await Context()
                             .Seguimientos
                             .AsNoTracking()
-                            .FirstOrDefaultAsync(x => x.Id == Seguimiento.Id  && x.Activo.Value);
+                            .FirstOrDefaultAsync(x => x.Id == Seguimiento.Id   );
 
             if (retorno == null) return null;
             return retorno; 

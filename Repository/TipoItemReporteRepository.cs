@@ -26,7 +26,7 @@ namespace api_public_backOffice.Repository
             var retorno = await Context()
                             .TipoItemReportes
                             .AsNoTracking()
-                            .FirstOrDefaultAsync(x => x.Id == TipoItemReporte.Id  && x.Activo.Value);
+                            .FirstOrDefaultAsync(x => x.Id == TipoItemReporte.Id   );
 
             if (retorno == null) return null;
             return retorno; 

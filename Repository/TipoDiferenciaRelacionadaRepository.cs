@@ -26,7 +26,7 @@ namespace api_public_backOffice.Repository
             var retorno = await Context()
                             .TipoDiferenciaRelacionada
                             .AsNoTracking()
-                            .FirstOrDefaultAsync(x => x.Id == TipoDiferenciaRelacionada.Id  && x.Activo.Value);
+                            .FirstOrDefaultAsync(x => x.Id == TipoDiferenciaRelacionada.Id   );
 
             if (retorno == null) return null;
             return retorno; 

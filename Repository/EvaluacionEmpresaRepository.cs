@@ -18,6 +18,8 @@ namespace api_public_backOffice.Repository
         Task<IEnumerable<EvaluacionEmpresa>> GetEvaluacionEmpresas();
         Task<IEnumerable<EvaluacionEmpresa>> GetEvaluacionEmpresasByEvaluacionId(Evaluacion evaluacion);
         Task<IEnumerable<EvaluacionEmpresa>> GetEvaluacionEmpresasByEmpresaId(Empresa empresa);
+        Task DeleteList(List<EvaluacionEmpresa> c);
+        Task InsertOrUpdateList(List<EvaluacionEmpresa> c);
 
     }
     public class EvaluacionEmpresaRepository : Repository<EvaluacionEmpresa, Context>, IEvaluacionEmpresaRepository
@@ -30,7 +32,7 @@ namespace api_public_backOffice.Repository
             var retorno = await Context()
                             .EvaluacionEmpresas
                             .AsNoTracking()
-                            .FirstOrDefaultAsync(x => x.Id == EvaluacionEmpresa.Id  && x.Activo.Value);
+                            .FirstOrDefaultAsync(x => x.Id == EvaluacionEmpresa.Id   );
 
             if (retorno == null) return null;
             return retorno; 
@@ -52,6 +54,79 @@ namespace api_public_backOffice.Repository
 
             if (retorno == null) return null;
             return retorno;
+        }
+
+        public async Task InsertOrUpdateList(List<EvaluacionEmpresa> c)
+        {
+            try
+            {
+                if (c.Count < 0) throw new Exception("Sin datos para registrar conciliacion");
+                decimal rango = 1000;
+                var iteracion = Math.Ceiling(((decimal)c.Count / rango));
+
+                using (var ctx = Context())
+                {
+                    for (int i = 0; i < iteracion; i++)
+                    {
+                        List<EvaluacionEmpresa> toInsert = c.Take((int)rango).ToList();
+
+                        ctx.ChangeTracker.AutoDetectChangesEnabled = false;
+                        ctx.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+                        ctx.EvaluacionEmpresas.AddRange(toInsert);
+
+                        c.RemoveRange(0, (c.Count < rango) ? c.Count : (int)rango);
+                    }
+                    ctx.BulkSaveChanges();
+                    ctx.ChangeTracker.Clear();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task DeleteList(List<EvaluacionEmpresa> existen)
+        {
+            try
+            {
+                /*List<EvaluacionEmpresa> existen = null;
+                c.ForEach(async e =>
+                {
+                    EvaluacionEmpresa xxx = await Context().EvaluacionEmpresas.AsNoTracking()
+                            .FirstOrDefaultAsync(x => x.Id == e.Id);
+                    if (xxx != null) {
+                        existen.Add(xxx);
+                        }
+                });*/
+                if (existen == null) return;
+                decimal rango = 1000;
+                var iteracion = Math.Ceiling(((decimal)existen.Count / rango));
+
+                using (var ctx = Context())
+                {
+                    for (int i = 0; i < iteracion; i++)
+                    {
+                        
+                            List<EvaluacionEmpresa> toInsert = existen.Take((int)rango).ToList();
+
+                        ctx.ChangeTracker.AutoDetectChangesEnabled = false;
+                        ctx.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+                        
+                        ctx.EvaluacionEmpresas.RemoveRange(toInsert);
+
+                        existen.RemoveRange(0, (existen.Count < rango) ? existen.Count : (int)rango);
+                    }
+                    ctx.BulkSaveChanges();
+                    ctx.ChangeTracker.Clear();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
         }
 
         public async Task<IEnumerable<EvaluacionEmpresa>> GetEvaluacionEmpresasByEmpresaId(Empresa empresa)

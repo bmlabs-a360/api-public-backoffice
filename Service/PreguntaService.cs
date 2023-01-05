@@ -18,6 +18,7 @@ namespace api_public_backOffice.Service
         Task<List<PreguntaModel>> GetPreguntasBySegmentacionAreaId(SegmentacionAreaModel segmentacionAreaModel);
         Task<List<PreguntaModel>> GetPreguntasBySegmentacionSubAreaId(SegmentacionSubAreaModel segmentacionSubAreaModel);
         Task<PreguntaModel> InsertOrUpdate(PreguntaModel PreguntaModel);
+        Task<int> DeletePregunta(PreguntaModel preguntaModel);
         void Dispose();
     }
     public class PreguntaService : IPreguntaService, IDisposable
@@ -75,7 +76,15 @@ namespace api_public_backOffice.Service
             var retorno = await _PreguntaRepository.InsertOrUpdate(_mapper.Map<Pregunta>(PreguntaModel));
             return _mapper.Map<PreguntaModel>(retorno);
         }
-        public void Dispose() 
+
+        public async Task<int> DeletePregunta(PreguntaModel preguntaModel)
+        {
+
+
+            return await _PreguntaRepository.DeletePregunta(_mapper.Map<Pregunta>(preguntaModel));
+
+        }
+            public void Dispose() 
         { 
             if (_PreguntaRepository != null)
             {

@@ -19,6 +19,7 @@ namespace api_public_backOffice.Repository
         Task<IEnumerable<Pregunta>> GetPreguntasByEvaluacionId(Evaluacion evaluacion);
         Task<IEnumerable<Pregunta>> GetPreguntasBySegmentacionAreaId(SegmentacionArea segmentacionArea);
         Task<IEnumerable<Pregunta>> GetPreguntasBySegmentacionSubAreaId(SegmentacionSubArea segmentacionSubArea);
+        Task<int> DeletePregunta(Pregunta pregunta);
     }
     public class PreguntaRepository : Repository<Pregunta, Context>, IPreguntaRepository
     {
@@ -29,7 +30,7 @@ namespace api_public_backOffice.Repository
             var retorno = await Context()
                             .Pregunta
                             .AsNoTracking()
-                            .FirstOrDefaultAsync(x => x.Id == Pregunta.Id  && x.Activo.Value);
+                            .FirstOrDefaultAsync(x => x.Id == Pregunta.Id   );
 
             if (retorno == null) return null;
             return retorno; 
@@ -38,7 +39,7 @@ namespace api_public_backOffice.Repository
         {
             var retorno = await  Context()
                             .Pregunta
-                            .AsNoTracking().Where(x=> x.Activo.Value).ToListAsync();
+                            .AsNoTracking().ToListAsync();
 
             if (retorno == null) return null;
             return retorno;
@@ -46,7 +47,7 @@ namespace api_public_backOffice.Repository
         public async Task<IEnumerable<Pregunta>> GetPreguntasByEvaluacionId(Evaluacion evaluacion)
         {
             var retorno = await Context()
-                            .Pregunta.Where(y => y.EvaluacionId == evaluacion.Id && y.Activo.Value).AsNoTracking().ToListAsync();
+                            .Pregunta.Where(y => y.EvaluacionId == evaluacion.Id).AsNoTracking().ToListAsync();
 
             if (retorno == null) return null;
             return retorno;
@@ -54,7 +55,7 @@ namespace api_public_backOffice.Repository
         public async Task<IEnumerable<Pregunta>> GetPreguntasBySegmentacionAreaId(SegmentacionArea segmentacionArea)
         {
             var retorno = await Context()
-                            .Pregunta.Where(y => y.SegmentacionAreaId == segmentacionArea.Id && y.Activo.Value).AsNoTracking().ToListAsync();
+                            .Pregunta.Where(y => y.SegmentacionAreaId == segmentacionArea.Id ).AsNoTracking().ToListAsync();
 
             if (retorno == null) return null;
             return retorno;
@@ -62,10 +63,16 @@ namespace api_public_backOffice.Repository
         public async Task<IEnumerable<Pregunta>> GetPreguntasBySegmentacionSubAreaId(SegmentacionSubArea segmentacionSubArea)
         {
             var retorno = await Context()
-                            .Pregunta.Where(y => y.SegmentacionSubAreaId == segmentacionSubArea.Id && y.Activo.Value).AsNoTracking().ToListAsync();
+                            .Pregunta.Where(y => y.SegmentacionSubAreaId == segmentacionSubArea.Id).AsNoTracking().ToListAsync();
 
             if (retorno == null) return null;
             return retorno;
+        }
+
+        public async Task<int> DeletePregunta(Pregunta pregunta)
+        {
+
+            return await Context().Pregunta.Where(x => x.Id == pregunta.Id).DeleteFromQueryAsync();
         }
     }
 }

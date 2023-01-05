@@ -203,6 +203,32 @@ namespace api_public_backOffice.Controllers
             }
         }
 
+        [HttpPost("GetEmpresasByEvaluacionId")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<EmpresaModel>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundResult))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+        public async Task<ActionResult<List<EmpresaModel>>> GetEmpresasByEvaluacionId(EvaluacionModel evaluacionModel)
+        {
+            try
+            {
+                List<EmpresaModel> retorno = await _EmpresaService.GetEmpresasByEvaluacionId(evaluacionModel);
+                if (retorno == null) return NotFound();
+                return Ok(retorno);
+            }
+            catch (Exception e)
+            {
+                while (e.InnerException != null) e = e.InnerException;
+                _logger.LogError("Error  Source:{0}, Trace:{1} ", e.Source, e);
+                return Problem(detail: e.Message, title: "ERROR");
+            }
+            finally
+            {
+                _EmpresaService.Dispose();
+                // _controlTokenService.Dispose();
+            }
+        }
+
     }
 
 

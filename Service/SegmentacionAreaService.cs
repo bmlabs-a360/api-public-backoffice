@@ -16,6 +16,7 @@ namespace api_public_backOffice.Service
         Task<List<SegmentacionAreaModel>> GetSegmentacionAreas();
         Task<List<SegmentacionAreaModel>> GetSegmentacionAreasByEvaluacionId(EvaluacionModel evaluacionModel);
         Task<SegmentacionAreaModel> InsertOrUpdate(SegmentacionAreaModel SegmentacionAreaModel);
+        Task<int> DeleteSegmentacionArea(SegmentacionAreaModel SegmentacionAreaModel);
         void Dispose();
     }
     public class SegmentacionAreaService : ISegmentacionAreaService, IDisposable
@@ -57,6 +58,15 @@ namespace api_public_backOffice.Service
             var retorno = await _SegmentacionAreaRepository.InsertOrUpdate(_mapper.Map<SegmentacionArea>(SegmentacionAreaModel));
             return _mapper.Map<SegmentacionAreaModel>(retorno);
         }
+
+        public async Task<int> DeleteSegmentacionArea(SegmentacionAreaModel SegmentacionAreaModel)
+        {
+         
+
+            return await  _SegmentacionAreaRepository.DeleteSegmentacionArea(_mapper.Map<SegmentacionArea>(SegmentacionAreaModel));
+            
+        }
+
         public void Dispose() 
         { 
             if (_SegmentacionAreaRepository != null)

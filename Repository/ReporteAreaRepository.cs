@@ -28,7 +28,7 @@ namespace api_public_backOffice.Repository
             var retorno = await Context()
                             .ReporteAreas
                             .AsNoTracking()
-                            .FirstOrDefaultAsync(x => x.Id == ReporteArea.Id  && x.Activo.Value);
+                            .FirstOrDefaultAsync(x => x.Id == ReporteArea.Id   );
 
             if (retorno == null) return null;
             return retorno; 
@@ -45,7 +45,7 @@ namespace api_public_backOffice.Repository
         public async Task<IEnumerable<ReporteArea>> GetReporteAreasByReporteId(Reporte reporte)
         {
             var retorno = await Context()
-                            .ReporteAreas.Where(y => y.ReporteId == reporte.Id && y.Activo.Value).AsNoTracking().ToListAsync();
+                            .ReporteAreas.Where(y => y.ReporteId == reporte.Id).AsNoTracking().ToListAsync();
 
             if (retorno == null) return null;
             return retorno;
@@ -53,7 +53,7 @@ namespace api_public_backOffice.Repository
         public async Task<IEnumerable<ReporteArea>> GetReporteAreasBySegmentacionAreaId(SegmentacionArea segmentacionArea)
         {
             var retorno = await Context()
-                            .ReporteAreas.Where(y => y.SegmentacionAreaId == segmentacionArea.Id && y.Activo.Value).AsNoTracking().ToListAsync();
+                            .ReporteAreas.Where(y => y.SegmentacionAreaId == segmentacionArea.Id).AsNoTracking().ToListAsync();
 
             if (retorno == null) return null;
             return retorno;

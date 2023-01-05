@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using neva.entities;
+using System.Drawing;
 
 namespace api_public_backOffice.Service
 {
@@ -38,10 +39,32 @@ namespace api_public_backOffice.Service
             var miEvaluacion = await _EvaluacionRepository.GetEvaluacionById(_mapper.Map<Evaluacion>( EvaluacionModel));
             return _mapper.Map<EvaluacionModel>(miEvaluacion);
         }
+
+
         public async Task<List<EvaluacionModel>> GetEvaluacions()
         {
-            var EvaluacionsList = await _EvaluacionRepository.GetEvaluacions();
-            return _mapper.Map<List<EvaluacionModel>>(EvaluacionsList);
+            var EvaluacionsList = _mapper.Map<List<EvaluacionModel>>(await _EvaluacionRepository.GetEvaluacions());
+            return await maperCantidades(EvaluacionsList);
+        }
+        private async Task<List<EvaluacionModel>> maperCantidades(List<EvaluacionModel> retorno)
+        {
+            foreach (EvaluacionModel item in retorno)
+            {
+                var salida = _EvaluacionRepository.GetCantidades(item);
+
+                item.CantidadEmpresas = salida.CantidadEmpresas;
+                item.CantidadAreas = salida.CantidadAreas;
+                item.CantidadSubAreas = salida.CantidadSubAreas;
+                item.CantidadPreguntas = salida.CantidadPreguntas;
+                item.CantidadAlternativas = salida.CantidadAlternativas;
+                
+               /* item.CantidadEmpresas =  _EvaluacionRepository.GetCantidadEmpresas(_mapper.Map<Evaluacion>(item));
+                item.CantidadAreas =  _EvaluacionRepository.GetCantidadSegmentacionAreas(_mapper.Map<Evaluacion>(item));
+                item.CantidadSubAreas=  _EvaluacionRepository.GetCantidadSegmentacionSubAreas(_mapper.Map<Evaluacion>(item));
+                item.CantidadPreguntas =  _EvaluacionRepository.GetCantidadPreguntas(_mapper.Map<Evaluacion>(item));
+                item.CantidadAlternativas =  _EvaluacionRepository.GetCantidadAlternativas(_mapper.Map<Evaluacion>(item));*/
+            }
+            return retorno;
         }
         public async Task<EvaluacionModel> GetEvaluacionsByUsuarioId(UsuarioModel UsuarioModel)
         {

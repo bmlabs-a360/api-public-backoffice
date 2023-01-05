@@ -17,6 +17,7 @@ namespace api_public_backOffice.Repository
         Task<SegmentacionArea> GetSegmentacionAreaById(SegmentacionArea SegmentacionArea);
         Task<IEnumerable<SegmentacionArea>> GetSegmentacionAreas();
         Task<IEnumerable<SegmentacionArea>> GetSegmentacionAreasByEvaluacionId(Evaluacion evaluacion);
+        Task<int> DeleteSegmentacionArea(SegmentacionArea segmentacionArea);
     }
     public class SegmentacionAreaRepository : Repository<SegmentacionArea, Context>, ISegmentacionAreaRepository
     {
@@ -28,7 +29,7 @@ namespace api_public_backOffice.Repository
             var retorno = await Context()
                             .SegmentacionAreas
                             .AsNoTracking()
-                            .FirstOrDefaultAsync(x => x.Id == SegmentacionArea.Id  && x.Activo.Value);
+                            .FirstOrDefaultAsync(x => x.Id == SegmentacionArea.Id   );
 
             if (retorno == null) return null;
             return retorno; 
@@ -51,6 +52,11 @@ namespace api_public_backOffice.Repository
             if (retorno == null) return null;
             return retorno;
         }
+        public async Task<int> DeleteSegmentacionArea(SegmentacionArea segmentacionArea)
+        {
+
+          return  await Context().SegmentacionAreas.Where(x => x.Id == segmentacionArea.Id).DeleteFromQueryAsync();
+             }
 
     }
 }

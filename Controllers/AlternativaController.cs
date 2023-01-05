@@ -110,16 +110,16 @@ namespace api_public_backOffice.Controllers
 
         //[ApiKeyAuth]
         [HttpPost("GetAlternativaByPreguntaId")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AlternativaModel))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<AlternativaModel>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundResult))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
-        public async Task<ActionResult<AlternativaModel>> GetAlternativaByPreguntaId([FromBody] AlternativaModel alternativaModel)
+        public async Task<ActionResult<AlternativaModel>> GetAlternativaByPreguntaId([FromBody] PreguntaModel preguntaModell)
         {
             try
             {
-                if (string.IsNullOrEmpty(alternativaModel.PreguntaId.ToString())) return BadRequest("Debe indicar PreguntaId");
-                AlternativaModel retorno = await _alternativaService.GetAlternativaByPreguntaId(alternativaModel);
+                if (string.IsNullOrEmpty(preguntaModell.Id.ToString())) return BadRequest("Debe indicar PreguntaId");
+               List< AlternativaModel> retorno = await _alternativaService.GetAlternativaByPreguntaId(preguntaModell);
                 if (retorno == null) return NotFound();
                 return Ok(retorno);
             }
