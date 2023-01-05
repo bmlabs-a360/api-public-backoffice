@@ -1,4 +1,4 @@
-﻿name: Build MicroNetCore
+name: Build MicroNetCore
 on:
   push:
     branches: [develop]
@@ -11,11 +11,14 @@ jobs:
     steps:
       - name: git checkout 
         uses: actions/checkout@v2
+        with:
+           token: ${{ secrets.GIT_SECRET }}
+           submodules: 'recursive'
 
       - name: Setup netcore
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '5.0.100'
+          dotnet-version: '7.0.101'
 
       #- name: Install dependencies
       #  run: dotnet restore
@@ -33,5 +36,5 @@ jobs:
           username: ce7b790b048dc502fe59ae4b577a1ad22b6810f96b303ca0b10b42addaac1b5e
           password: ${{ secrets.REGISTRY_SECRET }}    
       - run: |
-          docker build . -t  registry.digitalocean.com/bmlabs/api_public_backOffice:develop-lastest
-          docker push registry.digitalocean.com/bmlabs/api_public_backOffice:develop-lastest      
+          docker build . -t  registry.digitalocean.com/bmlabs/neva/api-public-backoffice:dev-latest
+          docker push registry.digitalocean.com/bmlabs/neva/api-public-backoffice:dev-latest      
