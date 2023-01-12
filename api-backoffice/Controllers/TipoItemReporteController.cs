@@ -104,7 +104,7 @@ namespace api_public_backOffice.Controllers
         }
 
         //[ApiKeyAuth]
-        [HttpPost("GetTipoItemReportes")]
+        [HttpGet("GetTipoItemReportes")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<TipoItemReporteModel>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundResult))]

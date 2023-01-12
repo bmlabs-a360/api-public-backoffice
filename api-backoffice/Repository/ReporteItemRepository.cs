@@ -44,7 +44,7 @@ namespace api_public_backOffice.Repository
         public async Task<IEnumerable<ReporteItem>> GetReporteItemsByReporteId(Reporte reporte)
         {
             var retorno = await Context()
-                            .ReporteItems.Where(y => y.ReporteId == reporte.Id && y.Activo.Value).AsNoTracking().ToListAsync();
+                            .ReporteItems.Where(y => y.ReporteId == reporte.Id).AsNoTracking().ToListAsync();
 
             if (retorno == null) return null;
             return retorno;

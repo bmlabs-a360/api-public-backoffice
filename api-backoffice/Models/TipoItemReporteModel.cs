@@ -1,14 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 //using System.Collections.Generic;
 
 namespace api_public_backOffice.Models
 {
     public class TipoItemReporteModel
     {
-        /*public TipoItemReporteModel()
+        public TipoItemReporteModel()
         {
-            ReporteItems = new HashSet<ReporteItem>();
-        }*/
+            ReporteItems = new HashSet<ReporteItemModel>();
+        }
 
         public Guid Id { get; set; }
         public int Orden { get; set; }
@@ -17,6 +18,6 @@ namespace api_public_backOffice.Models
         public bool? Activo { get; set; }
         public DateTime? FechaCreacion { get; set; }
 
-        //public virtual ICollection<ReporteItem> ReporteItems { get; set; }
+        public virtual ICollection<ReporteItemModel> ReporteItems { get; set; }
     }
 }
