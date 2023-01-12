@@ -19,6 +19,8 @@ namespace api_public_backOffice.Models
         public DateTime? FechaCreacion { get; set; }
         public bool? Activo { get; set; }
         public virtual Evaluacion Evaluacion { get; set; }
+
+
         /*public virtual Empresa Empresa { get; set; }
         
         public virtual ICollection<ImportanciaRelativa> ImportanciaRelativas { get; set; }

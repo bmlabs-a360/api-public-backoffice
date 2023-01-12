@@ -17,6 +17,8 @@ namespace api_public_backOffice.Service
         Task<EvaluacionEmpresaModel> GetEvaluacionEmpresasByEvaluacionId(EvaluacionModel EvaluacionModel);
         Task<List<EvaluacionEmpresaModel>> GetEvaluacionEmpresasByEmpresaId(EmpresaModel EmpresaMode);
         Task<EvaluacionEmpresaModel> InsertOrUpdate(EvaluacionEmpresaModel EvaluacionEmpresaModel);
+        List<SeguimientoEvaluacionEmpresaDto> GetSeguimiento();
+        List<SeguimientoPlanMejoraModelDto> GetPlanMejoras(EvaluacionEmpresa evaluacionEmpresa);
 
           Task DeleteList(List<EvaluacionEmpresaModel> c);
           Task InsertOrUpdateList(List<EvaluacionEmpresaModel> c);
@@ -47,6 +49,15 @@ namespace api_public_backOffice.Service
         {
             var EvaluacionEmpresasList = await _EvaluacionEmpresaRepository.GetEvaluacionEmpresas();
             return _mapper.Map<List<EvaluacionEmpresaModel>>(EvaluacionEmpresasList);
+        }
+        public List<SeguimientoEvaluacionEmpresaDto> GetSeguimiento()
+        {
+            return _EvaluacionEmpresaRepository.GetSeguimiento();
+        }
+
+        public List<SeguimientoPlanMejoraModelDto> GetPlanMejoras(EvaluacionEmpresa evaluacionEmpresa)
+        {
+            return _EvaluacionEmpresaRepository.GetPlanMejoras(evaluacionEmpresa);
         }
         public async Task<EvaluacionEmpresaModel> GetEvaluacionEmpresasByEvaluacionId(EvaluacionModel EvaluacionModel)
         {

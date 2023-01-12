@@ -16,6 +16,7 @@ using api_public_backOffice.Interceptors;
 using ProblemDetails = Microsoft.AspNetCore.Mvc.ProblemDetails;
 using NotFoundResult = Microsoft.AspNetCore.Mvc.NotFoundResult;
 using System.Web;
+using neva.entities;
 
 namespace api_public_backOffice.Controllers
 {
@@ -130,6 +131,60 @@ namespace api_public_backOffice.Controllers
                 // _controlTokenService.Dispose();
             }
         }
+        [HttpPost("GetSeguimiento")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<EvaluacionEmpresaModel>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundResult))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+        public async Task<ActionResult<List<SeguimientoEvaluacionEmpresaDto>>> GetSeguimiento()
+        {
+            try
+            {
+                List<SeguimientoEvaluacionEmpresaDto> retorno =  _EvaluacionEmpresaService.GetSeguimiento();
+                if (retorno == null) return NotFound();
+                return Ok(retorno);
+            }
+            catch (Exception e)
+            {
+                while (e.InnerException != null) e = e.InnerException;
+                _logger.LogError("Error  Source:{0}, Trace:{1} ", e.Source, e);
+                return Problem(detail: e.Message, title: "ERROR");
+            }
+            finally
+            {
+                _EvaluacionEmpresaService.Dispose();
+                // _controlTokenService.Dispose();
+            }
+        }
+
+
+        [HttpPost("GetPlanMejoras")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<SeguimientoPlanMejoraModelDto>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundResult))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+        public async Task<ActionResult<List<SeguimientoPlanMejoraModelDto>>> GetPlanMejoras(EvaluacionEmpresa evaluacionEmpresa)
+        {
+            try
+            {
+                List<SeguimientoPlanMejoraModelDto> retorno = _EvaluacionEmpresaService.GetPlanMejoras(evaluacionEmpresa);
+                if (retorno == null) return NotFound();
+                return Ok(retorno);
+            }
+            catch (Exception e)
+            {
+                while (e.InnerException != null) e = e.InnerException;
+                _logger.LogError("Error  Source:{0}, Trace:{1} ", e.Source, e);
+                return Problem(detail: e.Message, title: "ERROR");
+            }
+            finally
+            {
+                _EvaluacionEmpresaService.Dispose();
+                // _controlTokenService.Dispose();
+            }
+        }
+
+
 
         //[ApiKeyAuth]
         [HttpPost("GetEvaluacionEmpresasByEvaluacionId")]

@@ -38,7 +38,7 @@ namespace api_public_backOffice.Repository
         {
             var retorno = await  Context()
                             .Seguimientos
-                            .AsNoTracking().Where(x=>x.Activo.Value).ToListAsync();
+                            .AsNoTracking().ToListAsync();
 
             if (retorno == null) return null;
             return retorno;
@@ -46,7 +46,7 @@ namespace api_public_backOffice.Repository
         public async Task<IEnumerable<Seguimiento>> GetSeguimientosByEmpresaId(Empresa empresa)
         {
             var retorno = await Context()
-                            .Seguimientos.Where(y => y.EmpresaId == empresa.Id && y.Activo.Value).AsNoTracking().ToListAsync();
+                            .Seguimientos.Where(y => y.EmpresaId == empresa.Id ).AsNoTracking().ToListAsync();
 
             if (retorno == null) return null;
             return retorno;
@@ -54,7 +54,7 @@ namespace api_public_backOffice.Repository
         public async Task<IEnumerable<Seguimiento>> GetSeguimientosByEvaluacionId(Evaluacion evaluacion)
         {
             var retorno = await Context()
-                            .Seguimientos.Where(y => y.EvaluacionId == evaluacion.Id && y.Activo.Value).AsNoTracking().ToListAsync();
+                            .Seguimientos.Where(y => y.EvaluacionId == evaluacion.Id).AsNoTracking().ToListAsync();
 
             if (retorno == null) return null;
             return retorno;
@@ -62,7 +62,7 @@ namespace api_public_backOffice.Repository
         public async Task<IEnumerable<Seguimiento>> GetSeguimientosByPlanMejoraId(PlanMejora planMejora)
         {
             var retorno = await Context()
-                            .Seguimientos.Where(y => y.PlanMejoraId == planMejora.Id && y.Activo.Value).AsNoTracking().ToListAsync();
+                            .Seguimientos.Where(y => y.PlanMejoraId == planMejora.Id).AsNoTracking().ToListAsync();
 
             if (retorno == null) return null;
             return retorno;
