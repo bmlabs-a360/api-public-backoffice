@@ -25,7 +25,7 @@ namespace api_public_backOffice.Repository
         {
             if (string.IsNullOrEmpty(ReporteItemNivelSubscripcion.Id.ToString())) throw new ArgumentNullException("ReporteItemNivelSubscripcionId");
             var retorno = await Context()
-                            .ReporteItemNivelSubscripcions
+                            .ReporteItemNivelSubscripcion
                             .AsNoTracking()
                             .FirstOrDefaultAsync(x => x.Id == ReporteItemNivelSubscripcion.Id);
 
@@ -35,7 +35,7 @@ namespace api_public_backOffice.Repository
         public async Task<IEnumerable<ReporteItemNivelSubscripcion>> GetReporteItemNivelSubscripcions()
         {
             var retorno = await Context()
-                            .ReporteItemNivelSubscripcions
+                            .ReporteItemNivelSubscripcion
                             .AsNoTracking().Where(x => x.Activo.Value).ToListAsync();
 
             if (retorno == null) return null;
@@ -44,7 +44,7 @@ namespace api_public_backOffice.Repository
         public async Task<IEnumerable<ReporteItemNivelSubscripcion>> GetReporteItemNivelSubscripcionsByReporteId(Reporte reporte)
         {
             var retorno = await Context()
-                            .ReporteItemNivelSubscripcions.Where(y => y.ReporteId == reporte.Id).AsNoTracking().ToListAsync();
+                            .ReporteItemNivelSubscripcion.Where(y => y.ReporteId == reporte.Id).AsNoTracking().ToListAsync();
 
             if (retorno == null) return null;
             return retorno;
