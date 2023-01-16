@@ -25,7 +25,7 @@ namespace api_public_backOffice.Repository
         {
             if (string.IsNullOrEmpty(ReporteItemNivelBasico.Id.ToString())) throw new ArgumentNullException("ReporteItemNivelBasicoId");
             var retorno = await Context()
-                            .ReporteItemNivelBasico
+                            .ReporteItemNivelBasicos
                             .AsNoTracking()
                             .FirstOrDefaultAsync(x => x.Id == ReporteItemNivelBasico.Id);
 
@@ -35,7 +35,7 @@ namespace api_public_backOffice.Repository
         public async Task<IEnumerable<ReporteItemNivelBasico>> GetReporteItemNivelBasicos()
         {
             var retorno = await Context()
-                            .ReporteItemNivelBasico
+                            .ReporteItemNivelBasicos
                             .AsNoTracking().Where(x => x.Activo.Value).ToListAsync();
 
             if (retorno == null) return null;
@@ -44,7 +44,7 @@ namespace api_public_backOffice.Repository
         public async Task<IEnumerable<ReporteItemNivelBasico>> GetReporteItemNivelBasicosByReporteId(Reporte reporte)
         {
             var retorno = await Context()
-                            .ReporteItemNivelBasico.Where(y => y.ReporteId == reporte.Id).AsNoTracking().ToListAsync();
+                            .ReporteItemNivelBasicos.Where(y => y.ReporteId == reporte.Id).OrderBy(y => y.Orden).AsNoTracking().ToListAsync();
 
             if (retorno == null) return null;
             return retorno;

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using neva.entities;
+using System;
+using System.Collections.Generic;
 //using System.Collections.Generic;
 
 namespace api_public_backOffice.Models
@@ -16,6 +18,8 @@ namespace api_public_backOffice.Models
         public string Nombre { get; set; }
         public DateTime? FechaCreacion { get; set; }
         public bool? Activo { get; set; }
+
+        public virtual ICollection<ReporteItemNivelBasicoModel> ReporteItemNivelBasicos { get; set; }
 
         /*public virtual Evaluacion Evaluacion { get; set; }
         public virtual ICollection<ReporteArea> ReporteAreas { get; set; }
