@@ -1,4 +1,5 @@
 using api_public_backOffice.Models;
+using api_public_backOffice.Repository;
 using AutoMapper;
 using neva.entities;
 
@@ -23,6 +24,8 @@ namespace api_public_backOffice.Mappers
             CreateMap<PreguntaModel, Pregunta>().ReverseMap();
             CreateMap<ReporteModel, Reporte>().ReverseMap();
             CreateMap<ReporteAreaModel, ReporteArea>().ReverseMap();
+            CreateMap<ReporteItemNivelBasicoModel, ReporteItemNivelBasico>().ReverseMap();
+            CreateMap<ReporteItemNivelSubscripcionModel, ReporteItemNivelSubscripcion>().ReverseMap();
             CreateMap<ReporteItemModel, ReporteItem>().ReverseMap();
             CreateMap<RespuestaModel, Respuesta>().ReverseMap();
             CreateMap<SegmentacionAreaModel, SegmentacionArea>().ReverseMap();

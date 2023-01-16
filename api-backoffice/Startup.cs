@@ -107,6 +107,8 @@ namespace api_public_backOffice
             services.AddScoped<PlanMejoraRepository>();
             services.AddScoped<PreguntaRepository>();
             services.AddScoped<ReporteAreaRepository>();
+            services.AddScoped<ReporteItemNivelBasicoRepository>();
+            services.AddScoped<ReporteItemNivelSubscripcionRepository>();
             services.AddScoped<ReporteItemRepository>();
             services.AddScoped<ReporteRepository>();
             services.AddScoped<SegmentacionAreaRepository>();
@@ -140,6 +142,8 @@ namespace api_public_backOffice
             services.AddScoped<PlanMejoraService>();
             services.AddScoped<PreguntaService>();
             services.AddScoped<ReporteAreaService>();
+            services.AddScoped<ReporteItemNivelBasicoService>();
+            services.AddScoped<ReporteItemNivelSubscripcionService>();
             services.AddScoped<ReporteItemService>();
             services.AddScoped<ReporteService>();
             services.AddScoped<SegmentacionAreaService>();
