@@ -78,27 +78,32 @@ namespace api_public_backOffice.Controllers
 
         //[ApiKeyAuth]
         [HttpPost("PlanMejoraInsertOrUpdate")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PlanMejoraModel))]
+        //[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PlanMejoraModel))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundResult))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
-        public async Task<ActionResult<PlanMejoraModel>> PlanMejoraInsertOrUpdate([FromBody] PlanMejoraModel PlanMejoraModel)
+        //public async Task<ActionResult<PlanMejoraModel>> PlanMejoraInsertOrUpdate( PlanMejoraModel PlanMejoraModel)
+        public async Task<ActionResult> PlanMejoraInsertOrUpdate(PlanMejoraModel planMejoraModel)
         {
             try
             {
-                if (string.IsNullOrEmpty(PlanMejoraModel.Mejora.ToString())) return BadRequest("Debe indicar Mejora");
-                if (string.IsNullOrEmpty(PlanMejoraModel.PreguntaId.ToString())) return BadRequest("Debe indicar PreguntaId");
-                if (string.IsNullOrEmpty(PlanMejoraModel.SegmentacionAreaId.ToString())) return BadRequest("SegmentacionAreaId");
-                if (string.IsNullOrEmpty(PlanMejoraModel.TipoDiferenciaRelacionadaId.ToString())) return BadRequest("TipoDiferenciaRelacionadaId");
-                if (string.IsNullOrEmpty(PlanMejoraModel.TipoImportanciaId.ToString())) return BadRequest("TipoImportanciaId");
-                if (string.IsNullOrEmpty(PlanMejoraModel.AlternativaId.ToString())) return BadRequest("AlternativaId");
-                if (string.IsNullOrEmpty(PlanMejoraModel.SegmentacionAreaId.ToString())) return BadRequest("SegmentacionAreaId");
-                if (string.IsNullOrEmpty(PlanMejoraModel.Activo.ToString())) return BadRequest("Debe indicar Activo");
+                if (string.IsNullOrEmpty(planMejoraModel.Mejora.ToString())) return BadRequest("Debe indicar Mejora");
+                if (string.IsNullOrEmpty(planMejoraModel.PreguntaId.ToString())) return BadRequest("Debe indicar PreguntaId");
+                if (string.IsNullOrEmpty(planMejoraModel.SegmentacionAreaId.ToString())) return BadRequest("SegmentacionAreaId");
+                if (string.IsNullOrEmpty(planMejoraModel.TipoDiferenciaRelacionadaId.ToString())) return BadRequest("TipoDiferenciaRelacionadaId");
+                if (string.IsNullOrEmpty(planMejoraModel.TipoImportanciaId.ToString())) return BadRequest("TipoImportanciaId");
+                if (string.IsNullOrEmpty(planMejoraModel.AlternativaId.ToString())) return BadRequest("AlternativaId");
+                if (string.IsNullOrEmpty(planMejoraModel.SegmentacionAreaId.ToString())) return BadRequest("SegmentacionAreaId");
+                if (string.IsNullOrEmpty(planMejoraModel.EvaluacionId.ToString())) return BadRequest("EvaluacionId");
+                if (string.IsNullOrEmpty(planMejoraModel.Activo.ToString())) return BadRequest("Debe indicar Activo");
 
-                PlanMejoraModel retorno = await _PlanMejoraService.InsertOrUpdate(PlanMejoraModel);
-                if (retorno == null) return NotFound();
+                //PlanMejoraModel retorno = await _PlanMejoraService.InsertOrUpdate(PlanMejoraModel);
+                //if (retorno == null) return NotFound();
 
-                return Ok(retorno);
+                //return Ok(retorno);
+                await _PlanMejoraService.PlanMejoraInsertOrUpdate(planMejoraModel);
+                return Ok(true);
             }
             catch (Exception e)
             {

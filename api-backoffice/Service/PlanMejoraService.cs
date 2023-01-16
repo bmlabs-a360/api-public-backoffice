@@ -16,6 +16,7 @@ namespace api_public_backOffice.Service
         Task<List<PlanMejoraModel>> GetPlanMejoras();
         Task<List<PlanMejoraModel>> GetPlanMejorasByPreguntaId(PreguntaModel preguntaModel);
         Task<PlanMejoraModel> InsertOrUpdate(PlanMejoraModel PlanMejoraModel);
+        Task PlanMejoraInsertOrUpdate(PlanMejoraModel planMejoraModel);
         void Dispose();
     }
     public class PlanMejoraService : IPlanMejoraService, IDisposable
@@ -62,7 +63,12 @@ namespace api_public_backOffice.Service
             var retorno = await _PlanMejoraRepository.InsertOrUpdate(_mapper.Map<PlanMejora>(PlanMejoraModel));
             return _mapper.Map<PlanMejoraModel>(retorno);
         }
-        public void Dispose() 
+
+        public async Task PlanMejoraInsertOrUpdate(PlanMejoraModel planMejoraModel)
+        {
+            await _PlanMejoraRepository.PlanMejoraInsertOrUpdate(_mapper.Map<PlanMejora>(planMejoraModel));
+        }
+            public void Dispose() 
         { 
             if (_PlanMejoraRepository != null)
             {

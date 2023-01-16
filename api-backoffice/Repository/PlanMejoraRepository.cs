@@ -17,6 +17,7 @@ namespace api_public_backOffice.Repository
         Task<PlanMejora> GetPlanMejoraById(PlanMejora PlanMejora);
         Task<IEnumerable<PlanMejora>> GetPlanMejoras();
         Task<IEnumerable<PlanMejora>> GetPlanMejorasByPreguntaId(Pregunta pregunta);
+        Task PlanMejoraInsertOrUpdate(PlanMejora PlanMejora);
     }
     public class PlanMejoraRepository : Repository<PlanMejora, Context>, IPlanMejoraRepository
     {
@@ -27,14 +28,14 @@ namespace api_public_backOffice.Repository
             var retorno = await Context()
                             .PlanMejoras
                             .AsNoTracking()
-                            .FirstOrDefaultAsync(x => x.Id == PlanMejora.Id   );
+                            .FirstOrDefaultAsync(x => x.Id == PlanMejora.Id);
 
             if (retorno == null) return null;
-            return retorno; 
+            return retorno;
         }
         public async Task<IEnumerable<PlanMejora>> GetPlanMejoras()
         {
-            var retorno = await  Context()
+            var retorno = await Context()
                             .PlanMejoras
                             .AsNoTracking().ToListAsync();
 
@@ -73,5 +74,22 @@ namespace api_public_backOffice.Repository
             if (retorno == null) return null;
             return retorno;
         }
+
+        public async Task PlanMejoraInsertOrUpdate(PlanMejora PlanMejora)
+        {
+            var retorno = await Context().PlanMejoras.AsNoTracking()
+                            .FirstOrDefaultAsync(x => x.Id == PlanMejora.Id);
+
+            if (retorno == null) //insert
+                await Context().PlanMejoras.AddAsync(PlanMejora);
+
+            else  //upodate
+                Context().PlanMejoras.Update(PlanMejora);
+
+
+            await Context().SaveChangesAsync();
+
+        }
+
     }
 }
