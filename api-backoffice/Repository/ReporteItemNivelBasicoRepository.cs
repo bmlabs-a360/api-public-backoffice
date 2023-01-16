@@ -44,11 +44,7 @@ namespace api_public_backOffice.Repository
         public async Task<IEnumerable<ReporteItemNivelBasico>> GetReporteItemNivelBasicosByReporteId(Reporte reporte)
         {
             var retorno = await Context()
-<<<<<<< HEAD
                             .ReporteItemNivelBasicos.Where(y => y.ReporteId == reporte.Id).OrderBy(y => y.Orden).AsNoTracking().ToListAsync();
-=======
-                            .ReporteItemNivelBasicos.Where(y => y.ReporteId == reporte.Id).AsNoTracking().ToListAsync();
->>>>>>> 94e050417f803c64f7935cc10a90ef6827446c60
 
             if (retorno == null) return null;
             return retorno;
