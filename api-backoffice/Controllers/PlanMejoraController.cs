@@ -83,7 +83,7 @@ namespace api_public_backOffice.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundResult))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
-        //public async Task<ActionResult<PlanMejoraModel>> PlanMejoraInsertOrUpdate( PlanMejoraModel PlanMejoraModel)
+        //public async Task<ActionResult<PlanMejoraModel>> PlanMejoraInsertOrUpdate( PlanMejoraModel planMejoraModel)
         public async Task<ActionResult> PlanMejoraInsertOrUpdate(PlanMejoraModel planMejoraModel)
         {
             try
@@ -98,7 +98,7 @@ namespace api_public_backOffice.Controllers
                 if (string.IsNullOrEmpty(planMejoraModel.EvaluacionId.ToString())) return BadRequest("EvaluacionId");
                 if (string.IsNullOrEmpty(planMejoraModel.Activo.ToString())) return BadRequest("Debe indicar Activo");
 
-                //PlanMejoraModel retorno = await _PlanMejoraService.InsertOrUpdate(PlanMejoraModel);
+                //PlanMejoraModel retorno = await _PlanMejoraService.InsertOrUpdate(planMejoraModel);
                 //if (retorno == null) return NotFound();
 
                 //return Ok(retorno);
