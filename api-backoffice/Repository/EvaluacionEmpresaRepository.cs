@@ -73,7 +73,8 @@ namespace api_public_backOffice.Repository
 	                                            public.respuesta re on
 	                                            re.pregunta_id  = pr.id and re.evaluacion_empresa_id =ee.id  left join 
 	                                            public.plan_mejora pm on
-	                                            pm.evaluacion_id = ee.evaluacion_id 
+	                                             pm.evaluacion_empresa_id = ee.id and pm.pregunta_id =pr.id and pm.segmentacion_area_id =pr.segmentacion_area_id 
+												and pm.segmentacion_sub_area_id =pr.segmentacion_sub_area_id 
                                             group by ee.id, ev.nombre,em.razon_social
                                             order by 4,6,1,2,3");
 
@@ -145,7 +146,7 @@ namespace api_public_backOffice.Repository
 	                                        public.alternativa al on
 	                                        al.id =re.alternativa_id and al.pregunta_id =pr.id left join
 	                                        public.plan_mejora pm on
-	                                        pm.evaluacion_id = ee.evaluacion_id and pm.pregunta_id =pr.id and pm.segmentacion_area_id =pr.segmentacion_area_id 
+	                                        pm.evaluacion_empresa_id = ee.id and pm.pregunta_id =pr.id and pm.segmentacion_area_id =pr.segmentacion_area_id 
 	                                        and pm.segmentacion_sub_area_id =pr.segmentacion_sub_area_id and pm.alternativa_id =al.id  join 
 	                                        public.segmentacion_area sa on
 	                                        sa.id =pr.segmentacion_area_id and sa.evaluacion_id = ee.evaluacion_id join 
