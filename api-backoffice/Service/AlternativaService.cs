@@ -17,6 +17,7 @@ namespace api_public_backOffice.Service
         Task<List<AlternativaModel>> GetAlternativaByPreguntaId(PreguntaModel preguntaModel);
 
         Task<List<AlternativaModel>> GetAlternativaByEvaluacionId(AlternativaModel alternativaMode);
+        Task<int> DeleteAlternativa(AlternativaModel alternativaModel);
 
        void Dispose();
     }
@@ -65,6 +66,13 @@ namespace api_public_backOffice.Service
 
             var retorno = await _alternativaRepository.InsertOrUpdate(_mapper.Map<Alternativa>(alternativaModel));
             return _mapper.Map<AlternativaModel>(retorno);
+        }
+        public async Task<int> DeleteAlternativa(AlternativaModel alternativaModel)
+        {
+
+
+            return await _alternativaRepository.DeleteAlternativa(_mapper.Map<Alternativa>(alternativaModel));
+
         }
 
         public void Dispose() 

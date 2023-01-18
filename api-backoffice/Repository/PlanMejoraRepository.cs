@@ -77,17 +77,25 @@ namespace api_public_backOffice.Repository
 
         public async Task PlanMejoraInsertOrUpdate(PlanMejora PlanMejora)
         {
-            var retorno = await Context().PlanMejoras.AsNoTracking()
-                            .FirstOrDefaultAsync(x => x.Id == PlanMejora.Id);
+            try
+            {
+                var retorno = await Context().PlanMejoras.AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == PlanMejora.Id);
 
-            if (retorno == null) //insert
-                await Context().PlanMejoras.AddAsync(PlanMejora);
+                if (retorno == null) //insert
+                    await Context().PlanMejoras.AddAsync(PlanMejora);
 
-            else  //upodate
-                Context().PlanMejoras.Update(PlanMejora);
+                else  //upodate
+                    Context().PlanMejoras.Update(PlanMejora);
 
 
-            await Context().SaveChangesAsync();
+                await Context().SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.InnerException.Message);
+            }
 
         }
 

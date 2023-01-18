@@ -89,13 +89,13 @@ namespace api_public_backOffice.Controllers
             try
             {
                 if (string.IsNullOrEmpty(planMejoraModel.Mejora.ToString())) return BadRequest("Debe indicar Mejora");
-                if (string.IsNullOrEmpty(planMejoraModel.PreguntaId.ToString())) return BadRequest("Debe indicar PreguntaId");
-                if (string.IsNullOrEmpty(planMejoraModel.SegmentacionAreaId.ToString())) return BadRequest("SegmentacionAreaId");
-                if (string.IsNullOrEmpty(planMejoraModel.TipoDiferenciaRelacionadaId.ToString())) return BadRequest("TipoDiferenciaRelacionadaId");
-                if (string.IsNullOrEmpty(planMejoraModel.TipoImportanciaId.ToString())) return BadRequest("TipoImportanciaId");
-                if (string.IsNullOrEmpty(planMejoraModel.AlternativaId.ToString())) return BadRequest("AlternativaId");
-                if (string.IsNullOrEmpty(planMejoraModel.SegmentacionAreaId.ToString())) return BadRequest("SegmentacionAreaId");
-                if (string.IsNullOrEmpty(planMejoraModel.EvaluacionId.ToString())) return BadRequest("EvaluacionId");
+                if ("00000000-0000-0000-0000-000000000000" == (planMejoraModel.PreguntaId.ToString())) return BadRequest("Debe indicar PreguntaId");
+                if ("00000000-0000-0000-0000-000000000000" == (planMejoraModel.SegmentacionAreaId.ToString())) return BadRequest("Debe indicar SegmentacionAreaId");
+                if ("00000000-0000-0000-0000-000000000000" == (planMejoraModel.TipoDiferenciaRelacionadaId.ToString())) return BadRequest("Debe indicar TipoDiferenciaRelacionadaId");
+                if ("00000000-0000-0000-0000-000000000000" == (planMejoraModel.TipoImportanciaId.ToString())) return BadRequest("Debe indicar TipoImportanciaId");
+                if ("00000000-0000-0000-0000-000000000000" == (planMejoraModel.AlternativaId.ToString())) return BadRequest("Debe indicar AlternativaId");
+                if ("00000000-0000-0000-0000-000000000000" == (planMejoraModel.SegmentacionAreaId.ToString())) return BadRequest("Debe indicar SegmentacionAreaId");
+                if ("00000000-0000-0000-0000-000000000000" == (planMejoraModel.EvaluacionEmpresaId.ToString())) return BadRequest("Debe indicar EvaluacionId");
                 if (string.IsNullOrEmpty(planMejoraModel.Activo.ToString())) return BadRequest("Debe indicar Activo");
 
                 //PlanMejoraModel retorno = await _PlanMejoraService.InsertOrUpdate(planMejoraModel);

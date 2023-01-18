@@ -17,6 +17,7 @@ namespace api_public_backOffice.Repository
         Task<Alternativa> GetAlternativaById(Alternativa Alternativa);
         Task<IEnumerable<Alternativa>> GetAlternativaByEvaluacionId(Alternativa alternativa);
         Task<IEnumerable<Alternativa>> GetAlternativaByPreguntaId(Pregunta pregunta);
+        Task<int> DeleteAlternativa(Alternativa alternativa);
     }
     public class AlternativaRepository : Repository<Alternativa, Context>, IAlternativaRepository
     {
@@ -53,6 +54,11 @@ namespace api_public_backOffice.Repository
 
             if (retorno == null) return null;
             return retorno;
+        }
+        public async Task<int> DeleteAlternativa(Alternativa alternativa)
+        {
+
+            return await Context().Alternativas.Where(x => x.Id == alternativa.Id).DeleteFromQueryAsync();
         }
     }
 }

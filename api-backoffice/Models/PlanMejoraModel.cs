@@ -20,7 +20,7 @@ namespace api_public_backOffice.Models
         public string Mejora { get; set; }
         public DateTime? FechaCreacion { get; set; }
         public bool? Activo { get; set; }
-        public Guid EvaluacionId { get; set; }
+        public Guid EvaluacionEmpresaId { get; set; }
 
         /*public virtual Alternativa Alternativa { get; set; }
         public virtual SegmentacionArea SegmentacionArea { get; set; }

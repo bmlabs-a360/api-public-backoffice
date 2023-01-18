@@ -163,6 +163,35 @@ namespace api_public_backOffice.Controllers
             }
         }
 
+
+        //[ApiKeyAuth]
+        [HttpPost("DeleteAlternativa")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(int))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundResult))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+        public async Task<ActionResult<int>> DeletePregunta([FromBody] AlternativaModel alternativaModel)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(alternativaModel.Id.ToString())) return BadRequest("Debe indicar alternativaModel.Id");
+                return await _alternativaService.DeleteAlternativa(alternativaModel);
+
+                //return NoContent();
+            }
+            catch (Exception e)
+            {
+                while (e.InnerException != null) e = e.InnerException;
+                _logger.LogError("Error  Source:{0}, Trace:{1} ", e.Source, e);
+                return Problem(detail: e.Message, title: "ERROR");
+            }
+            finally
+            {
+                _alternativaService.Dispose();
+                // _controlTokenService.Dispose();
+            }
+        }
+
     }
 
 
