@@ -1,16 +1,17 @@
 ﻿using neva.entities;
 using System;
-//using System.Collections.Generic;
+using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace api_public_backOffice.Models
 {
     public class EvaluacionEmpresaModel
     {
-       /* public EvaluacionEmpresa()
+        public EvaluacionEmpresaModel()
         {
-            ImportanciaRelativas = new HashSet<ImportanciaRelativa>();
-            Respuesta = new HashSet<Respuesta>();
-        }*/
+            ImportanciaRelativas = new HashSet<ImportanciaRelativaModel>();
+            //Respuesta = new HashSet<Respuesta>();
+        }
 
         public Guid Id { get; set; }
         public Guid EvaluacionId { get; set; }
@@ -18,8 +19,10 @@ namespace api_public_backOffice.Models
         public DateTime FechaInicioTiempoLimite { get; set; }
         public DateTime? FechaCreacion { get; set; }
         public bool? Activo { get; set; }
-        public virtual Evaluacion Evaluacion { get; set; }
+        public virtual EvaluacionModel Evaluacion { get; set; }
 
+
+        public virtual ICollection<ImportanciaRelativaModel> ImportanciaRelativas { get; set; }
 
         /*public virtual Empresa Empresa { get; set; }
         

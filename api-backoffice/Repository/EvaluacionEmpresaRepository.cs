@@ -292,7 +292,13 @@ namespace api_public_backOffice.Repository
         public async Task<IEnumerable<EvaluacionEmpresa>> GetEvaluacionEmpresasByEmpresaId(Empresa empresa)
         {
             var retorno = await Context()
-                            .EvaluacionEmpresas.Where(i => i.EmpresaId == empresa.Id).AsNoTracking().ToListAsync();
+                            .EvaluacionEmpresas
+                            .Include(x => x.ImportanciaRelativas)
+                                .ThenInclude(y => y.SegmentacionArea)
+                                    .ThenInclude(e => e.SegmentacionSubAreas)
+                                        .ThenInclude(a => a.ImportanciaEstrategicas)
+                            .Include(x => x.Evaluacion)
+                            .Where(i => i.EmpresaId == empresa.Id).AsNoTracking().ToListAsync();
 
             if (retorno == null) return null;
             return retorno;
