@@ -16,7 +16,9 @@ namespace api_public_backOffice.Service
         Task<List<EvaluacionEmpresaModel>> GetEvaluacionEmpresas();
         Task<EvaluacionEmpresaModel> GetEvaluacionEmpresasByEvaluacionId(EvaluacionModel EvaluacionModel);
         Task<List<EvaluacionEmpresaModel>> GetEvaluacionEmpresasByEmpresaId(EmpresaModel EmpresaMode);
-        Task<EvaluacionEmpresaModel> InsertOrUpdate(EvaluacionEmpresaModel EvaluacionEmpresaModel);
+        Task<EvaluacionEmpresaModel> InsertOrUpdate(EvaluacionEmpresaModel EvaluacionEmpresaModel); 
+        Task<List<EvaluacionEmpresaModel>> GetEvaluacionEmpresasByEvaluacionIdEmpresaId(Guid evaluacionId, Guid empresaId);
+
         List<SeguimientoEvaluacionEmpresaDto> GetSeguimiento();
         List<SeguimientoPlanMejoraModelDto> GetPlanMejoras(EvaluacionEmpresa evaluacionEmpresa);
 
@@ -95,6 +97,17 @@ namespace api_public_backOffice.Service
                 await _EvaluacionEmpresaRepository.InsertOrUpdate(_mapper.Map<EvaluacionEmpresa>(item));
             }
         }
+
+        public async Task<List<EvaluacionEmpresaModel>> GetEvaluacionEmpresasByEvaluacionIdEmpresaId(Guid evaluacionId, Guid empresaId)
+        {
+            if (string.IsNullOrEmpty(evaluacionId.ToString())) throw new ArgumentNullException("evaluacionId");
+            if (string.IsNullOrEmpty(empresaId.ToString())) throw new ArgumentNullException("empresaId");
+
+            var EvaluacionEmpresasList = await _EvaluacionEmpresaRepository.GetEvaluacionEmpresasByEvaluacionIdEmpresaId(evaluacionId, empresaId);
+            return _mapper.Map<List<EvaluacionEmpresaModel>>(EvaluacionEmpresasList);
+        }
+
+        
         public void Dispose() 
         { 
             if (_EvaluacionEmpresaRepository != null)

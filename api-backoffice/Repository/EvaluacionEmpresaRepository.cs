@@ -19,6 +19,7 @@ namespace api_public_backOffice.Repository
         Task<IEnumerable<EvaluacionEmpresa>> GetEvaluacionEmpresas();
         Task<IEnumerable<EvaluacionEmpresa>> GetEvaluacionEmpresasByEvaluacionId(Evaluacion evaluacion);
         Task<IEnumerable<EvaluacionEmpresa>> GetEvaluacionEmpresasByEmpresaId(Empresa empresa);
+        Task<IEnumerable<EvaluacionEmpresa>> GetEvaluacionEmpresasByEvaluacionIdEmpresaId(Guid evaluacionId, Guid empresaId);
         Task DeleteList(List<EvaluacionEmpresa> c);
         Task InsertOrUpdateList(List<EvaluacionEmpresa> c);
        // Task<IEnumerable<EvaluacionEmpresaModel>> GetSeguimiento();
@@ -303,6 +304,22 @@ namespace api_public_backOffice.Repository
             if (retorno == null) return null;
             return retorno;
         }
+
+        public async Task<IEnumerable<EvaluacionEmpresa>> GetEvaluacionEmpresasByEvaluacionIdEmpresaId(Guid evaluacionId, Guid empresaId)
+        {
+            var retorno = await Context()
+                            .EvaluacionEmpresas
+                            .Include(x => x.ImportanciaRelativas)
+                                .ThenInclude(y => y.SegmentacionArea)
+                                    .ThenInclude(e => e.SegmentacionSubAreas)
+                                        .ThenInclude(a => a.ImportanciaEstrategicas)
+                            .Include(x => x.Evaluacion)
+                            .Where(i => i.EmpresaId == empresaId && i.EvaluacionId == evaluacionId).AsNoTracking().ToListAsync();
+
+            if (retorno == null) return null;
+            return retorno;
+        }
+        
 
     }
 }
