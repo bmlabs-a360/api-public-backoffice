@@ -118,7 +118,7 @@ namespace api_public_backOffice.Repository
                                 .Include(x => x.UsuarioEvaluacions)
                                 //.Include(x => x.UsuarioSuscripcions)
                                 .OrderBy(x => x.Nombres)
-                                .Where(x =>  x.Activo.Value)
+                               // .Where(x =>  x.Activo.Value)
                                 .ToListAsync();
 
             return await maperUsuarioAreas(retorno);

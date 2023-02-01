@@ -20,6 +20,7 @@ namespace api_public_backOffice.Repository
         Task<IEnumerable<Pregunta>> GetPreguntasBySegmentacionAreaId(SegmentacionArea segmentacionArea);
         Task<IEnumerable<Pregunta>> GetPreguntasBySegmentacionSubAreaId(SegmentacionSubArea segmentacionSubArea);
         Task<int> DeletePregunta(Pregunta pregunta);
+        Task<int> GetMaxOrdenPregunta(Evaluacion evaluacion);
     }
     public class PreguntaRepository : Repository<Pregunta, Context>, IPreguntaRepository
     {
@@ -73,6 +74,12 @@ namespace api_public_backOffice.Repository
         {
 
             return await Context().Pregunta.Where(x => x.Id == pregunta.Id).DeleteFromQueryAsync();
+        }
+
+        public async Task<int> GetMaxOrdenPregunta(Evaluacion evaluacion)
+        {
+
+            return  Context().Pregunta.Where(x => x.EvaluacionId == evaluacion.Id).Max(x=> x.Orden);
         }
     }
 }

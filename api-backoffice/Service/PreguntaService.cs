@@ -19,6 +19,7 @@ namespace api_public_backOffice.Service
         Task<List<PreguntaModel>> GetPreguntasBySegmentacionSubAreaId(SegmentacionSubAreaModel segmentacionSubAreaModel);
         Task<PreguntaModel> InsertOrUpdate(PreguntaModel PreguntaModel);
         Task<int> DeletePregunta(PreguntaModel preguntaModel);
+        Task<int> GetMaxOrdenPregunta(EvaluacionModel evaluacion);
         void Dispose();
     }
     public class PreguntaService : IPreguntaService, IDisposable
@@ -79,12 +80,13 @@ namespace api_public_backOffice.Service
 
         public async Task<int> DeletePregunta(PreguntaModel preguntaModel)
         {
-
-
             return await _PreguntaRepository.DeletePregunta(_mapper.Map<Pregunta>(preguntaModel));
-
         }
-            public void Dispose() 
+        public async Task<int> GetMaxOrdenPregunta(EvaluacionModel evaluacion)
+        {
+            return await _PreguntaRepository.GetMaxOrdenPregunta(_mapper.Map<Evaluacion>(evaluacion));
+        }
+        public void Dispose() 
         { 
             if (_PreguntaRepository != null)
             {

@@ -27,12 +27,15 @@ namespace api_public_backOffice.Service
         private readonly IMapper _mapper;
         private IMemoryCache _cache;
         private IUsuarioRepository _usuarioRepository;
-        private IEmpresaRepository _empresaRepository;
+  
+            private IEmpresaRepository _empresaRepository;
         private ISecurityHelper _securityHelper;
         private IUsuarioEmpresaRepository _usuarioEmpresaRepository;
         private IPerfilRepository _perfilRepository;
+        private IUsuarioEvaluacionRepository _usuarioEvaluacionRepository;
+        private IUsuarioAreaRepository _usuarioAreaRepository;
 
-        public UsuarioService(IMapper mapper, IMemoryCache memoryCache, UsuarioRepository usuarioRepository, UsuarioEmpresaRepository usuarioEmpresaRepository, PerfilRepository perfilRepository, EmpresaRepository empresaRepository , SecurityHelper securityHelper)
+        public UsuarioService(IMapper mapper, IMemoryCache memoryCache,UsuarioAreaRepository usuarioAreaRepository, UsuarioEvaluacionRepository usuarioEvaluacionRepository, UsuarioRepository usuarioRepository, UsuarioEmpresaRepository usuarioEmpresaRepository, PerfilRepository perfilRepository, EmpresaRepository empresaRepository , SecurityHelper securityHelper)
         {
             _mapper = mapper;
             _cache = memoryCache;
@@ -41,6 +44,8 @@ namespace api_public_backOffice.Service
             _usuarioEmpresaRepository = usuarioEmpresaRepository;  //Empresa al agregar usuario agregar empresa ******
             _empresaRepository = empresaRepository;
             _perfilRepository = perfilRepository;
+            _usuarioEvaluacionRepository = usuarioEvaluacionRepository;
+            _usuarioAreaRepository = usuarioAreaRepository;
 
         }
         public async Task<UsuarioModel> GetUser(LoginModel loginModel)
@@ -57,8 +62,8 @@ namespace api_public_backOffice.Service
             if (string.IsNullOrEmpty(usuario.Password)) throw new ArgumentNullException("Contraseña");
             if (string.IsNullOrEmpty(usuario.Email)) throw new ArgumentNullException("Email");
             //if (string.IsNullOrEmpty(usuario.Telefono)) throw new ArgumentNullException("Telefono");
-            if (string.IsNullOrEmpty(usuario.Empresa.RazonSocial)) throw new ArgumentNullException("Razón social");
-            if (string.IsNullOrEmpty(usuario.Empresa.RutEmpresa)) throw new ArgumentNullException("Rut empresa");
+            //if (string.IsNullOrEmpty(usuario.Empresa.RazonSocial)) throw new ArgumentNullException("Razón social");
+           // if (string.IsNullOrEmpty(usuario.Empresa.RutEmpresa)) throw new ArgumentNullException("Rut empresa");
 
             usuario.Password = _securityHelper.EncryptPassword(usuario.Password);
             if (usuario.PerfilId.Equals(Guid.Empty))
@@ -69,6 +74,35 @@ namespace api_public_backOffice.Service
             //var empresa = await _empresaRepository.GetEmpresaByRutEmpresa(usuario.Empresa.RutEmpresa);
 
             var retorno = await _usuarioRepository.InsertOrUpdate(_mapper.Map<Usuario>(usuario));
+            if (retorno.UsuarioEmpresas.Count > 0) {
+                List<UsuarioEmpresa> UsuarioEmpresasNew = new List<UsuarioEmpresa>();
+
+                foreach (UsuarioEmpresa usuarioEmpresa in retorno.UsuarioEmpresas)
+                    UsuarioEmpresasNew.Add( await _usuarioEmpresaRepository.InsertOrUpdate(usuarioEmpresa));
+
+                retorno.UsuarioEmpresas = UsuarioEmpresasNew;
+            }
+            if (retorno.UsuarioEvaluacions.Count > 0)
+            {
+                List<UsuarioEvaluacion> usuarioEvaluacionsNew = new List<UsuarioEvaluacion>();
+
+                foreach (UsuarioEvaluacion usuarioEvaluacion in retorno.UsuarioEvaluacions)
+                {
+                    UsuarioEvaluacion salidaUsuarioEvaluacion = await _usuarioEvaluacionRepository.InsertOrUpdate(usuarioEvaluacion);
+                    if (usuarioEvaluacion.UsuarioAreas.Count>0) {
+                        List<UsuarioArea> usuarioAreasNew = new List<UsuarioArea>();
+                        foreach (UsuarioArea usuarioArea in usuarioEvaluacion.UsuarioAreas)
+                        {
+                            UsuarioArea salidaUsuarioArea = await _usuarioAreaRepository.InsertOrUpdate(usuarioArea);
+                            usuarioAreasNew.Add(salidaUsuarioArea);
+                        }
+                        salidaUsuarioEvaluacion.UsuarioAreas = usuarioAreasNew;
+                    }
+                    usuarioEvaluacionsNew.Add(salidaUsuarioEvaluacion);
+                }
+                retorno.UsuarioEvaluacions = usuarioEvaluacionsNew;
+            }
+
             return _mapper.Map<UsuarioModel>(retorno);
         }
         public async Task<UsuarioModel> Update(UsuarioModel usuario)

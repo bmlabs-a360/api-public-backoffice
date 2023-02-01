@@ -35,7 +35,7 @@ namespace api_public_backOffice.Repository
         {
             var retorno = await  Context()
                             .TipoNivelVenta
-                            .AsNoTracking().Where(x => x.Activo.Value).ToListAsync();
+                            .AsNoTracking().Where(x => x.Activo.Value).OrderBy(x=>x.FechaCreacion).ToListAsync();
 
             if (retorno == null) return null;
             return retorno;
