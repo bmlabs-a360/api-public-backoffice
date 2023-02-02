@@ -26,6 +26,7 @@ namespace api_public_backOffice.Mappers
             CreateMap<ReporteAreaModel, ReporteArea>().ReverseMap();
             CreateMap<ReporteItemNivelBasicoModel, ReporteItemNivelBasico>().ReverseMap();
             CreateMap<ReporteItemNivelSubscripcionModel, ReporteItemNivelSubscripcion>().ReverseMap();
+            CreateMap<ReporteRecomendacionAreaModel, ReporteRecomendacionArea>().ReverseMap();
             CreateMap<ReporteItemModel, ReporteItem>().ReverseMap();
             CreateMap<RespuestaModel, Respuesta>().ReverseMap();
             CreateMap<SegmentacionAreaModel, SegmentacionArea>().ReverseMap();

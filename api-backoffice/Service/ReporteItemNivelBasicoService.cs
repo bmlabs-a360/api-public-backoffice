@@ -53,6 +53,12 @@ namespace api_public_backOffice.Service
             if (string.IsNullOrEmpty(ReporteItemNivelBasicoModel.ReporteId.ToString())) throw new ArgumentNullException("ReporteId");
             if (string.IsNullOrEmpty(ReporteItemNivelBasicoModel.Activo.ToString())) throw new ArgumentNullException("Activo");
 
+            if (!ReporteItemNivelBasicoModel.Id.Equals(Guid.Empty))
+            {
+                var miReporteItemNivelBasico = await _ReporteItemNivelBasicoRepository.GetReporteItemNivelBasicoById(_mapper.Map<ReporteItemNivelBasico>(ReporteItemNivelBasicoModel));
+                ReporteItemNivelBasicoModel.FechaCreacion = miReporteItemNivelBasico.FechaCreacion;
+            }
+
             var retorno = await _ReporteItemNivelBasicoRepository.InsertOrUpdate(_mapper.Map<ReporteItemNivelBasico>(ReporteItemNivelBasicoModel));
             return _mapper.Map<ReporteItemNivelBasicoModel>(retorno);
         }

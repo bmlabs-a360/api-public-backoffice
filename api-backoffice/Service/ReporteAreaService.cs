@@ -62,6 +62,12 @@ namespace api_public_backOffice.Service
             if (string.IsNullOrEmpty(ReporteAreaModel.SegmentacionAreaId.ToString())) throw new ArgumentNullException("SegmentacionAreaId");
             if (string.IsNullOrEmpty(ReporteAreaModel.Activo.ToString())) throw new ArgumentNullException("Activo");
 
+            if (!ReporteAreaModel.Id.Equals(Guid.Empty))
+            {
+                var miReporteReporteArea = await _ReporteAreaRepository.GetReporteAreaById(_mapper.Map<ReporteArea>(ReporteAreaModel));
+                ReporteAreaModel.FechaCreacion = miReporteReporteArea.FechaCreacion;
+            }
+
             var retorno = await _ReporteAreaRepository.InsertOrUpdate(_mapper.Map<ReporteArea>(ReporteAreaModel));
             return _mapper.Map<ReporteAreaModel>(retorno);
         }
