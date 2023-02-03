@@ -18,6 +18,7 @@ namespace api_public_backOffice.Repository
         Task<Usuario> FindByEmail(string email);
         Task<Usuario> GetById(int? id);
         Task<List<Usuario>> GetAll();
+        Task<int> DeleteCascade(Usuario usuario);
     }
     /*(¯`·._.··¸.-~*´¨¯¨`*·~-.,-(IMPLEMENTACION)-,.-~*´¨¯¨`*·~-.¸··._.·´¯)*/
     public class UsuarioRepository : Repository<Usuario, Context>, IUsuarioRepository
@@ -135,6 +136,29 @@ namespace api_public_backOffice.Repository
                 }
             }
             return retorno;
+        }
+
+        public async Task<int> DeleteCascade(Usuario usuario)
+        {
+            try
+            {
+                var usuariosEvaluacion =  Context().UsuarioEvaluacions.Where(x => x.UsuarioId == usuario.Id).ToList();
+
+                foreach (UsuarioEvaluacion item in usuariosEvaluacion)
+                    await Context().UsuarioAreas.Where(x => x.UsuarioEvaluacionId == item.Id).DeleteFromQueryAsync();
+
+                await Context().UsuarioEvaluacions.Where(x => x.UsuarioId == usuario.Id).DeleteFromQueryAsync();
+                await Context().UsuarioSuscripcions.Where(x => x.UsuarioId == usuario.Id).DeleteFromQueryAsync();
+                await Context().UsuarioEmpresas.Where(x => x.UsuarioId == usuario.Id).DeleteFromQueryAsync();
+                return await Context().Usuarios.Where(x => x.Id == usuario.Id).DeleteFromQueryAsync();
+
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception( ex.Message);
+            }
+            
         }
 
     }

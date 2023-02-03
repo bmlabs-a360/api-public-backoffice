@@ -20,6 +20,7 @@ namespace api_public_backOffice.Service
         Task<UsuarioModel> GetUsuarioByEmail(string email);
         Task<List<UsuarioModel>> GetAll();
         Task<UsuarioModel> GetById(int? id);
+        Task<int> DeleteCascade(UsuarioModel usuarioModel);
         void Dispose();
     }
     public class UsuarioService : IUsuarioService, IDisposable
@@ -140,6 +141,14 @@ namespace api_public_backOffice.Service
         {
             var retorno = await _usuarioRepository.GetAll();
             return _mapper.Map<List<UsuarioModel>>(retorno);
+        }
+
+        public async Task<int> DeleteCascade(UsuarioModel usuarioModel)
+        {
+
+
+            return await _usuarioRepository.DeleteCascade(_mapper.Map<Usuario>(usuarioModel));
+
         }
         public void Dispose() 
         { 
