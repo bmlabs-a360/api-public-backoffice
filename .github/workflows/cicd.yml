@@ -19,21 +19,12 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '6.0.405'
-
-      #- name: Install dependencies
-      #  run: dotnet restore
-
-      #- name: Build netcore
-      #  run: dotnet build --configuration Release --no-restore
-
-      #- name: Test
-      #  run: dotnet test --no-restore --verbosity normal
       
       - name: Docker Login            
         uses: docker/login-action@v1.10.0
         with:
           registry: registry.digitalocean.com
-          username: ce7b790b048dc502fe59ae4b577a1ad22b6810f96b303ca0b10b42addaac1b5e
+          username: ${{ secrets.REGISTRY_SECRET }}
           password: ${{ secrets.REGISTRY_SECRET }}    
       - run: |
           docker build . -t  registry.digitalocean.com/bmlabs/neva/api-public-backoffice:dev-latest
