@@ -25,6 +25,10 @@ namespace api_public_backOffice.Repository
        // Task<IEnumerable<EvaluacionEmpresaModel>> GetSeguimiento();
         List<SeguimientoEvaluacionEmpresaDto> GetSeguimiento();
         List<SeguimientoPlanMejoraModelDto> GetPlanMejoras(EvaluacionEmpresa evaluacionEmpresa);
+        List<PorcentajeEvaluacionDto> GetPorcentajeEvaluacion(Guid evaluacionId, Guid empresaId);
+        List<EnvioMailTiempoLimiteDto> GetCorreoTiempoLimite(Guid SegmentacionAreaId, Guid empresaId);
+
+
 
     }
     public class EvaluacionEmpresaRepository : Repository<EvaluacionEmpresa, Context>, IEvaluacionEmpresaRepository
@@ -58,26 +62,34 @@ namespace api_public_backOffice.Repository
             List<SeguimientoEvaluacionEmpresaDto> lista = new List<SeguimientoEvaluacionEmpresaDto>();
             using (var command = Context().Database.GetDbConnection().CreateCommand())
             {
-                command.CommandText = string.Format(@"select ee.id as evaluacion_empresa_id, em.razon_social, ev.nombre , 's/m' as madurez,
-                                            concat((count(re.id) * 100) / count(pr.id),'%') as respuestas,
-                                            max(re.fecha_creacion) as re_fecha_creacion,
-                                            concat((count(pm.id) * 100) / count(pr.id),'%') as plan_mejoras,
-                                            max(pm.fecha_creacion) as pm_fecha_creacion
-                                            from
-	                                            public.empresa em  join
-	                                            public.evaluacion_empresa ee on 
-	                                             em.id = ee.empresa_id join 
-	                                            public.evaluacion ev on 
-	                                            ev.id =ee.evaluacion_id  join 
-	                                            public.pregunta pr on
-	                                            pr.evaluacion_id  = ee.evaluacion_id left join 
-	                                            public.respuesta re on
-	                                            re.pregunta_id  = pr.id and re.evaluacion_empresa_id =ee.id  left join 
-	                                            public.plan_mejora pm on
-	                                             pm.evaluacion_empresa_id = ee.id and pm.pregunta_id =pr.id and pm.segmentacion_area_id =pr.segmentacion_area_id 
-												and pm.segmentacion_sub_area_id =pr.segmentacion_sub_area_id 
-                                            group by ee.id, ev.nombre,em.razon_social
-                                            order by 4,6,1,2,3");
+                command.CommandText = string.Format(@"select ee.id as evaluacion_empresa_id,
+                                                    em.razon_social, 
+                                                    em.id as empresa_id,
+                                                    ev.nombre, 
+                                                    ev.id as evaluacion_id,
+                                                    's/m' as madurez,
+                                                    concat((count(re.id) * 100) / count(pr.id),'%') as respuestas,
+                                                    max(re.fecha_creacion) as re_fecha_creacion,
+                                                    concat((count(pm.id) * 100) / count(pr.id),'%') as plan_mejoras,
+                                                    max(pm.fecha_creacion) as pm_fecha_creacion,
+                                                    ev.tiempo_limite,
+                                                    ev.fecha_creacion as fecha_creacion_evaluacion,
+                                                    now() -  ev.fecha_creacion as dias_transcurridos
+                                                    from
+                                                        public.empresa em  join
+                                                        public.evaluacion_empresa ee on 
+                                                         em.id = ee.empresa_id join 
+                                                        public.evaluacion ev on 
+                                                        ev.id =ee.evaluacion_id  join 
+                                                        public.pregunta pr on
+                                                        pr.evaluacion_id  = ee.evaluacion_id left join 
+                                                        public.respuesta re on
+                                                        re.pregunta_id  = pr.id and re.evaluacion_empresa_id =ee.id  left join 
+                                                        public.plan_mejora pm on
+                                                         pm.evaluacion_empresa_id = ee.id and pm.pregunta_id =pr.id and pm.segmentacion_area_id =pr.segmentacion_area_id 
+                                                        and pm.segmentacion_sub_area_id =pr.segmentacion_sub_area_id 
+                                                    group by ee.id, ev.nombre,em.razon_social, ev.tiempo_limite, ev.fecha_creacion, em.id, ev.id
+                                                    order by em.razon_social ");
 
                 Context().Database.OpenConnection();
                 
@@ -90,13 +102,18 @@ namespace api_public_backOffice.Repository
                             SeguimientoEvaluacionEmpresaDto item = new SeguimientoEvaluacionEmpresaDto();
                             item.EvaluacionEmpresaId = Guid.Parse(result["evaluacion_empresa_id"].ToString());
                             item.EmpresaRazonSocial = (result["razon_social"].ToString());
+                            item.EmpresaId = Guid.Parse(result["empresa_id"].ToString());
                             item.EvaluacionNombre = (result["nombre"].ToString());
+                            item.EvaluacionId = Guid.Parse(result["evaluacion_id"].ToString());
                             item.Madurez = (result["madurez"].ToString());
                             item.Respuestas = (result["respuestas"].ToString());
                             item.RespuestaFechaMax = (result["re_fecha_creacion"].ToString())==string.Empty ? "s/a": (result["re_fecha_creacion"].ToString());
                             item.PlanMejoras = (result["plan_mejoras"].ToString());
                             item.PlanMejoraFechaMax = (result["pm_fecha_creacion"].ToString()) == string.Empty ? "s/a" : (result["pm_fecha_creacion"].ToString()); 
                             item.Estado = int.Parse(item.Respuestas.Replace("%", "")) > 0;
+                            item.TiempoLimite = result["tiempo_limite"].ToString();
+                            item.FechaCreacionEvaluacion = result["fecha_creacion_evaluacion"].ToString();
+                            item.DiasTranscurridos = result["dias_transcurridos"].ToString();
                             lista.Add(item);
                         }
                     }
@@ -319,7 +336,96 @@ namespace api_public_backOffice.Repository
             if (retorno == null) return null;
             return retorno;
         }
-        
+
+        public List<PorcentajeEvaluacionDto> GetPorcentajeEvaluacion(Guid evaluacionId, Guid empresaId)
+        {
+            List<PorcentajeEvaluacionDto> lista = new List<PorcentajeEvaluacionDto>();
+            using (var command = Context().Database.GetDbConnection().CreateCommand())
+            {
+                command.CommandText = string.Format(@"select
+                                                    ev.nombre,
+                                                    sa.nombre_area ,
+                                                    sa.id as segmentacion_area_id,
+                                                    concat((count(re.id) * 100) / count(pr.id)) as respuestas_porc
+                                                from
+                                                    public.evaluacion ev join
+                                                    public.evaluacion_empresa ee 
+                                                    on (ev.id = ee.evaluacion_id) join
+                                                    public.segmentacion_area sa
+                                                    on (sa.evaluacion_id = ev.id) join
+                                                    public.pregunta pr
+                                                    on (pr.segmentacion_area_id = sa.id) left join
+                                                    public.respuesta re
+                                                    on(re.pregunta_id = pr.id and re.evaluacion_empresa_id = ee.id)
+                                                where ee.empresa_id = '{0}' and ee.evaluacion_id = '{1}' AND pr.activo is true
+                                                group by
+                                                    ev.nombre,
+                                                    sa.nombre_area, 
+                                                    sa.id ", empresaId, evaluacionId);
+
+                Context().Database.OpenConnection();
+
+                using (var result = command.ExecuteReader())
+                {
+                    if (result.HasRows)
+                    {
+                        while (result.Read())
+                        {
+                            PorcentajeEvaluacionDto item = new PorcentajeEvaluacionDto();
+
+                            item.Nombre = (result["nombre"].ToString());
+                            item.NombreArea = (result["nombre_area"].ToString());
+                            item.SegmentacionAreaId = Guid.Parse(result["segmentacion_area_id"].ToString());
+                            item.RespuestaPorcentaje = (result["respuestas_porc"].ToString());
+
+                            lista.Add(item);
+                        }
+                    }
+                }
+            }
+
+            return lista;
+        }
+
+        public List<EnvioMailTiempoLimiteDto> GetCorreoTiempoLimite(Guid SegmentacionAreaId, Guid empresaId)
+        {
+            List<EnvioMailTiempoLimiteDto> lista = new List<EnvioMailTiempoLimiteDto>();
+            using (var command = Context().Database.GetDbConnection().CreateCommand())
+            {
+                command.CommandText = string.Format(@"select u.email, u.nombres 
+                                                    from 
+                                                     public.usuario u join 
+                                                     public.usuario_evaluacion ue 
+                                                     on (ue.usuario_id = u.id) join 
+                                                     public.usuario_area ua
+                                                     on (ua.usuario_evaluacion_id = ue.id) join 
+                                                     public.perfil p 
+                                                     on (p.id = u.perfil_id)
+                                                     where 
+                                                      ua.segmentacion_area_id = '{0}' and ue.empresa_id = '{1}'", SegmentacionAreaId, empresaId);
+
+                Context().Database.OpenConnection();
+
+                using (var result = command.ExecuteReader())
+                {
+                    if (result.HasRows)
+                    {
+                        while (result.Read())
+                        {
+                            EnvioMailTiempoLimiteDto item = new EnvioMailTiempoLimiteDto();
+
+                            item.Email = (result["email"].ToString());
+                            item.Nombre = (result["nombres"].ToString());
+
+                            lista.Add(item);
+                        }
+                    }
+                }
+            }
+
+            return lista;
+        }
+
 
     }
 }

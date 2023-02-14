@@ -255,7 +255,6 @@ namespace api_public_backOffice.Controllers
             {
                 if (string.IsNullOrEmpty(evaluacion.Id.ToString())) return BadRequest("Debe indicar evaluacion.Id");
                 return await _PreguntaService.GetMaxOrdenPregunta(evaluacion);
-
                 //return NoContent();
             }
             catch (Exception e)

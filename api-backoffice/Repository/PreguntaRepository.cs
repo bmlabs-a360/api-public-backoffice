@@ -79,7 +79,17 @@ namespace api_public_backOffice.Repository
         public async Task<int> GetMaxOrdenPregunta(Evaluacion evaluacion)
         {
 
-            return  Context().Pregunta.Where(x => x.EvaluacionId == evaluacion.Id).Max(x=> x.Orden);
+            //return  Context().Pregunta.Where(x => x.EvaluacionId == evaluacion.Id).Max(x=> x.Orden);
+
+            var preguntas = await Context().Pregunta.Where(x => x.EvaluacionId == evaluacion.Id).AsNoTracking().ToListAsync();
+            if (preguntas.Count == 0)
+            {
+                return 0;
+            }
+            else
+            {
+                return Context().Pregunta.Where(x => x.EvaluacionId == evaluacion.Id).Max(x => x.Orden);
+            }
         }
     }
 }

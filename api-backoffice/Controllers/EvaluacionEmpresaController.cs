@@ -17,6 +17,7 @@ using ProblemDetails = Microsoft.AspNetCore.Mvc.ProblemDetails;
 using NotFoundResult = Microsoft.AspNetCore.Mvc.NotFoundResult;
 using System.Web;
 using neva.entities;
+using System.Text.Json;
 
 namespace api_public_backOffice.Controllers
 {
@@ -27,6 +28,7 @@ namespace api_public_backOffice.Controllers
     {
         private readonly ILogger _logger;
         private readonly IEvaluacionEmpresaService _EvaluacionEmpresaService;
+        private readonly IMailService _mailService;
         private readonly IEmailHelper _emailHelper;
         private readonly ISecurityHelper _securityHelper;
         private readonly Helpers.IUrlHelper _urlHelper;
@@ -35,6 +37,7 @@ namespace api_public_backOffice.Controllers
 
         public EvaluacionEmpresaController(
             EvaluacionEmpresaService EvaluacionEmpresaService,
+            MailService mailService,
             ILogger<EvaluacionEmpresaController> logger,
             EmailHelper emailHelper,
             SecurityHelper securityHelper,
@@ -43,6 +46,7 @@ namespace api_public_backOffice.Controllers
         {
             _logger = logger;
             _EvaluacionEmpresaService = EvaluacionEmpresaService;
+            _mailService = mailService;
             _emailHelper = emailHelper;
             Configuration = configuration;
             _securityHelper = securityHelper;
@@ -317,6 +321,68 @@ namespace api_public_backOffice.Controllers
                 _EvaluacionEmpresaService.Dispose();
                 // _controlTokenService.Dispose();
             }
+        }
+
+        [HttpGet("EnvioMailTiempoLimite")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<EvaluacionEmpresaModel>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundResult))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+        public async Task<ActionResult<EvaluacionEmpresaModel>> EnvioMailTiempoLimite(Guid evaluacionId, Guid empresaId)
+        {
+            List<PorcentajeEvaluacionDto> porcentajes = _EvaluacionEmpresaService.GetPorcentajeEvaluacion(evaluacionId, empresaId);
+
+            List<string> correos = new();
+            List<string> alias = new();
+            
+            foreach (PorcentajeEvaluacionDto item in porcentajes)
+            {
+
+                if (item.RespuestaPorcentaje != "100")
+                {
+                    List<EnvioMailTiempoLimiteDto> infousuario = _EvaluacionEmpresaService.GetCorreoTiempoLimite(item.SegmentacionAreaId, empresaId);
+
+                    foreach (EnvioMailTiempoLimiteDto info in infousuario)
+                    {
+                        correos.Add(info.Email);
+                        alias.Add(info.Nombre);
+                    }
+                }
+
+            }
+
+            try
+            {
+
+                MailDTO correo = new MailDTO
+                {
+                    // From = Configuration["Mail:FromConfirmacion"], //CONFIGURAR FROM
+                    From = "miloandres7@gmail.com", //CONFIGURAR FROM
+                    FromAlias = "Evaluacion",
+                    To = new string[] { "miloandres7@gmail.com", "camiloretamalmora@gmail.com" },
+                    ToAlias = alias,
+                    IsHtml = true,
+                    Subject = "Confirmar mail",
+                    Body = _emailHelper.GetBodyEmailConfirmacion("link")
+                };
+
+                string jsonString = JsonSerializer.Serialize(correo);
+                _ = await _mailService.SendMailAsync(correo);
+            }
+            catch (Exception e)
+            {
+                while (e.InnerException != null) e = e.InnerException;
+                _logger.LogError("Error  Source:{0}, Trace:{1} ", e.Source, e);
+                return Problem(detail: e.Message, title: "ERROR");
+            }
+            finally
+            {
+                _EvaluacionEmpresaService.Dispose();
+                // _controlTokenService.Dispose();
+            }
+
+            if (correos == null) return NotFound();
+            return Ok(correos);
         }
     }
 

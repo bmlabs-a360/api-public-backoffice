@@ -21,8 +21,10 @@ namespace api_public_backOffice.Service
 
         List<SeguimientoEvaluacionEmpresaDto> GetSeguimiento();
         List<SeguimientoPlanMejoraModelDto> GetPlanMejoras(EvaluacionEmpresa evaluacionEmpresa);
+        List<PorcentajeEvaluacionDto> GetPorcentajeEvaluacion(Guid evaluacionId, Guid empresaId);
+        List<EnvioMailTiempoLimiteDto> GetCorreoTiempoLimite(Guid SegmentacionAreaId, Guid empresaId);
 
-          Task DeleteList(List<EvaluacionEmpresaModel> c);
+        Task DeleteList(List<EvaluacionEmpresaModel> c);
           Task InsertOrUpdateList(List<EvaluacionEmpresaModel> c);
 
 
@@ -108,6 +110,16 @@ namespace api_public_backOffice.Service
         }
 
         
+        public List<PorcentajeEvaluacionDto> GetPorcentajeEvaluacion(Guid evaluacionId, Guid empresaId)
+        {
+            return _EvaluacionEmpresaRepository.GetPorcentajeEvaluacion(evaluacionId, empresaId);
+        }
+        public List<EnvioMailTiempoLimiteDto> GetCorreoTiempoLimite(Guid SegmentacionAreaId, Guid empresaId)
+        {
+            return _EvaluacionEmpresaRepository.GetCorreoTiempoLimite(SegmentacionAreaId, empresaId);
+        }
+
+
         public void Dispose() 
         { 
             if (_EvaluacionEmpresaRepository != null)
