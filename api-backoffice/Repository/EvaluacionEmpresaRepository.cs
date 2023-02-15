@@ -10,6 +10,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections;
+using MongoDB.Bson;
+using Microsoft.EntityFrameworkCore.Internal;
+using System.Text.RegularExpressions;
+using System.Numerics;
 
 namespace api_public_backOffice.Repository
 {
@@ -339,6 +343,43 @@ namespace api_public_backOffice.Repository
 
         public List<PorcentajeEvaluacionDto> GetPorcentajeEvaluacion(Guid evaluacionId, Guid empresaId)
         {
+            /*var retorno = Context().Evaluacions.
+                             Join(Context().EvaluacionEmpresas, e => e.Id, ee => ee.EvaluacionId, (e, ee) => new { EvaluacionEmpresas = ee, Evaluacions = e }).
+                             Join(Context().SegmentacionAreas, ea => ea.Evaluacions.Id, sa => sa.Id, (ea, sa) => new { EvaluacionArea = ea, SegmentacionAreas = sa }).
+                             Join(Context().Pregunta, ep => ep.EvaluacionArea.Evaluacions.Id, p => p.EvaluacionId, (ep, p) => new { EvaluacionPregunta = p, Pregunta = p }).
+                             LeftJoin(Context().Respuesta, pr => pr.Pregunta.Id, r => r.PreguntaId, (ep, p) => new { EvaluacionPregunta = p, Pregunta = p }).
+                             Select(pe => new PorcentajeEvaluacionDto {
+                                 Nombre = ee,
+
+                             }).
+                             AsNoTracking().ToListAsync();*/
+
+
+            //using (var repo = Context()) {
+            /*var context = Context();
+                var retorno = (from e in context.Evaluacions
+                                   join ee in context.EvaluacionEmpresas on e.Id equals ee.EvaluacionId
+                                   join sa in context.SegmentacionAreas on e.Id equals sa.EvaluacionId
+                                   join p in context.Pregunta on e.Id equals p.EvaluacionId
+                                   join r in context.Respuesta on new { x1 = ee.Id, x2 = p.Id} equals new { x1 = r.EvaluacionEmpresaId, x2 = r.PreguntaId}
+                                where  ee.EmpresaId == empresaId && p.Activo == true && e.Id == evaluacionId
+                                group e by new {
+                                    e.Nombre,
+                                    sa.NombreArea,
+                                    sa.Id
+                                } into groupBy
+                               select new PorcentajeEvaluacionDto { 
+                                   Nombre = groupBy.Key.Nombre,
+                                   NombreArea = groupBy.Key.NombreArea,
+                                   SegmentacionAreaId = groupBy.Key.Id,
+                                   RespuestaPorcentaje = "0"
+                               }).ToList();
+            //}
+
+            if (retorno == null) return null;
+            return retorno;
+            */
+
             List<PorcentajeEvaluacionDto> lista = new List<PorcentajeEvaluacionDto>();
             using (var command = Context().Database.GetDbConnection().CreateCommand())
             {
@@ -392,7 +433,7 @@ namespace api_public_backOffice.Repository
             List<EnvioMailTiempoLimiteDto> lista = new List<EnvioMailTiempoLimiteDto>();
             using (var command = Context().Database.GetDbConnection().CreateCommand())
             {
-                command.CommandText = string.Format(@"select u.email, u.nombres 
+                command.CommandText = string.Format(@"select u.email, u.nombres , p.nombre as perfilnombre
                                                     from 
                                                      public.usuario u join 
                                                      public.usuario_evaluacion ue 
@@ -416,6 +457,7 @@ namespace api_public_backOffice.Repository
 
                             item.Email = (result["email"].ToString());
                             item.Nombre = (result["nombres"].ToString());
+                            item.NombrePerfil = (result["perfilnombre"].ToString());
 
                             lista.Add(item);
                         }

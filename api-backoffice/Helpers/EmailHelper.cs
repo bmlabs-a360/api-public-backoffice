@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System;
 using Microsoft.AspNetCore.Hosting;
+using System.Collections.Generic;
 
 namespace api_public_backOffice.Helpers
 {
@@ -11,6 +12,9 @@ namespace api_public_backOffice.Helpers
             string linkIrFormulario);
         string GetBodyEmailConfirmacion(string linkVerificar);
         string GetBodyEmailRecuperacion(string linkIrFormulario);
+        string GetBodyEmailCompletaEvaluacionUsuarioBasico(string porcentajeRespuesta, string nombre);
+        string GetBodyEmailCompletaEvaluacionUsuarioPro(string porcentajeRespuesta, string nombre);
+        
     }
 
     public class EmailHelper : IEmailHelper, IDisposable
@@ -94,6 +98,46 @@ namespace api_public_backOffice.Helpers
                 templateBody = File.ReadAllText(urlTemplate);
 
                 templateBody = templateBody.Replace("[LINK_IRFORMULARIO]", linkIrFormulario);
+
+                return templateBody;
+
+            }
+            catch (Exception)
+            {
+                return templateBody;
+            }
+        }
+
+        public string GetBodyEmailCompletaEvaluacionUsuarioBasico(string porcentajeRespuesta, string nombre)
+        {
+            string templateBody = "";
+            string urlTemplate = "wwwroot/htmlEmail/BodyCompletaEvaluacionUsuarioBasico.html";
+
+            try
+            {
+                templateBody = File.ReadAllText(urlTemplate);
+
+                templateBody = templateBody.Replace("[PORCENTAJE]", porcentajeRespuesta).Replace("[NOMBRE_USUARIO]", nombre);
+
+                return templateBody;
+
+            }
+            catch (Exception)
+            {
+                return templateBody;
+            }
+        }
+
+        public string GetBodyEmailCompletaEvaluacionUsuarioPro(string porcentajeRespuesta, string nombre)
+        {
+            string templateBody = "";
+            string urlTemplate = "wwwroot/htmlEmail/BodyCompletaEvaluacionUsuarioPro.html";
+
+            try
+            {
+                templateBody = File.ReadAllText(urlTemplate);
+
+                templateBody = templateBody.Replace("[PORCENTAJE]", porcentajeRespuesta).Replace("[NOMBRE_USUARIO]", nombre);
 
                 return templateBody;
 

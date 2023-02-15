@@ -328,15 +328,16 @@ namespace api_public_backOffice.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundResult))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
-        public async Task<ActionResult<EvaluacionEmpresaModel>> EnvioMailTiempoLimite(Guid evaluacionId, Guid empresaId)
+        public async Task<ActionResult<EvaluacionEmpresaModel>> EnvioMailTiempoLimite(Guid evaluacionId, Guid empresaId, string respuestas)
         {
             List<PorcentajeEvaluacionDto> porcentajes = _EvaluacionEmpresaService.GetPorcentajeEvaluacion(evaluacionId, empresaId);
 
             List<string> correos = new();
-            List<string> alias = new();
-            
+            List<string> correosPro = new();
+
             foreach (PorcentajeEvaluacionDto item in porcentajes)
             {
+                if (item == null) return NotFound();
 
                 if (item.RespuestaPorcentaje != "100")
                 {
@@ -344,44 +345,89 @@ namespace api_public_backOffice.Controllers
 
                     foreach (EnvioMailTiempoLimiteDto info in infousuario)
                     {
-                        correos.Add(info.Email);
-                        alias.Add(info.Nombre);
+                        if (info.NombrePerfil == "Usuario básico")
+                        {
+                            int indice = correos.IndexOf(info.Email);
+                            if (indice == -1)
+                            {
+                                correos.Add(info.Email);
+                                //alias.Add(info.Nombre);
+
+                                try
+                                {
+                                    MailDTO correo = new MailDTO
+                                    {
+                                        // From = Configuration["Mail:FromConfirmacion"], //CONFIGURAR FROM
+                                        //From = "miloandres7@gmail.com", //CONFIGURAR FROM
+                                        From = Configuration["MAIL:FromConfirmacion"],
+                                        FromAlias = "Evaluacion",
+                                        To = new string[] { info.Email },
+                                        ToAlias = new string[] { info.Nombre },
+                                        //To = new string[] { "miloandres7@gmail.com"},
+                                        //ToAlias = new string[] { "nombre" },
+                                        IsHtml = true,
+                                        Subject = "¡Completa tu evaluación de madurez en NEVA!",
+                                        Body = _emailHelper.GetBodyEmailCompletaEvaluacionUsuarioBasico(respuestas, info.Nombre)
+                                    };
+
+                                    string jsonString = JsonSerializer.Serialize(correo);
+                                    _ = await _mailService.SendMailAsync(correo);
+                                }
+                                catch (Exception e)
+                                {
+                                    while (e.InnerException != null) e = e.InnerException;
+                                    _logger.LogError("Error  Source:{0}, Trace:{1} ", e.Source, e);
+                                    return Problem(detail: e.Message, title: "ERROR");
+                                }
+                                /*finally
+                                {
+                                    _EvaluacionEmpresaService.Dispose();
+                                    // _controlTokenService.Dispose();
+                                }*/
+                            }
+                        }
+                        else if (info.NombrePerfil == "Usuario pro (empresa)") {
+                            int indicePro = correosPro.IndexOf(info.Email);
+                            if (indicePro == -1)
+                            {
+                                correosPro.Add(info.Email);
+                                //alias.Add(info.Nombre);
+
+                                try
+                                {
+                                    MailDTO correo = new MailDTO
+                                    {
+                                        // From = Configuration["Mail:FromConfirmacion"], //CONFIGURAR FROM
+                                        //From = "miloandres7@gmail.com", //CONFIGURAR FROM
+                                        From = "miloandres7@gmail.com",
+                                        FromAlias = "Evaluacion",
+                                        To = new string[] { info.Email },
+                                        ToAlias = new string[] { info.Nombre },
+                                        //To = new string[] { "miloandres7@gmail.com"},
+                                        //ToAlias = new string[] { "nombre" },
+                                        IsHtml = true,
+                                        Subject = "Actualización sobre la evaluación de madurez empresarial en NEVA",
+                                        Body = _emailHelper.GetBodyEmailCompletaEvaluacionUsuarioPro(respuestas, info.Nombre)
+                                    };
+
+                                    string jsonString = JsonSerializer.Serialize(correo);
+                                    _ = await _mailService.SendMailAsync(correo);
+                                }
+                                catch (Exception e)
+                                {
+                                    while (e.InnerException != null) e = e.InnerException;
+                                    _logger.LogError("Error  Source:{0}, Trace:{1} ", e.Source, e);
+                                    return Problem(detail: e.Message, title: "ERROR");
+                                }
+                            }
+                        } 
                     }
                 }
 
             }
 
-            try
-            {
-
-                MailDTO correo = new MailDTO
-                {
-                    // From = Configuration["Mail:FromConfirmacion"], //CONFIGURAR FROM
-                    From = "miloandres7@gmail.com", //CONFIGURAR FROM
-                    FromAlias = "Evaluacion",
-                    To = new string[] { "miloandres7@gmail.com", "camiloretamalmora@gmail.com" },
-                    ToAlias = alias,
-                    IsHtml = true,
-                    Subject = "Confirmar mail",
-                    Body = _emailHelper.GetBodyEmailConfirmacion("link")
-                };
-
-                string jsonString = JsonSerializer.Serialize(correo);
-                _ = await _mailService.SendMailAsync(correo);
-            }
-            catch (Exception e)
-            {
-                while (e.InnerException != null) e = e.InnerException;
-                _logger.LogError("Error  Source:{0}, Trace:{1} ", e.Source, e);
-                return Problem(detail: e.Message, title: "ERROR");
-            }
-            finally
-            {
-                _EvaluacionEmpresaService.Dispose();
-                // _controlTokenService.Dispose();
-            }
-
             if (correos == null) return NotFound();
+            _EvaluacionEmpresaService.Dispose();
             return Ok(correos);
         }
     }
