@@ -266,8 +266,8 @@ namespace api_public_backOffice.Repository
 				ssa.nombre_sub_area,
 				ir.valor as peso_relativo_area_porc,
 				ie.valor as peso_relativo_subarea_porc,
-				SUM(public.func_capacidad(ee.empresa_id,ee.evaluacion_id,pr.segmentacion_area_id,pr.segmentacion_sub_area_id,cast (ti.detalle as  integer))
-					* re.valor)/100 as IMSA
+				(SUM(public.func_capacidad(ee.empresa_id,ee.evaluacion_id,pr.segmentacion_area_id,pr.segmentacion_sub_area_id,cast (ti.detalle as  integer))
+					* re.valor)/100) * 5 / 4 as IMSA
 			from 
 				public.respuesta re join
 				public.pregunta pr on
@@ -467,8 +467,8 @@ namespace api_public_backOffice.Repository
 					ssa.nombre_sub_area,
 					ir.valor as peso_relativo_area_porc,
 					ie.valor as peso_relativo_subarea_porc,
-					SUM(public.func_capacidad(ee.empresa_id,ee.evaluacion_id,pr.segmentacion_area_id,pr.segmentacion_sub_area_id,cast (ti.detalle as  integer))
-						* re.valor)/100 as IMSA
+					(SUM(public.func_capacidad(ee.empresa_id,ee.evaluacion_id,pr.segmentacion_area_id,pr.segmentacion_sub_area_id,cast (ti.detalle as  integer))
+						* re.valor)/100) * 5 / 4 as IMSA
 				from 
 					public.respuesta re join
 					public.pregunta pr on
@@ -674,7 +674,7 @@ namespace api_public_backOffice.Repository
 						rrr.ir_evaluacion_empresa_id,
 						rrr.razon_social,
 						rrr.nombre_evaluacion,
-						SUM(rrr.peso_relativo_area_porc * rrr.IMA)/100 as IM
+						(SUM(rrr.peso_relativo_area_porc * rrr.IMA)/100) *5/4 as IM
 						from
 					(select 
 						ttt.pr_evaluacion_id,
@@ -798,7 +798,7 @@ namespace api_public_backOffice.Repository
 						rrr.ir_evaluacion_empresa_id,
 						rrr.razon_social,
 						rrr.nombre_evaluacion,
-						SUM(rrr.peso_relativo_area_porc * rrr.IMA)/100 as IM
+						(SUM(rrr.peso_relativo_area_porc * rrr.IMA)/100) * 5/4 as IM
 						from
 					(select 
 						ttt.pr_evaluacion_id,
