@@ -29,8 +29,10 @@ namespace api_public_backOffice.Models
         public bool Accion { get; set; }
         public bool Estado { get; set; }
         public string TipoImportanciaNombre { get; set; }
-        
-	  public string TipoDiferenciaRelacionadaNombre { get; set; }
+        public string ImportanciaDetalle { get; set; }
+
+
+        public string TipoDiferenciaRelacionadaNombre { get; set; }
         
 
 

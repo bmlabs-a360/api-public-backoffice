@@ -158,7 +158,8 @@ namespace api_public_backOffice.Repository
 	                                        sa.nombre_area ,
 	                                        ssa.nombre_sub_area,
 	                                        ti.nombre as tipo_importancia_nombre,
-	                                        tdr.nombre as tipo_diferencia_relacionada_nombre
+	                                        tdr.nombre as tipo_diferencia_relacionada_nombre,
+                                            ti.detalle as importancia_detalle
                                         from
 	                                        public.evaluacion_empresa ee join 
 	                                        public.pregunta pr on
@@ -218,6 +219,7 @@ namespace api_public_backOffice.Repository
                             item.Estado=result["plan_mejora_id"].ToString() != string.Empty;
                             item.TipoImportanciaNombre = (result["tipo_importancia_nombre"].ToString()) == string.Empty ? "s/d" : (result["tipo_importancia_nombre"].ToString());  
                             item.TipoDiferenciaRelacionadaNombre = (result["tipo_diferencia_relacionada_nombre"].ToString()) == string.Empty ? "s/d" : (result["tipo_diferencia_relacionada_nombre"].ToString()); 
+                            item.ImportanciaDetalle = (result["importancia_detalle"].ToString());
 
                             lista.Add(item);
                         }
