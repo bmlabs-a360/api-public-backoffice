@@ -45,7 +45,7 @@ namespace api_public_backOffice.Repository
         {
             var retorno = await Context()
                             .Reportes
-                            .Include(x => x.ReporteItemNivelBasicos)
+                            .Include(x => x.ReporteItemNivelBasicos.OrderBy(x => x.Orden))
                             .Where(y => y.EvaluacionId == evaluacion.Id && y.Activo.Value).AsNoTracking().ToListAsync();
 
             if (retorno == null) return null;
