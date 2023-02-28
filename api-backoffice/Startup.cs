@@ -128,6 +128,7 @@ namespace api_public_backOffice
             services.AddScoped<UsuarioSuscripcionRepository>();
             services.AddScoped<UsuarioRepository>();
             services.AddScoped<MadurezRepository>();
+            services.AddScoped<IndicadoresRepository>();
 
             /*Inyection Service*/
 
@@ -167,6 +168,7 @@ namespace api_public_backOffice
             services.AddScoped<MailService>();
             services.AddScoped<TokenService>();
             services.AddScoped<MadurezService>();
+            services.AddScoped<IndicadoresService>();
 
             /*Inyection Helpper*/
             services.AddScoped<EmailHelper>();

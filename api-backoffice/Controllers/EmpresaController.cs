@@ -156,7 +156,7 @@ namespace api_public_backOffice.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundResult))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
-        public async Task<ActionResult<List<EmpresaModel>>> GetEmpresaByEvaluacionId()
+        public async Task<ActionResult<List<EmpresaModel>>> GetEmpresas()
         {
             try
             {
