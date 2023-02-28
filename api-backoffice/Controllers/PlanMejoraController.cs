@@ -91,7 +91,7 @@ namespace api_public_backOffice.Controllers
                 if (string.IsNullOrEmpty(planMejoraModel.Mejora.ToString())) return BadRequest("Debe indicar Mejora");
                 if ("00000000-0000-0000-0000-000000000000" == (planMejoraModel.PreguntaId.ToString())) return BadRequest("Debe indicar PreguntaId");
                 if ("00000000-0000-0000-0000-000000000000" == (planMejoraModel.SegmentacionAreaId.ToString())) return BadRequest("Debe indicar SegmentacionAreaId");
-                if ("00000000-0000-0000-0000-000000000000" == (planMejoraModel.TipoDiferenciaRelacionadaId.ToString())) return BadRequest("Debe indicar TipoDiferenciaRelacionadaId");
+                //if ("00000000-0000-0000-0000-000000000000" == (planMejoraModel.TipoDiferenciaRelacionadaId.ToString())) return BadRequest("Debe indicar TipoDiferenciaRelacionadaId");
                 if ("00000000-0000-0000-0000-000000000000" == (planMejoraModel.TipoImportanciaId.ToString())) return BadRequest("Debe indicar TipoImportanciaId");
                 if ("00000000-0000-0000-0000-000000000000" == (planMejoraModel.AlternativaId.ToString())) return BadRequest("Debe indicar AlternativaId");
                 if ("00000000-0000-0000-0000-000000000000" == (planMejoraModel.SegmentacionAreaId.ToString())) return BadRequest("Debe indicar SegmentacionAreaId");

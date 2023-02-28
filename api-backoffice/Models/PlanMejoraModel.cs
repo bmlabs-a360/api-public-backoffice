@@ -16,7 +16,7 @@ namespace api_public_backOffice.Models
         public Guid SegmentacionSubAreaId { get; set; }
         public Guid AlternativaId { get; set; }
         public Guid TipoImportanciaId { get; set; }
-        public Guid TipoDiferenciaRelacionadaId { get; set; }
+        public Guid? TipoDiferenciaRelacionadaId { get; set; }
         public string Mejora { get; set; }
         public DateTime? FechaCreacion { get; set; }
         public bool? Activo { get; set; }

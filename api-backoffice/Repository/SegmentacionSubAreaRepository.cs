@@ -47,7 +47,8 @@ namespace api_public_backOffice.Repository
         public async Task<IEnumerable<SegmentacionSubArea>> GetSegmentacionSubAreasBySegmentacionAreaId(SegmentacionArea segmentacionArea)
         {
             var retorno = await Context()
-                            .SegmentacionSubAreas.Where(y => y.SegmentacionAreaId == segmentacionArea.Id ).AsNoTracking().ToListAsync();
+                            .SegmentacionSubAreas
+                            .Where(y => y.SegmentacionAreaId == segmentacionArea.Id ).AsNoTracking().ToListAsync();
 
             if (retorno == null) return null;
             return retorno;

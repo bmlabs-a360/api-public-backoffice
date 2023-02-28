@@ -44,7 +44,9 @@ namespace api_public_backOffice.Repository
         public async Task<IEnumerable<Reporte>> GetReportesByEvaluacionId(Evaluacion evaluacion)
         {
             var retorno = await Context()
-                            .Reportes.Where(y => y.EvaluacionId == evaluacion.Id && y.Activo.Value).AsNoTracking().ToListAsync();
+                            .Reportes
+                            .Include(x => x.ReporteItemNivelBasicos)
+                            .Where(y => y.EvaluacionId == evaluacion.Id && y.Activo.Value).AsNoTracking().ToListAsync();
 
             if (retorno == null) return null;
             return retorno;
