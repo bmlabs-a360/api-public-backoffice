@@ -27,6 +27,8 @@ namespace api_public_backOffice.Controllers
     {
         private readonly ILogger _logger;
         private readonly IMadurezService _madurezService;
+        private readonly IUsuarioSuscripcionService _usuarioSubscripcionService;
+        private readonly IReporteService _reporteService;
         private readonly IEmailHelper _emailHelper;
         private readonly ISecurityHelper _securityHelper;
         private readonly Helpers.IUrlHelper _urlHelper;
@@ -34,6 +36,8 @@ namespace api_public_backOffice.Controllers
         public IConfiguration Configuration { get; }
 
         public MadurezController(
+            UsuarioSuscripcionService usuarioSuscripcionService,
+            ReporteService reporteService,
             MadurezService madurezService,
             ILogger<MadurezController> logger,
             EmailHelper emailHelper,
@@ -42,6 +46,8 @@ namespace api_public_backOffice.Controllers
             IConfiguration configuration)
         {
             _logger = logger;
+            _usuarioSubscripcionService = usuarioSuscripcionService;
+            _reporteService = reporteService;
             _madurezService = madurezService;
             _emailHelper = emailHelper;
             Configuration = configuration;
@@ -262,7 +268,67 @@ namespace api_public_backOffice.Controllers
             }
         }
 
+        [HttpGet("GetIMAReporteSubscripcionOBasico")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<IMADto>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundResult))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+        public async Task<ActionResult<List<IMADto>>> GetIMAReporteSubscripcionOBasico(Guid evaluacionId, Guid empresaId, Guid usuarioId)
+        {
+            try
+            {
+                List<IMADto> retorno = null;
+                UsuarioModel usuario = new UsuarioModel
+                {
+                    Id = usuarioId
+                };
+                UsuarioSuscripcionModel usuarioRetorno = await _usuarioSubscripcionService.GetUsuarioSuscripcionsByUsuarioId(usuario);
 
+                if (usuarioRetorno == null)
+                {
+                    EvaluacionModel evaluacion = new EvaluacionModel
+                    {
+                        Id = evaluacionId
+                    };
+                    List<ReporteModel> reporteRetorno = await _reporteService.GetReportesByEvaluacionId(evaluacion);
+
+                    List<Guid> areas = new();
+                    foreach (var rr in reporteRetorno)
+                    {
+                        foreach (var ra in rr.ReporteAreas)
+                        {
+                            if (ra.Activo == true)
+                            {
+                                areas.Add(ra.SegmentacionAreaId);
+                            }
+                        }
+                    }
+                    retorno = _madurezService.GetIMAByAreasUsuarioBasico(evaluacionId, empresaId, areas);
+                }
+                else
+                {
+                    MadurezCapacidadSubAreaDto madurezCapacidadSubArea = new MadurezCapacidadSubAreaDto
+                    {
+                        EvaluacionId = evaluacionId,
+                        EmpresaId = empresaId
+                    };
+                    retorno = _madurezService.GetIMA(madurezCapacidadSubArea);
+                }
+                if (retorno == null) return NotFound();
+                return Ok(retorno);
+            }
+            catch (Exception e)
+            {
+                while (e.InnerException != null) e = e.InnerException;
+                _logger.LogError("Error  Source:{0}, Trace:{1} ", e.Source, e);
+                return Problem(detail: e.Message, title: "ERROR");
+            }
+            finally
+            {
+                _madurezService.Dispose();
+                // _controlTokenService.Dispose();
+            }
+        }
 
     }
 

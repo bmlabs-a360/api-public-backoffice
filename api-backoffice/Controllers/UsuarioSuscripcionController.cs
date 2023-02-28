@@ -131,5 +131,34 @@ namespace api_public_backOffice.Controllers
             }
         }
 
+        //[ApiKeyAuth]
+        [HttpPost("GetUsuarioSuscripcionsByUsuarioId")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UsuarioSuscripcionModel))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundResult))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+        public async Task<ActionResult<UsuarioSuscripcionModel>> GetUsuarioSuscripcionsByUsuarioId([FromBody] UsuarioModel UsuarioModel)
+
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(UsuarioModel.Id.ToString())) return BadRequest("Debe indicar UsuarioModel.Id");
+                UsuarioSuscripcionModel retorno = await _UsuarioSuscripcionService.GetUsuarioSuscripcionsByUsuarioId(UsuarioModel);
+                if (retorno == null) return NotFound();
+                return Ok(retorno);
+            }
+            catch (Exception e)
+            {
+                while (e.InnerException != null) e = e.InnerException;
+                _logger.LogError("Error  Source:{0}, Trace:{1} ", e.Source, e);
+                return Problem(detail: e.Message, title: "ERROR");
+            }
+            finally
+            {
+                _UsuarioSuscripcionService.Dispose();
+                // _controlTokenService.Dispose();
+            }
+        }
+
     }
 }

@@ -7,11 +7,11 @@ namespace api_public_backOffice.Models
 {
     public class ReporteModel
     {
-        /*public Reporte()
+        public ReporteModel()
         {
             ReporteAreas = new HashSet<ReporteArea>();
             ReporteItems = new HashSet<ReporteItem>();
-        }*/
+        }
 
         public Guid Id { get; set; }
         public Guid EvaluacionId { get; set; }
@@ -21,8 +21,8 @@ namespace api_public_backOffice.Models
 
         public virtual ICollection<ReporteItemNivelBasicoModel> ReporteItemNivelBasicos { get; set; }
 
-        /*public virtual Evaluacion Evaluacion { get; set; }
+        /*public virtual Evaluacion Evaluacion { get; set; }*/
         public virtual ICollection<ReporteArea> ReporteAreas { get; set; }
-        public virtual ICollection<ReporteItem> ReporteItems { get; set; }*/
+        public virtual ICollection<ReporteItem> ReporteItems { get; set; }
     }
 }
