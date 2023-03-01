@@ -664,7 +664,6 @@ namespace api_public_backOffice.Repository
 				}
 			}
 
-
 			List<IMADto> listaRetono = new List<IMADto>();
 			foreach (var ar in areas) 
 			{ 
