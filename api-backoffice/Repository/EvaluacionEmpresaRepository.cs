@@ -23,7 +23,7 @@ namespace api_public_backOffice.Repository
         Task<IEnumerable<EvaluacionEmpresa>> GetEvaluacionEmpresas();
         Task<IEnumerable<EvaluacionEmpresa>> GetEvaluacionEmpresasByEvaluacionId(Evaluacion evaluacion);
         Task<IEnumerable<EvaluacionEmpresa>> GetEvaluacionEmpresasByEmpresaId(Empresa empresa);
-        Task<IEnumerable<EvaluacionEmpresa>> GetEvaluacionEmpresasByEvaluacionIdEmpresaId(Guid evaluacionId, Guid empresaId);
+        Task<IEnumerable<EvaluacionEmpresa>> GetEvaluacionEmpresasByEvaluacionIdEmpresaId(Guid evaluacionEmpresaId, Guid empresaId);
         Task DeleteList(List<EvaluacionEmpresa> c);
         Task InsertOrUpdateList(List<EvaluacionEmpresa> c);
        // Task<IEnumerable<EvaluacionEmpresaModel>> GetSeguimiento();
@@ -231,7 +231,7 @@ namespace api_public_backOffice.Repository
             return lista;
         }
 
-        public List<SeguimientoPlanMejoraModelDto> GetPlanMejorasReporteSubscripcionOBasico(Guid evaluacionId, List<Guid> areas)
+        public List<SeguimientoPlanMejoraModelDto> GetPlanMejorasReporteSubscripcionOBasico(Guid evaluacionEmpresaId, List<Guid> areas)
         {
             List<SeguimientoPlanMejoraModelDto> lista = new List<SeguimientoPlanMejoraModelDto>();
             using (var command = Context().Database.GetDbConnection().CreateCommand())
@@ -280,7 +280,7 @@ namespace api_public_backOffice.Repository
 	                                        ti.id = re.tipo_importancia_id left join 
 	                                        public.tipo_diferencia_relacionada tdr on
 	                                        tdr.id  = re.tipo_diferencia_relacionada_id 
-                                        where ee.id = '{0}' ", evaluacionId.ToString());
+                                        where ee.id = '{0}' ", evaluacionEmpresaId.ToString());
 
                 Context().Database.OpenConnection();
 

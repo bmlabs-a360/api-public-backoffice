@@ -230,7 +230,7 @@ namespace api_public_backOffice.Controllers
                             }
                         }
                     }
-                    retorno = _EvaluacionEmpresaService.GetPlanMejorasReporteSubscripcionOBasico(evaluacionId, areas);
+                    retorno = _EvaluacionEmpresaService.GetPlanMejorasReporteSubscripcionOBasico(evaluacionEmpresaId, areas);
                 }
                 else
                 {
