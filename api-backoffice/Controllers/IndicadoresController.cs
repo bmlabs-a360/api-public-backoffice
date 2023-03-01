@@ -240,6 +240,55 @@ namespace api_public_backOffice.Controllers
                 // _controlTokenService.Dispose();
             }
         }
+
+
+        [HttpPost("PromedioIMTamanoEmpresaByEvaluacionId")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(int))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundResult))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+        public ActionResult<List<PromedioIMTamanoEmpresaDto>> PromedioIMTamanoEmpresaByEvaluacionId(EvaluacionModel evalaucion)
+        {
+            try
+            {
+                return _IndicadoresService.PromedioIMTamanoEmpresaByEvaluacionId(evalaucion);
+            }
+            catch (Exception e)
+            {
+                while (e.InnerException != null) e = e.InnerException;
+                _logger.LogError("Error  Source:{0}, Trace:{1} ", e.Source, e);
+                return Problem(detail: e.Message, title: "ERROR");
+            }
+            finally
+            {
+                _IndicadoresService.Dispose();
+                // _controlTokenService.Dispose();
+            }
+        }
+
+        [HttpPost("PromedioIMRubroByEvaluacionId")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(int))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundResult))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+        public ActionResult<List<PromedioIMRubroDto>> PromedioIMRubroByEvaluacionId(EvaluacionModel evalaucion)
+        {
+            try
+            {
+                return _IndicadoresService.PromedioIMRubroByEvaluacionId(evalaucion);
+            }
+            catch (Exception e)
+            {
+                while (e.InnerException != null) e = e.InnerException;
+                _logger.LogError("Error  Source:{0}, Trace:{1} ", e.Source, e);
+                return Problem(detail: e.Message, title: "ERROR");
+            }
+            finally
+            {
+                _IndicadoresService.Dispose();
+                // _controlTokenService.Dispose();
+            }
+        }
     }
 
 

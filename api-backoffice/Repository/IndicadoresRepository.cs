@@ -27,6 +27,8 @@ namespace api_public_backOffice.Repository
         int CantidadEmpresasEvaluacionFinalizada();
         List<PromedioIMTamanoEmpresaDto> PromedioIMTamanoEmpresa();
         List<PromedioIMRubroDto> PromedioIMRubro();
+		List<PromedioIMRubroDto> PromedioIMRubroByEvaluacionId(Evaluacion evalaucion);
+		List<PromedioIMTamanoEmpresaDto> PromedioIMTamanoEmpresaByEvaluacionId(Evaluacion evalaucion);
     }
     public class IndicadoresRepository : Repository<Empresa, Context>, IIndicadoresRepository
     {
@@ -435,6 +437,267 @@ namespace api_public_backOffice.Repository
 						)indi
 						group by 
 							indi.tr_tipo_rubro ");
+                Context().Database.OpenConnection();
+                using (var result = command.ExecuteReader())
+                {
+                    if (result.HasRows)
+                    {
+                        while (result.Read())
+                        {
+                            PromedioIMRubroDto elemento = new PromedioIMRubroDto();
+                            elemento.NombreRubro = result["tr_tipo_rubro"].ToString();
+                            elemento.IMPromedio = decimal.Parse(result["PromedioIMRubroDto"].ToString());
+                            salida.Add(elemento);
+                        }
+                    }
+                    return salida;
+                }
+            }
+        }
+
+        public List<PromedioIMTamanoEmpresaDto> PromedioIMTamanoEmpresaByEvaluacionId(Evaluacion evalaucion)
+        {
+            using (var command = Context().Database.GetDbConnection().CreateCommand())
+            {
+                List<PromedioIMTamanoEmpresaDto> salida = new List<PromedioIMTamanoEmpresaDto>();
+                command.CommandText = string.Format(@" select 
+                                                        indi.tte_tamano_empresa,
+                                                        avg(indi.IM) as PromedioIMTamanoEmpresaDto from (
+                                                        select 
+	                                                        rrr.pr_evaluacion_id,
+	                                                        rrr.ee_empresa_id,
+	                                                        rrr.ir_evaluacion_empresa_id,
+	                                                        rrr.razon_social,
+	                                                        rrr.tte_tamano_empresa,
+	                                                        rrr.nombre_evaluacion,
+	                                                        (SUM(rrr.peso_relativo_area_porc * rrr.IMA)/100) * 5/4 as IM
+	                                                        from
+                                                        (select 
+	                                                        ttt.pr_evaluacion_id,
+	                                                        ttt.ee_empresa_id,
+	                                                        ttt.ir_evaluacion_empresa_id,
+	                                                        ttt.pr_segmentacion_area_id,
+	                                                        ttt.razon_social,
+	                                                        ttt.tte_tamano_empresa,
+	                                                        ttt.nombre_evaluacion,
+	                                                        ttt.nombre_area,
+	                                                        ttt.peso_relativo_area_porc,
+	                                                        SUM(ttt.peso_relativo_subarea_porc * ttt.IMSA)/100  as IMA
+	                                                        from (
+                                                        select 
+	                                                        pr.evaluacion_id as pr_evaluacion_id,
+	                                                        ee.empresa_id  as ee_empresa_id,
+	                                                        ir.id as importancia_relativa_id,
+	                                                        ir.evaluacion_empresa_id as ir_evaluacion_empresa_id,
+	                                                        ie.id as importancia_estrategica_id,
+	                                                        pr.segmentacion_area_id as pr_segmentacion_area_id,
+	                                                        pr.segmentacion_sub_area_id as pr_segmentacion_sub_area_id,
+	                                                        e.razon_social,
+	                                                        tte.nombre as tte_tamano_empresa,
+	                                                        ev.nombre as nombre_evaluacion,
+	                                                        sa.nombre_area,
+	                                                        ssa.nombre_sub_area,
+	                                                        ir.valor as peso_relativo_area_porc,
+	                                                        ie.valor as peso_relativo_subarea_porc,
+	                                                        SUM(public.func_capacidad(ee.empresa_id,ee.evaluacion_id,pr.segmentacion_area_id,pr.segmentacion_sub_area_id,cast (ti.detalle as  integer))
+		                                                        * re.valor)/100 as IMSA
+                                                        from 
+	                                                        public.respuesta re join
+	                                                        public.pregunta pr on
+	                                                        (pr.id = re.pregunta_id)join 
+	                                                        public.evaluacion_empresa ee on
+	                                                        (ee.id = re.evaluacion_empresa_id) join 
+	                                                        public.importancia_relativa ir on
+	                                                        (ir.evaluacion_empresa_id=ee.id and ir.segmentacion_area_id = pr.segmentacion_area_id)join
+	                                                        public.importancia_estrategica ie on 
+	                                                        (ie.importancia_relativa_id = ir.id and ie.segmentacion_sub_area_id = pr.segmentacion_sub_area_id) join 
+	                                                        public.tipo_importancia ti on
+	                                                        (ti.id =re.tipo_importancia_id ) join 	
+	                                                        public.segmentacion_area sa	on 
+	                                                        (sa.id = pr.segmentacion_area_id and sa.evaluacion_id =ee.evaluacion_id)join 
+	                                                        public.segmentacion_sub_area ssa on 
+	                                                        (ssa.segmentacion_area_id = pr.segmentacion_area_id and ssa.id = pr.segmentacion_sub_area_id) join 
+	                                                        public.empresa e on 
+	                                                        (e.id = ee.empresa_id )join 
+	                                                        public.evaluacion ev on
+	                                                        (ev.id =ee.evaluacion_id )join 
+	                                                        public.alternativa al on
+	                                                        (al.id = re.alternativa_id and al.evaluacion_id = ee.evaluacion_id) join 
+	                                                        public.tipo_tamano_empresa tte on
+	                                                        (tte.id = e.tipo_tamano_empresa_id)
+                                                        where  cast (ti.detalle as  integer) > 0 and ev.id = '{0}'
+                                                        group by 
+	                                                        pr.evaluacion_id,
+	                                                        ee.empresa_id,
+	                                                        ir.id,
+	                                                        ir.evaluacion_empresa_id,
+	                                                        ie.id,
+	                                                        pr.segmentacion_area_id,
+	                                                        pr.segmentacion_sub_area_id,
+	                                                        e.razon_social,
+	                                                        tte.nombre,
+	                                                        ev.nombre,
+	                                                        sa.nombre_area,
+	                                                        ssa.nombre_sub_area,
+	                                                        ie.valor
+                                                        order by e.razon_social,
+	                                                        ev.nombre,
+	                                                        sa.nombre_area,
+	                                                        ssa.nombre_sub_area ) ttt
+	                                                        group by 
+	                                                        ttt.pr_evaluacion_id,
+	                                                        ttt.ee_empresa_id,
+	                                                        ttt.ir_evaluacion_empresa_id,
+	                                                        ttt.pr_segmentacion_area_id,
+	                                                        ttt.razon_social,
+	                                                        ttt.tte_tamano_empresa,
+	                                                        ttt.nombre_evaluacion,
+	                                                        ttt.nombre_area,
+	                                                        ttt.peso_relativo_area_porc
+                                                        order by ttt.razon_social,
+	                                                        ttt.nombre_evaluacion,
+	                                                        ttt.nombre_area)rrr
+	                                                        group by 
+	                                                        rrr.pr_evaluacion_id,
+	                                                        rrr.ee_empresa_id,
+	                                                        rrr.ir_evaluacion_empresa_id,
+	                                                        rrr.razon_social,
+	                                                        rrr.tte_tamano_empresa,
+	                                                        rrr.nombre_evaluacion 
+                                                        )indi
+                                                        group by 
+	                                                        indi.tte_tamano_empresa ",evalaucion.Id);
+                Context().Database.OpenConnection();
+                using (var result = command.ExecuteReader())
+                {
+                    if (result.HasRows)
+                    {
+                        while (result.Read())
+                        {
+                            PromedioIMTamanoEmpresaDto elemento = new PromedioIMTamanoEmpresaDto();
+                            elemento.NombreTamano = result["tte_tamano_empresa"].ToString();
+                            elemento.IMPromedio = decimal.Parse(result["PromedioIMTamanoEmpresaDto"].ToString());
+                            salida.Add(elemento);
+                        }
+                    }
+                    return salida;
+                }
+            }
+        }
+
+        public List<PromedioIMRubroDto> PromedioIMRubroByEvaluacionId(Evaluacion evalaucion)
+        {
+
+            using (var command = Context().Database.GetDbConnection().CreateCommand())
+            {
+                List<PromedioIMRubroDto> salida = new List<PromedioIMRubroDto>();
+                command.CommandText = string.Format(@" select 
+						indi.tr_tipo_rubro,
+						avg(indi.IM) as  PromedioIMRubroDto from (
+						select 
+							rrr.pr_evaluacion_id,
+							rrr.ee_empresa_id,
+							rrr.ir_evaluacion_empresa_id,
+							rrr.razon_social,
+							rrr.tr_tipo_rubro,
+							rrr.nombre_evaluacion,
+							(SUM(rrr.peso_relativo_area_porc * rrr.IMA)/100) * 5/4 as IM
+							from
+						(select 
+							ttt.pr_evaluacion_id,
+							ttt.ee_empresa_id,
+							ttt.ir_evaluacion_empresa_id,
+							ttt.pr_segmentacion_area_id,
+							ttt.razon_social,
+							ttt.tr_tipo_rubro,
+							ttt.nombre_evaluacion,
+							ttt.nombre_area,
+							ttt.peso_relativo_area_porc,
+							SUM(ttt.peso_relativo_subarea_porc * ttt.IMSA)/100  as IMA
+							from (
+						select 
+							pr.evaluacion_id as pr_evaluacion_id,
+							ee.empresa_id  as ee_empresa_id,
+							ir.id as importancia_relativa_id,
+							ir.evaluacion_empresa_id as ir_evaluacion_empresa_id,
+							ie.id as importancia_estrategica_id,
+							pr.segmentacion_area_id as pr_segmentacion_area_id,
+							pr.segmentacion_sub_area_id as pr_segmentacion_sub_area_id,
+							e.razon_social,
+							tte.nombre as tr_tipo_rubro,
+							ev.nombre as nombre_evaluacion,
+							sa.nombre_area,
+							ssa.nombre_sub_area,
+							ir.valor as peso_relativo_area_porc,
+							ie.valor as peso_relativo_subarea_porc,
+							SUM(public.func_capacidad(ee.empresa_id,ee.evaluacion_id,pr.segmentacion_area_id,pr.segmentacion_sub_area_id,cast (ti.detalle as  integer))
+								* re.valor)/100 as IMSA
+						from 
+							public.respuesta re join
+							public.pregunta pr on
+							(pr.id = re.pregunta_id)join 
+							public.evaluacion_empresa ee on
+							(ee.id = re.evaluacion_empresa_id) join 
+							public.importancia_relativa ir on
+							(ir.evaluacion_empresa_id=ee.id and ir.segmentacion_area_id = pr.segmentacion_area_id)join
+							public.importancia_estrategica ie on 
+							(ie.importancia_relativa_id = ir.id and ie.segmentacion_sub_area_id = pr.segmentacion_sub_area_id) join 
+							public.tipo_importancia ti on
+							(ti.id =re.tipo_importancia_id ) join 	
+							public.segmentacion_area sa	on 
+							(sa.id = pr.segmentacion_area_id and sa.evaluacion_id =ee.evaluacion_id)join 
+							public.segmentacion_sub_area ssa on 
+							(ssa.segmentacion_area_id = pr.segmentacion_area_id and ssa.id = pr.segmentacion_sub_area_id) join 
+							public.empresa e on 
+							(e.id = ee.empresa_id )join 
+							public.evaluacion ev on
+							(ev.id =ee.evaluacion_id )join 
+							public.alternativa al on
+							(al.id = re.alternativa_id and al.evaluacion_id = ee.evaluacion_id) join 
+							public.tipo_rubro tte on
+							(tte.id = e.tipo_rubro_id)
+						where  cast (ti.detalle as  integer) > 0 and ev.id = '{0}'
+						group by 
+							pr.evaluacion_id,
+							ee.empresa_id,
+							ir.id,
+							ir.evaluacion_empresa_id,
+							ie.id,
+							pr.segmentacion_area_id,
+							pr.segmentacion_sub_area_id,
+							e.razon_social,
+							tte.nombre,
+							ev.nombre,
+							sa.nombre_area,
+							ssa.nombre_sub_area,
+							ie.valor
+						order by e.razon_social,
+							ev.nombre,
+							sa.nombre_area,
+							ssa.nombre_sub_area ) ttt
+							group by 
+							ttt.pr_evaluacion_id,
+							ttt.ee_empresa_id,
+							ttt.ir_evaluacion_empresa_id,
+							ttt.pr_segmentacion_area_id,
+							ttt.razon_social,
+							ttt.tr_tipo_rubro,
+							ttt.nombre_evaluacion,
+							ttt.nombre_area,
+							ttt.peso_relativo_area_porc
+						order by ttt.razon_social,
+							ttt.nombre_evaluacion,
+							ttt.nombre_area)rrr
+							group by 
+							rrr.pr_evaluacion_id,
+							rrr.ee_empresa_id,
+							rrr.ir_evaluacion_empresa_id,
+							rrr.razon_social,
+							rrr.tr_tipo_rubro,
+							rrr.nombre_evaluacion 
+						)indi
+						group by 
+							indi.tr_tipo_rubro ",evalaucion.Id);
                 Context().Database.OpenConnection();
                 using (var result = command.ExecuteReader())
                 {

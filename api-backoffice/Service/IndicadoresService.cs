@@ -24,6 +24,9 @@ namespace api_public_backOffice.Service
         List<PromedioIMTamanoEmpresaDto> PromedioIMTamanoEmpresa();
         List<PromedioIMRubroDto> PromedioIMRubro();
 
+        List<PromedioIMTamanoEmpresaDto> PromedioIMTamanoEmpresaByEvaluacionId(EvaluacionModel evalaucion);
+        List<PromedioIMRubroDto> PromedioIMRubroByEvaluacionId(EvaluacionModel evalaucion);
+
         void Dispose();
     }
     public class IndicadoresService : IIndicadoresService, IDisposable
@@ -71,6 +74,17 @@ namespace api_public_backOffice.Service
         public List<PromedioIMRubroDto> PromedioIMRubro()
         {
             return _IndicadoresRepository.PromedioIMRubro();
+
+        }
+
+        public List<PromedioIMTamanoEmpresaDto> PromedioIMTamanoEmpresaByEvaluacionId(EvaluacionModel evalaucion)
+        {
+            return _IndicadoresRepository.PromedioIMTamanoEmpresaByEvaluacionId(_mapper.Map<Evaluacion>(evalaucion));
+        }
+        public List<PromedioIMRubroDto> PromedioIMRubroByEvaluacionId(EvaluacionModel evalaucion)
+        {
+            return _IndicadoresRepository.PromedioIMRubroByEvaluacionId(_mapper.Map<Evaluacion>(evalaucion));
+
         }
         public void Dispose() 
         { 
