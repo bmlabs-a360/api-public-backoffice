@@ -32,11 +32,13 @@ namespace api_public_backOffice.Service
             private IEmpresaRepository _empresaRepository;
         private ISecurityHelper _securityHelper;
         private IUsuarioEmpresaRepository _usuarioEmpresaRepository;
+        private IUsuarioSuscripcionRepository _usuarioSuscripcionRepository;
+
         private IPerfilRepository _perfilRepository;
         private IUsuarioEvaluacionRepository _usuarioEvaluacionRepository;
         private IUsuarioAreaRepository _usuarioAreaRepository;
 
-        public UsuarioService(IMapper mapper, IMemoryCache memoryCache,UsuarioAreaRepository usuarioAreaRepository, UsuarioEvaluacionRepository usuarioEvaluacionRepository, UsuarioRepository usuarioRepository, UsuarioEmpresaRepository usuarioEmpresaRepository, PerfilRepository perfilRepository, EmpresaRepository empresaRepository , SecurityHelper securityHelper)
+        public UsuarioService(IMapper mapper, IMemoryCache memoryCache,UsuarioAreaRepository usuarioAreaRepository, UsuarioEvaluacionRepository usuarioEvaluacionRepository, UsuarioRepository usuarioRepository, UsuarioEmpresaRepository usuarioEmpresaRepository, PerfilRepository perfilRepository, EmpresaRepository empresaRepository , SecurityHelper securityHelper, UsuarioSuscripcionRepository usuarioSuscripcionRepository)
         {
             _mapper = mapper;
             _cache = memoryCache;
@@ -47,6 +49,7 @@ namespace api_public_backOffice.Service
             _perfilRepository = perfilRepository;
             _usuarioEvaluacionRepository = usuarioEvaluacionRepository;
             _usuarioAreaRepository = usuarioAreaRepository;
+            _usuarioSuscripcionRepository = usuarioSuscripcionRepository;
 
         }
         public async Task<UsuarioModel> GetUser(LoginModel loginModel)
@@ -103,6 +106,17 @@ namespace api_public_backOffice.Service
                 }
                 retorno.UsuarioEvaluacions = usuarioEvaluacionsNew;
             }
+
+            if (retorno.UsuarioSuscripcions.Count > 0)
+            {
+                List<UsuarioSuscripcion> UsuarioSuscripciones= new List<UsuarioSuscripcion>();
+
+                foreach (UsuarioSuscripcion usuarioSuscripcion in retorno.UsuarioSuscripcions)
+                    UsuarioSuscripciones.Add(await _usuarioSuscripcionRepository.InsertOrUpdate(usuarioSuscripcion));
+
+                retorno.UsuarioSuscripcions = UsuarioSuscripciones;
+            }
+
 
             return _mapper.Map<UsuarioModel>(retorno);
         }

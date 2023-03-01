@@ -117,7 +117,7 @@ namespace api_public_backOffice.Repository
                                 .Usuarios
                                 .Include(x => x.UsuarioEmpresas)
                                 .Include(x => x.UsuarioEvaluacions)
-                                //.Include(x => x.UsuarioSuscripcions)
+                                .Include(x => x.UsuarioSuscripcions)
                                 .OrderBy(x => x.Nombres)
                                // .Where(x =>  x.Activo.Value)
                                 .ToListAsync();
