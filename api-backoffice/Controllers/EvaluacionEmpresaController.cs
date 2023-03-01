@@ -194,7 +194,7 @@ namespace api_public_backOffice.Controllers
             }
         }
 
-        [HttpPost("GetPlanMejorasReporteSubscripcionOBasico")]
+        [HttpGet("GetPlanMejorasReporteSubscripcionOBasico")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<SeguimientoPlanMejoraModelDto>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundResult))]
