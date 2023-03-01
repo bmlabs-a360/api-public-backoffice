@@ -15,7 +15,7 @@ namespace api_public_backOffice.Service
         Task<UsuarioSuscripcionModel> GetUsuarioSuscripcionById(UsuarioSuscripcionModel UsuarioSuscripcionModel);
         Task<UsuarioSuscripcionModel> InsertOrUpdate(UsuarioSuscripcionModel UsuarioSuscripcionModel);
         Task<List<UsuarioSuscripcionModel>> GetUsuarioSuscripcions();
-        Task<List<UsuarioSuscripcionModel>> GetUsuarioSuscripcionsByUsuarioId(UsuarioModel usuarioModel);
+        Task<UsuarioSuscripcionModel> GetUsuarioSuscripcionsByUsuarioId(UsuarioModel usuarioModel);
 
 
         void Dispose();
@@ -55,12 +55,12 @@ namespace api_public_backOffice.Service
             var retorno = await _UsuarioSuscripcionRepository.InsertOrUpdate(_mapper.Map<UsuarioSuscripcion>(UsuarioSuscripcionModel));
             return _mapper.Map<UsuarioSuscripcionModel>(retorno);
         }
-        public async Task<List<UsuarioSuscripcionModel>> GetUsuarioSuscripcionsByUsuarioId(UsuarioModel usuarioModel)
+        public async Task<UsuarioSuscripcionModel> GetUsuarioSuscripcionsByUsuarioId(UsuarioModel usuarioModel)
         {
 
             if (string.IsNullOrEmpty(usuarioModel.Id.ToString())) throw new ArgumentNullException("Debe indicar Id de usuario");
             var UsuarioSuscripcionsList = await _UsuarioSuscripcionRepository.GetUsuarioSuscripcionsByUsuarioId(_mapper.Map<Usuario>(usuarioModel));
-            return _mapper.Map<List<UsuarioSuscripcionModel>>(UsuarioSuscripcionsList);
+            return _mapper.Map<UsuarioSuscripcionModel>(UsuarioSuscripcionsList);
         }
 
 

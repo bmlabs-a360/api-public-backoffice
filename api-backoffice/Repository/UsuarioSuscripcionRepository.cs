@@ -16,7 +16,7 @@ namespace api_public_backOffice.Repository
     {
         Task<UsuarioSuscripcion> GetUsuarioSuscripcionById(UsuarioSuscripcion UsuarioSuscripcion);
         Task<IEnumerable<UsuarioSuscripcion>> GetUsuarioSuscripcions();
-        Task<IEnumerable<UsuarioSuscripcion>> GetUsuarioSuscripcionsByUsuarioId(Usuario usuario);
+        Task<UsuarioSuscripcion> GetUsuarioSuscripcionsByUsuarioId(Usuario usuario);
     }
     public class UsuarioSuscripcionRepository : Repository<UsuarioSuscripcion, Context>, IUsuarioSuscripcionRepository
     {
@@ -41,10 +41,13 @@ namespace api_public_backOffice.Repository
             if (retorno == null) return null;
             return retorno;
         }
-        public async Task<IEnumerable<UsuarioSuscripcion>> GetUsuarioSuscripcionsByUsuarioId(Usuario usuario)
+        public async Task<UsuarioSuscripcion> GetUsuarioSuscripcionsByUsuarioId(Usuario usuario)
         {
+
             var retorno = await Context()
-                            .UsuarioSuscripcions.Where(y => y.UsuarioId == usuario.Id &&  y.Activo.Value).AsNoTracking().ToListAsync();
+                           .UsuarioSuscripcions
+                           .AsNoTracking().
+                           FirstOrDefaultAsync(y => y.UsuarioId == usuario.Id && y.Activo.Value);
 
             if (retorno == null) return null;
             return retorno;

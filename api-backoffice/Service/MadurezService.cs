@@ -15,6 +15,7 @@ namespace api_public_backOffice.Service
         List<MadurezCapacidadSubAreaDto> GetCapacidadSubAreas(MadurezCapacidadSubAreaDto madurezCapacidadSubAreaDto);
         List<IMSADto> GetIMSA(MadurezCapacidadSubAreaDto madurezCapacidadSubAreasDto);
         List<IMADto> GetIMA(MadurezCapacidadSubAreaDto madurezCapacidadSubAreasDto);
+        List<IMADto> GetIMAByAreasUsuarioBasico(Guid evaluacionId, Guid empresaId, List<Guid> areas);
         List<IMDto> GetIM(MadurezCapacidadSubAreaDto madurezCapacidadSubAreasDto);
         List<MadurezCapacidadSubAreaDto> GetAllCapacidadSubAreas();
         List<IMSADto> GetAllIMSA();
@@ -49,6 +50,10 @@ namespace api_public_backOffice.Service
         public List<IMADto> GetIMA(MadurezCapacidadSubAreaDto madurezCapacidadSubAreasDto)
         {
             return _madurezRepository.GetIMA(madurezCapacidadSubAreasDto);
+        }
+        public List<IMADto> GetIMAByAreasUsuarioBasico(Guid evaluacionId, Guid empresaId, List<Guid> areas)
+        {
+            return _madurezRepository.GetIMAByAreasUsuarioBasico(evaluacionId, empresaId, areas);
         }
         public List<IMDto> GetIM(MadurezCapacidadSubAreaDto madurezCapacidadSubAreasDto)
         {

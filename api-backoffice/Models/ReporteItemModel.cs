@@ -11,6 +11,7 @@ namespace api_public_backOffice.Models
         public DateTime? FechaCreacion { get; set; }
         public bool? Activo { get; set; }
 
+
        /* public virtual Reporte Reporte { get; set; }
         public virtual TipoItemReporte TipoItemReporte { get; set; }*/
     }

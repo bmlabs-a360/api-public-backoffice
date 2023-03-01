@@ -21,6 +21,8 @@ namespace api_public_backOffice.Service
 
         List<SeguimientoEvaluacionEmpresaDto> GetSeguimiento();
         List<SeguimientoPlanMejoraModelDto> GetPlanMejoras(EvaluacionEmpresa evaluacionEmpresa);
+        List<SeguimientoPlanMejoraModelDto> GetPlanMejorasReporteSubscripcionOBasico(Guid evaluacionEmpresaId, List<Guid> areas);
+        
         List<PorcentajeEvaluacionDto> GetPorcentajeEvaluacion(Guid evaluacionId, Guid empresaId);
         List<EnvioMailTiempoLimiteDto> GetCorreoTiempoLimite(Guid SegmentacionAreaId, Guid empresaId);
 
@@ -63,6 +65,11 @@ namespace api_public_backOffice.Service
         {
             return _EvaluacionEmpresaRepository.GetPlanMejoras(evaluacionEmpresa);
         }
+        public List<SeguimientoPlanMejoraModelDto> GetPlanMejorasReporteSubscripcionOBasico(Guid evaluacionEmpresaId, List<Guid> areas)
+        {
+            return _EvaluacionEmpresaRepository.GetPlanMejorasReporteSubscripcionOBasico(evaluacionEmpresaId, areas);
+        }
+        
         public async Task<EvaluacionEmpresaModel> GetEvaluacionEmpresasByEvaluacionId(EvaluacionModel EvaluacionModel)
         {
             if (string.IsNullOrEmpty(EvaluacionModel.Id.ToString())) throw new ArgumentNullException("Id");
