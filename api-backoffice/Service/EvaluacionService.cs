@@ -18,6 +18,7 @@ namespace api_public_backOffice.Service
         Task<EvaluacionModel> GetEvaluacionsByUsuarioId(UsuarioModel UsuarioModel);
         Task<List<EvaluacionModel>> GetEvaluacionsByEmpresaId(EmpresaModel EmpresaMode);
         Task<EvaluacionModel> InsertOrUpdate(EvaluacionModel EvaluacionModel);
+        Task<int> InsertOrUpdateDefault(EvaluacionModel EvaluacionModel);
         void Dispose();
     }
     public class EvaluacionService : IEvaluacionService, IDisposable
@@ -87,6 +88,26 @@ namespace api_public_backOffice.Service
 
             var retorno = await _EvaluacionRepository.InsertOrUpdate(_mapper.Map<Evaluacion>(EvaluacionModel));
             return _mapper.Map<EvaluacionModel>(retorno);
+        }
+
+        public async Task<int>  InsertOrUpdateDefault(EvaluacionModel evaluacionModel)
+        {
+            {
+                try
+                {
+                    List<EvaluacionModel> EvaluacionsList = _mapper.Map<List<EvaluacionModel>>(await _EvaluacionRepository.GetEvaluacions());
+                    foreach (EvaluacionModel item in EvaluacionsList)
+                    {
+                        item.Default = item.Id != evaluacionModel.Id ? false : true;
+                        await _EvaluacionRepository.InsertOrUpdate(_mapper.Map<Evaluacion>(item));
+                    }
+                    return 1;
+                }
+                catch (Exception)
+                {
+                    return 0;
+                }
+            }
         }
         public void Dispose() 
         { 

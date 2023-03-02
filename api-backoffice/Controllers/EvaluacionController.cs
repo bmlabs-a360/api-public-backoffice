@@ -182,6 +182,32 @@ namespace api_public_backOffice.Controllers
                 // _controlTokenService.Dispose();
             }
         }
+        [HttpPost("InsertOrUpdateDefault")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(int))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundResult))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+        public async Task<ActionResult<int>> InsertOrUpdateDefault(EvaluacionModel evaluacionModel)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(evaluacionModel.Id.ToString())) return BadRequest("Debe indicar evaluacionModel.Id");
+                return await _EvaluacionService.InsertOrUpdateDefault(evaluacionModel);
+
+                //return NoContent();
+            }
+            catch (Exception e)
+            {
+                while (e.InnerException != null) e = e.InnerException;
+                _logger.LogError("Error  Source:{0}, Trace:{1} ", e.Source, e);
+                return Problem(detail: e.Message, title: "ERROR");
+            }
+            finally
+            {
+                _EvaluacionService.Dispose();
+                // _controlTokenService.Dispose();
+            }
+        }
 
 
     }
