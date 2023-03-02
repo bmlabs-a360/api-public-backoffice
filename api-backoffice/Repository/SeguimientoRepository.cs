@@ -26,43 +26,43 @@ namespace api_public_backOffice.Repository
         public async Task<Seguimiento> GetSeguimientoById(Seguimiento Seguimiento)
         {
             if (string.IsNullOrEmpty(Seguimiento.Id.ToString())) throw new ArgumentNullException("SeguimientoId");
-            var retorno = await Context()
-                            .Seguimientos
-                            .AsNoTracking()
-                            .FirstOrDefaultAsync(x => x.Id == Seguimiento.Id   );
+            Seguimiento retorno = null;  //await Context()
+            //                .Seguimientos
+            //                .AsNoTracking()
+            //                .FirstOrDefaultAsync(x => x.Id == Seguimiento.Id   );
 
             if (retorno == null) return null;
             return retorno; 
         }
         public async Task<IEnumerable<Seguimiento>> GetSeguimientos()
         {
-            var retorno = await  Context()
-                            .Seguimientos
-                            .AsNoTracking().ToListAsync();
+            List<Seguimiento> retorno = null;  //await Context()
+                            //.Seguimientos
+                            //.AsNoTracking().ToListAsync();
 
             if (retorno == null) return null;
             return retorno;
         }
         public async Task<IEnumerable<Seguimiento>> GetSeguimientosByEmpresaId(Empresa empresa)
         {
-            var retorno = await Context()
-                            .Seguimientos.Where(y => y.EmpresaId == empresa.Id ).AsNoTracking().ToListAsync();
+            List<Seguimiento> retorno = null;  //await Context()
+                            //.Seguimientos.Where(y => y.EmpresaId == empresa.Id ).AsNoTracking().ToListAsync();
 
             if (retorno == null) return null;
             return retorno;
         }
         public async Task<IEnumerable<Seguimiento>> GetSeguimientosByEvaluacionId(Evaluacion evaluacion)
         {
-            var retorno = await Context()
-                            .Seguimientos.Where(y => y.EvaluacionId == evaluacion.Id).AsNoTracking().ToListAsync();
+            List<Seguimiento> retorno = null;  //await Context()
+                            //.Seguimientos.Where(y => y.EvaluacionId == evaluacion.Id).AsNoTracking().ToListAsync();
 
             if (retorno == null) return null;
             return retorno;
         }
         public async Task<IEnumerable<Seguimiento>> GetSeguimientosByPlanMejoraId(PlanMejora planMejora)
         {
-            var retorno = await Context()
-                            .Seguimientos.Where(y => y.PlanMejoraId == planMejora.Id).AsNoTracking().ToListAsync();
+            List<Seguimiento> retorno = null;  //await Context()
+                            //.Seguimientos.Where(y => y.PlanMejoraId == planMejora.Id).AsNoTracking().ToListAsync();
 
             if (retorno == null) return null;
             return retorno;

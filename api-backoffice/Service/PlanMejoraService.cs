@@ -56,7 +56,7 @@ namespace api_public_backOffice.Service
             if (string.IsNullOrEmpty(PlanMejoraModel.PreguntaId.ToString())) throw new ArgumentNullException("PreguntaId");
             if (string.IsNullOrEmpty(PlanMejoraModel.SegmentacionAreaId.ToString())) throw new ArgumentNullException("SegmentacionAreaId");
             if (string.IsNullOrEmpty(PlanMejoraModel.SegmentacionSubAreaId.ToString())) throw new ArgumentNullException("SegmentacionSubAreaId");
-            if (string.IsNullOrEmpty(PlanMejoraModel.TipoDiferenciaRelacionadaId.ToString())) throw new ArgumentNullException("TipoDiferenciaRelacionadaId");
+            //if (string.IsNullOrEmpty(PlanMejoraModel.TipoDiferenciaRelacionadaId.ToString())) throw new ArgumentNullException("TipoDiferenciaRelacionadaId");
             if (string.IsNullOrEmpty(PlanMejoraModel.TipoImportanciaId.ToString())) throw new ArgumentNullException("TipoImportanciaId");
             if (string.IsNullOrEmpty(PlanMejoraModel.Activo.ToString())) throw new ArgumentNullException("Activo");
 

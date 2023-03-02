@@ -28,6 +28,7 @@ namespace api_public_backOffice.Models
         public int CantidadPreguntas { get; set; }
         public int CantidadAlternativas { get; set; }
         public bool? Activo { get; set; }
+        public bool? Default { get; set; }
 
         //public virtual ICollection<Alternativa> Alternativas { get; set; }
         //public virtual ICollection<EvaluacionEmpresaModel> EvaluacionEmpresas { get; set; }
