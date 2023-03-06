@@ -31,7 +31,7 @@ namespace api_public_backOffice.Mappers
             CreateMap<RespuestaModel, Respuesta>().ReverseMap();
             CreateMap<SegmentacionAreaModel, SegmentacionArea>().ReverseMap();
             CreateMap<SegmentacionSubAreaModel, SegmentacionSubArea>().ReverseMap();
-            CreateMap<SeguimientoModel, Seguimiento>().ReverseMap();
+            //CreateMap<SeguimientoModel, Seguimiento>().ReverseMap();
             CreateMap<TipoCantidadEmpleadoModel, TipoCantidadEmpleado>().ReverseMap();
             CreateMap<TipoDiferenciaRelacionadaModel, TipoDiferenciaRelacionada>().ReverseMap();
             CreateMap<TipoImportanciaModel, TipoImportancia>().ReverseMap();
