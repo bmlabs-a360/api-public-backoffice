@@ -80,6 +80,8 @@ namespace api_public_backOffice.Service
             var retorno = await _usuarioRepository.InsertOrUpdate(_mapper.Map<Usuario>(usuario));
             if (retorno.UsuarioEmpresas.Count > 0) {
                 List<UsuarioEmpresa> UsuarioEmpresasNew = new List<UsuarioEmpresa>();
+               
+                await _usuarioEmpresaRepository.DeleteByUsuarioId(_mapper.Map<Usuario>(usuario));
 
                 foreach (UsuarioEmpresa usuarioEmpresa in retorno.UsuarioEmpresas)
                     UsuarioEmpresasNew.Add( await _usuarioEmpresaRepository.InsertOrUpdate(usuarioEmpresa));

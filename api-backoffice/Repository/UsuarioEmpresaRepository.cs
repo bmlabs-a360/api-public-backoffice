@@ -15,11 +15,9 @@ namespace api_public_backOffice.Repository
     public interface IUsuarioEmpresaRepository : IRepository<UsuarioEmpresa>
     {
         Task<UsuarioEmpresa> GetUsuarioEmpresaById(UsuarioEmpresa usuarioEmpresa);
-
         Task<IEnumerable<UsuarioEmpresa>> GetUsuarioEmpresas();
         Task<IEnumerable<UsuarioEmpresa>> GetUsuarioEmpresasByUsuarioId(Usuario usuario);
-
-
+        Task<int> DeleteByUsuarioId(Usuario usuario);
 
     }
     public class UsuarioEmpresaRepository : Repository<UsuarioEmpresa, Context>, IUsuarioEmpresaRepository
@@ -46,7 +44,6 @@ namespace api_public_backOffice.Repository
             if (retorno == null) return null;
             return retorno;
         }
-
         public async Task<IEnumerable<UsuarioEmpresa>> GetUsuarioEmpresasByUsuarioId(Usuario usuario)
         {
             var retorno = await Context()
@@ -56,8 +53,17 @@ namespace api_public_backOffice.Repository
             if (retorno == null) return null;
             return retorno;
         }
-
-
+        public async Task<int> DeleteByUsuarioId(Usuario usuario)
+        {
+            try
+            {
+                return await Context().UsuarioEmpresas.Where(x => x.UsuarioId == usuario.Id).DeleteFromQueryAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
 
     }
 }
