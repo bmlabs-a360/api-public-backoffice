@@ -297,10 +297,8 @@ namespace api_public_backOffice.Controllers
                     {
                         foreach (var ra in rr.ReporteAreas)
                         {
-                            if (ra.Activo == true)
-                            {
+                            //if (ra.Activo == true)
                                 areas.Add(ra.SegmentacionAreaId);
-                            }
                         }
                     }
                     retorno = _madurezService.GetIMAByAreasUsuarioBasico(evaluacionId, empresaId, areas);

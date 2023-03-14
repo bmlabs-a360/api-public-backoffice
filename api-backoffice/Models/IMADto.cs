@@ -15,6 +15,7 @@ namespace api_public_backOffice.Models
         public string NombreArea { get; set; }
         public decimal PesoRelativoAreaPorc  { get; set; }
         public decimal IMAValor { get; set; }
+        public bool ActivaArea { get; set; }
 
     }
 }

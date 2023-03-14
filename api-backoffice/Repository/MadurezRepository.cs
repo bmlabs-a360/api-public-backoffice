@@ -16,6 +16,7 @@ namespace api_public_backOffice.Repository
 {
     public interface IMadurezRepository : IRepository<MadurezCapacidadSubAreaDto>
     {
+
         List<MadurezCapacidadSubAreaDto> GetCapacidadSubAreas(MadurezCapacidadSubAreaDto madurezCapacidadSubArea);
 		List<MadurezCapacidadSubAreaDto> GetAllCapacidadSubAreas();
 
@@ -664,9 +665,10 @@ namespace api_public_backOffice.Repository
 				}
 			}
 
-			List<IMADto> listaRetono = new List<IMADto>();
+            List<IMADto> listaRetono = new List<IMADto>();
 			foreach (var ar in areas) 
 			{ 
+
 				foreach (var li in lista)
 				{
 					if (li.SegmentacionAreaId == ar) {
@@ -674,6 +676,27 @@ namespace api_public_backOffice.Repository
 					}
 				}
 			}
+            
+        EvaluacionModel evaluacion = new EvaluacionModel{ Id = evaluacionId};
+            // List<ReporteModel> reporteRetorno = await _reporteService.GetReportesByEvaluacionId(evaluacion);
+
+
+            var reporteRetorno =  Context()
+                          .Reportes
+                           .Include(ri => ri.ReporteItems)
+                              .ThenInclude(ti => ti.TipoItemReporte)
+                          .Include(x => x.ReporteItemNivelBasicos.OrderByDescending(x => x.Orden))
+                          .Include(a => a.ReporteAreas)
+                          .Where(y => y.EvaluacionId == evaluacion.Id && y.Activo.Value).AsNoTracking();
+
+            foreach (var rr in reporteRetorno)
+				foreach (var ra in rr.ReporteAreas)
+					listaRetono.ForEach(r => { 
+						if (r.SegmentacionAreaId== ra.SegmentacionAreaId && ra.Activo == true) 
+							r.ActivaArea = true;
+						 });
+               
+ 
 
             return listaRetono;
         }
