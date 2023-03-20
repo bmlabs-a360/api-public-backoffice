@@ -18,6 +18,7 @@ using NotFoundResult = Microsoft.AspNetCore.Mvc.NotFoundResult;
 using System.Web;
 using neva.entities;
 using System.Text.Json;
+using RestSharp;
 
 namespace api_public_backOffice.Controllers
 {
@@ -407,7 +408,7 @@ namespace api_public_backOffice.Controllers
             {
                 if (item == null) return NotFound();
 
-                if (item.RespuestaPorcentaje != "100")
+                if (item.RespuestaPorcentaje != "100%")
                 {
                     List<EnvioMailTiempoLimiteDto> infousuario = _EvaluacionEmpresaService.GetCorreoTiempoLimite(item.SegmentacionAreaId, empresaId);
 
@@ -438,8 +439,33 @@ namespace api_public_backOffice.Controllers
                                         Body = _emailHelper.GetBodyEmailCompletaEvaluacionUsuarioBasico(respuestas, info.Nombre)
                                     };
 
-                                    string jsonString = JsonSerializer.Serialize(correo);
-                                    _ = await _mailService.SendMailAsync(correo);
+                                    //_ = await _mailService.SendMailAsync(correo);
+
+                                    try
+                                    {
+                                        string jsonString = JsonSerializer.Serialize(correo);
+                                        //_ = await _mailService.SendMailAsync(correo);
+
+                                        string urlmsMail = Configuration["Configuration:msMail.urlbase"];
+                                        var client = new RestClient(urlmsMail);
+                                        client.Timeout = -1;
+                                        var request = new RestRequest(Method.POST);
+                                        request.AddHeader("Content-Type", "application/json");
+
+                                        request.AddParameter("application/json", jsonString, ParameterType.RequestBody);
+                                        IRestResponse response = await client.ExecuteAsync(request);
+                                        Console.WriteLine(response.Content);
+                                        if (!response.Content.ToUpper().Contains("OK"))
+                                        {
+                                            throw new Exception(response.StatusCode + " " + response.StatusDescription);
+                                        }
+                                    }
+                                    catch (Exception e)
+                                    {
+
+                                        throw new Exception(e.Message);
+                                    }
+
                                 }
                                 catch (Exception e)
                                 {
@@ -467,19 +493,39 @@ namespace api_public_backOffice.Controllers
                                     {
                                         // From = Configuration["Mail:FromConfirmacion"], //CONFIGURAR FROM
                                         //From = "miloandres7@gmail.com", //CONFIGURAR FROM
-                                        From = "miloandres7@gmail.com",
+                                        From = Configuration["MAIL:FromConfirmacion"],
                                         FromAlias = "Evaluacion",
                                         To = new string[] { info.Email },
                                         ToAlias = new string[] { info.Nombre },
-                                        //To = new string[] { "miloandres7@gmail.com"},
-                                        //ToAlias = new string[] { "nombre" },
                                         IsHtml = true,
-                                        Subject = "Actualización sobre la evaluación de madurez empresarial en NEVA",
-                                        Body = _emailHelper.GetBodyEmailCompletaEvaluacionUsuarioPro(respuestas, info.Nombre)
+                                        Subject = "Te invitamos a terminar la evaluación de madurez en NEVA",
+                                        Body = _emailHelper.GetBodyEmailCompletaEvaluacionUsuarioPro(respuestas, porcentajes, info.Nombre)
                                     };
 
-                                    string jsonString = JsonSerializer.Serialize(correo);
-                                    _ = await _mailService.SendMailAsync(correo);
+                                    try
+                                    {
+                                        string jsonString = JsonSerializer.Serialize(correo);
+                                        //_ = await _mailService.SendMailAsync(correo);
+
+                                        string urlmsMail = Configuration["Configuration:msMail.urlbase"];
+                                        var client = new RestClient(urlmsMail);
+                                        client.Timeout = -1;
+                                        var request = new RestRequest(Method.POST);
+                                        request.AddHeader("Content-Type", "application/json");
+
+                                        request.AddParameter("application/json", jsonString, ParameterType.RequestBody);
+                                        IRestResponse response = await client.ExecuteAsync(request);
+                                        Console.WriteLine(response.Content);
+                                        if (!response.Content.ToUpper().Contains("OK"))
+                                        {
+                                            throw new Exception(response.StatusCode + " " + response.StatusDescription);
+                                        }
+                                    }
+                                    catch (Exception e)
+                                    {
+
+                                        throw new Exception(e.Message);
+                                    }
                                 }
                                 catch (Exception e)
                                 {

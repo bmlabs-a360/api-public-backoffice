@@ -1,311 +1,108 @@
 ﻿<!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="x-apple-disable-message-reformatting">
     <title></title>
-
-    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
-
     <style>
-        html,
-        body {
-            margin: 0 auto !important;
-            padding: 0 !important;
-            height: 100% !important;
-            width: 100% !important;
-            background: #f1f1f1;
+        table, td, div, h1, p {
+            font-family: Arial, sans-serif;
         }
 
-        * {
-            -ms-text-size-adjust: 100%;
-            -webkit-text-size-adjust: 100%;
-        }
+        @media screen and (max-width: 530px) {
+            .col-lge {
+                max-width: 100% !important;
+            }
 
-        div[style*="margin: 16px 0"] {
-            margin: 0 !important;
-        }
-
-        table,
-        td {
-            mso-table-lspace: 0pt !important;
-            mso-table-rspace: 0pt !important;
-        }
-
-        table {
-            border-spacing: 0 !important;
-            border-collapse: collapse !important;
-            table-layout: fixed !important;
-            margin: 0 auto !important;
-        }
-
-        img {
-            -ms-interpolation-mode: bicubic;
-        }
-
-        a {
-            text-decoration: none;
-        }
-
-        *[x-apple-data-detectors],
-        .unstyle-auto-detected-links *,
-        .aBn {
-            border-bottom: 0 !important;
-            cursor: default !important;
-            color: inherit !important;
-            text-decoration: none !important;
-            font-size: inherit !important;
-            font-family: inherit !important;
-            font-weight: inherit !important;
-            line-height: inherit !important;
-        }
-
-        .a6S {
-            display: none !important;
-            opacity: 0.01 !important;
-        }
-
-        .im {
-            color: inherit !important;
-        }
-
-        img.g-img + div {
-            display: none !important;
-        }
-
-
-        @media only screen and (min-device-width: 320px) and (max-device-width: 374px) {
-            u ~ div .email-container {
-                min-width: 320px !important;
+            .iconoseguridad {
+                padding-top: 0px !important;
             }
         }
 
-        @media only screen and (min-device-width: 375px) and (max-device-width: 413px) {
-            u ~ div .email-container {
-                min-width: 375px !important;
+        @media screen and (min-width: 531px) {
+            .col-sml {
+                max-width: 27% !important;
+            }
+
+            .col-lge {
+                max-width: 73% !important;
             }
         }
 
-        @media only screen and (min-device-width: 414px) {
-            u ~ div .email-container {
-                min-width: 414px !important;
-            }
+        .iconoseguridad {
+            padding-top: 70px;
         }
     </style>
-
-    <style>
-
-        .primary {
-            background: #17bebb;
-        }
-
-        .bg_white {
-            background: #ffffff;
-        }
-
-        .bg_light {
-            background: #f7fafa;
-        }
-
-        .bg_black {
-            background: #000000;
-        }
-
-        .bg_dark {
-            background: rgba(0,0,0,.8);
-        }
-
-        .email-section {
-            padding: 2.5em;
-        }
-
-        /*BUTTON*/
-        .btn {
-            padding: 10px 15px;
-            display: inline-block;
-        }
-
-            .btn.btn-primary {
-                border-radius: 5px;
-                background: #17bebb;
-                color: #ffffff;
-            }
-
-            .btn.btn-white {
-                border-radius: 5px;
-                background: #ffffff;
-                color: #000000;
-            }
-
-            .btn.btn-white-outline {
-                border-radius: 5px;
-                background: transparent;
-                border: 1px solid #fff;
-                color: #fff;
-            }
-
-            .btn.btn-black-outline {
-                border-radius: 0px;
-                background: transparent;
-                border: 2px solid #000;
-                color: #000;
-                font-weight: 700;
-            }
-
-        .btn-custom {
-            color: rgba(0,0,0,.3);
-            text-decoration: underline;
-        }
-
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Poppins', sans-serif;
-            color: #000000;
-            margin-top: 0;
-            font-weight: 400;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            font-weight: 400;
-            font-size: 15px;
-            line-height: 1.8;
-            color: rgba(0,0,0,.4);
-        }
-
-        a {
-            color: #17bebb;
-        }
-
-        table {
-        }
-        /*LOGO*/
-
-        .logo h1 {
-            margin: 0;
-        }
-
-            .logo h1 a {
-                color: #17bebb;
-                font-size: 24px;
-                font-weight: 700;
-                font-family: 'Lato', sans-serif;
-            }
-
-        /*HERO*/
-        .hero {
-            position: relative;
-            z-index: 0;
-        }
-
-            .hero .text {
-                color: rgba(0,0,0,.3);
-            }
-
-                .hero .text h2 {
-                    color: #000;
-                    font-size: 34px;
-                    margin-bottom: 0;
-                    font-weight: 200;
-                    line-height: 1.4;
-                }
-
-                .hero .text h3 {
-                    font-size: 24px;
-                    font-weight: 300;
-                }
-
-                .hero .text h2 span {
-                    font-weight: 600;
-                    color: #000;
-                }
-
-        .text-author {
-            bordeR: 1px solid rgba(0,0,0,.05);
-            max-width: 50%;
-            margin: 0 auto;
-            padding: 2em;
-        }
-
-            .text-author img {
-                border-radius: 50%;
-                padding-bottom: 20px;
-            }
-
-            .text-author h3 {
-                margin-bottom: 0;
-            }
-
-        ul.social {
-            padding: 0;
-        }
-
-            ul.social li {
-                display: inline-block;
-                margin-right: 10px;
-            }
-
-        /*FOOTER*/
-
-        .footer {
-            border-top: 1px solid rgba(0,0,0,.05);
-            color: rgba(0,0,0,.5);
-        }
-
-            .footer .heading {
-                color: #000;
-                font-size: 20px;
-            }
-
-            .footer ul {
-                margin: 0;
-                padding: 0;
-            }
-
-                .footer ul li {
-                    list-style: none;
-                    margin-bottom: 10px;
-                }
-
-                    .footer ul li a {
-                        color: rgba(0,0,0,1);
-                    }
-
-
-        @media screen and (max-width: 500px) {
-        }
-    </style>
-
-
 </head>
-<body width="100%" style="margin: 0; padding: 0 !important; mso-line-height-rule: exactly; background-color: #f1f1f1;">
-    <center style="width: 100%; background-color: #f1f1f1;">
-        <div style="display: none; font-size: 1px;max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden; mso-hide: all; font-family: sans-serif;">
-            &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
-        </div>
-        <div style="max-width: 600px; margin: 0 auto;" class="email-container">
-            <label>
-                Hola [NOMBRE_USUARIO], esperamos que este sea un excelente día.
+<body style="margin:0;padding:0;word-spacing:normal;background-color:#EAEBEF;">
+    <div role="article" aria-roledescription="email" lang="en" style="text-size-adjust:100%;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;background-color:#EAEBEF;">
+        <div style="background-color:#15ACC0;padding: 100px;position:absolute;width:100%"></div>
+        <table role="presentation" style="width:100%;border:none;border-spacing:0;z-index: 9999;position: relative">
+            <tr>
+                <td align="center" style="padding:0;">
+                    <table role="presentation" style="width:94%;max-width:600px;border:none;border-spacing:0;text-align:left;font-family:Arial,sans-serif;font-size:16px;line-height:22px;color:#363636;">
+                        <tr>
+                            <td style="padding:40px 30px 30px 30px;text-align:center;font-size:24px;font-weight:bold;">
+                                <a href="#" style="text-decoration:none;"><img src="neva-logo 1.png" width="120" alt="Logo" style="width:120px;max-width:80%;height:auto;border:none;text-decoration:none;color:#ffffff;"></a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding:30px;background-color:#ffffff;padding-bottom: 5px;">
+                                <h2>Hola [NOMBRE_USUARIO], esperamos que este sea un excelente día.</h2>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="font-size:0;background-color:#ffffff;">
 
-                Queríamos informar que se comenzó el proceso de evaluación en NEVA y
-                actualmente el avance es de un [PORCENTAJE].
+                                <div style="display:inline-block;width:90%;vertical-align:top;padding-bottom:20px;font-family:Arial,sans-serif;font-size:16px;line-height:22px;color:#363636;text-align: center;padding-right:20px;padding-left:20px;">
+                                    <p style="text-align: center;">
+                                        <a href="#" style="background: #15ACC0; text-decoration: none; padding: 30px 50px; color: #ffffff; border-radius: 4px; display:inline-block; mso-padding-alt:0;text-underline-color:#15ACC0">
+                                            Queríamos informar que se comenzó el proceso de evaluación en NEVA y actualmente el avance es de un [PORCENTAJE].
+                                        </a>
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding:30px;background-color:#ffffff;padding-top: 5px;">
+                                <p style="margin:0;text-align: center;margin-bottom: 15px;">
+                                    Nos alegra mucho que te hayas involucrado en este proceso, ya que creemos que es fundamental para obtener un informe detallado y preciso sobre la madurez de tu empresa. 
+                                    Además, ofrecemos asesoramiento personalizado para ayudarte a entender mejor tus resultados y a implementar estrategias de mejora.
+                                </p>
+                                <p style="margin:0;text-align: center;margin-bottom: 15px;"> Te invitamos a terminar la evaluación de madurez en NEVA en unos pocos minutos, no dudes en contactarnos si tienes alguna pregunta!!</p>
+                                <p style="margin:0;text-align: center;">Gracias por utilizar NEVA.</p>
+                                <p style="margin:0;text-align: center;">Atentamente, El equipo de NEVA</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding:35px 30px 11px 30px;font-size:0;background-color:#15ACC0;border-bottom:1px solid #f0f0f5;border-color:rgba(201,201,207,.35);">
 
-                Nos alegra mucho que te hayas involucrado en este proceso, ya que
-                creemos que es fundamental para obtener un informe detallado y preciso
-                sobre la madurez de tu empresa.
+                                <div class="col-sml iconoseguridad" style="display:inline-block;width:100%;max-width:80px;">
+                                    <img src="seguridad.png" width="80" alt="" style="width:80px;max-width:80%;margin-top:20px;">
+                                </div>
+                                <div class="col-lge" style="display:inline-block;width:100%;max-width:395px;vertical-align:top;padding-bottom:20px;font-family:Arial,sans-serif;font-size:16px;line-height:22px;color:#363636;">
+                                    <h2 style="color:#ffffff;">Comprometidos con tu seguridad</h2>
+                                    <p style="margin-top:0;margin-bottom:12px;color: #ffffff;"> Solo te enviaremos correos electrónicos con links desde contacto@neva.cl</p>
+                                    <p style="margin-top:0;margin-bottom:18px;color: #ffffff;">Nunca te enviaremos e-mails, SMS o llamaremos solicitando tus datos, ni contraseñas</p>
+                                    <p style="margin-top:0;margin-bottom:18px;color: #ffffff;">- Si no quieres recibir más correos de nosotros lo entendemos, puedes darte de baja en el siguiente link Desuscribirs</p>
+                                </div>
+                            </td>
+                        </tr>
 
-                Además, ofrecemos asesoramiento personalizado para ayudarte a entender
-                mejor tus resultados y a implementar estrategias de mejora.
-
-                Te invitamos a terminar la evaluación de madurez en NEVA en unos pocos
-                minutos, no dudes en contactarnos si tienes alguna pregunta!!
-
-                Gracias por utilizar NEVA.
-
-                Atentamente, El equipo de NEVA
-            </label>
-        </div>
-    </center>
+                        <tr>
+                            <td style="padding:30px;text-align:center;font-size:12px;background-color:#ffffff;color:#cccccc;">
+                                <p style="margin:0;font-size:14px;line-height:20px;color: #000000;margin-bottom: 8px;">© 2001-2023 Neva&reg;, todos los derechos reservados.Santiago •  • Chile, 2021<br><a class="unsub" href="#" style="color:#15ACC0;text-decoration:underline;">Contacta con nosotros</a> • <a class="unsub" href="#" style="color:#15ACC0;text-decoration:underline;">Condiciones de uso</a> • <a class="unsub" href="#" style="color:#15ACC0;text-decoration:underline;">Política de privacidad</a></p>
+                                <p style="margin:0 0 8px 0;">
+                                    <a href="#" style="text-decoration:none;"><img src="ISOTIPO BLANCO_1 1.svg" width="60" alt="t" style="display:inline-block;color:#cccccc;margin-bottom: 4px;"></a> <br>
+                                    <a href="http://www.facebook.com/" style="text-decoration:none;"><img src="instagram.svg" width="40" height="40" alt="f" style="display:inline-block;color:#000000;"></a> <a href="#" style="text-decoration:none;margin-left: 10px;"><img src="in.svg" width="40" height="40" alt="t" style="display:inline-block;color:#000000;"></a>
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </div>
 </body>
 </html>
