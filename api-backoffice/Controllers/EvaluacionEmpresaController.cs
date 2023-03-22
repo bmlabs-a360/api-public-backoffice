@@ -447,7 +447,7 @@ namespace api_public_backOffice.Controllers
                                         //_ = await _mailService.SendMailAsync(correo);
 
                                         string urlmsMail = Configuration["Configuration:msMail.urlbase"];
-                                        var client = new RestClient(urlmsMail);
+                                        var client = new RestClient(urlmsMail+ "/api/v1/MailService/Send");
                                         client.Timeout = -1;
                                         var request = new RestRequest(Method.POST);
                                         request.AddHeader("Content-Type", "application/json");
@@ -508,7 +508,7 @@ namespace api_public_backOffice.Controllers
                                         //_ = await _mailService.SendMailAsync(correo);
 
                                         string urlmsMail = Configuration["Configuration:msMail.urlbase"];
-                                        var client = new RestClient(urlmsMail);
+                                        var client = new RestClient(urlmsMail+ "/api/v1/MailService/Send");
                                         client.Timeout = -1;
                                         var request = new RestRequest(Method.POST);
                                         request.AddHeader("Content-Type", "application/json");
