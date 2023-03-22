@@ -25,7 +25,7 @@ namespace api_public_backOffice.Models
         public bool? Activo { get; set; }
 
        public virtual EmpresaModel Empresa { get; set; }
-       //public virtual Perfil Perfil { get; set; }
+       public virtual PerfilModel Perfil { get; set; }
        //public virtual ICollection<Bitacora> Bitacoras { get; set; }
        public virtual ICollection<UsuarioEmpresaModel> UsuarioEmpresas { get; set; }
        public virtual ICollection<UsuarioEvaluacionModel> UsuarioEvaluacions { get; set; }

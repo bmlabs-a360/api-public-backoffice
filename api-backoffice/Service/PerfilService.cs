@@ -15,6 +15,8 @@ namespace api_public_backOffice.Service
         Task<PerfilModel> GetPerfilById(PerfilModel PerfilModel);
         Task<PerfilModel> InsertOrUpdate(PerfilModel PerfilModel);
         Task<List<PerfilModel>> GetPerfils();
+        Task<List<PerfilModel>> GetPerfilsConsultor();
+        
 
        void Dispose();
     }
@@ -53,9 +55,14 @@ namespace api_public_backOffice.Service
             var retorno = await _PerfilRepository.InsertOrUpdate(_mapper.Map<Perfil>(PerfilModel));
             return _mapper.Map<PerfilModel>(retorno);
         }
+        public async Task<List<PerfilModel>> GetPerfilsConsultor()
+        {
+            var PerfilsList = await _PerfilRepository.GetPerfilsConsultor();
+            return _mapper.Map<List<PerfilModel>>(PerfilsList);
+        }
 
 
-       
+
 
 
 

@@ -169,8 +169,8 @@ namespace api_public_backOffice.Controllers
                 var claims = _tokenService.GetTokenInfo(token);
                 string idusuario = claims[ClaimTypes.SerialNumber];
                 
-                int id;
-                if (!int.TryParse(idusuario, out id)) throw new ArgumentNullException(nameof(idusuario));
+                Guid id;
+                if (!Guid.TryParse(idusuario, out id)) throw new ArgumentNullException(nameof(idusuario));
                 
                 var userModel = await _usuarioService.GetById(id);
                 userModel.FechaUltimoAcceso = DateTime.Now;

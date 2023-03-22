@@ -16,8 +16,11 @@ namespace api_public_backOffice.Service
         Task<UsuarioEmpresaModel> InsertOrUpdate(UsuarioEmpresaModel usuarioEmpresaModel);
         Task<List<UsuarioEmpresaModel>> GetUsuarioEmpresas();
         Task<List<UsuarioEmpresaModel>> GetUsuarioEmpresasByUsuarioId(UsuarioModel usuarioModel);
+        Task<List<UsuarioEmpresaModel>> GetUsuarioEmpresasByUsuario(UsuarioModel usuarioModel);
+        Task<List<UsuarioEmpresaModel>> GetUsuarioEmpresasByEmpresaId(Guid empresaId);
+        
 
-       void Dispose();
+        void Dispose();
     }
     public class UsuarioEmpresaService : IUsuarioEmpresaService, IDisposable
     {
@@ -64,6 +67,22 @@ namespace api_public_backOffice.Service
             var UsuarioEmpresasList = await _UsuarioEmpresaRepository.GetUsuarioEmpresasByUsuarioId(_mapper.Map<Usuario>(usuarioModel));
             return _mapper.Map<List<UsuarioEmpresaModel>>(UsuarioEmpresasList);
         }
+
+        public async Task<List<UsuarioEmpresaModel>> GetUsuarioEmpresasByUsuario(UsuarioModel usuarioModel)
+        {
+
+            if (string.IsNullOrEmpty(usuarioModel.Id.ToString())) throw new ArgumentNullException("Debe indicar Id de usuario");
+            var UsuarioEmpresasList = await _UsuarioEmpresaRepository.GetUsuarioEmpresasByUsuario(_mapper.Map<Usuario>(usuarioModel));
+            return _mapper.Map<List<UsuarioEmpresaModel>>(UsuarioEmpresasList);
+        }
+        public async Task<List<UsuarioEmpresaModel>> GetUsuarioEmpresasByEmpresaId(Guid empresaId)
+        {
+
+            if (string.IsNullOrEmpty(empresaId.ToString())) throw new ArgumentNullException("Debe indicar Id de empresa");
+            var UsuarioEmpresasList = await _UsuarioEmpresaRepository.GetUsuarioEmpresasByEmpresaId(empresaId);
+            return _mapper.Map<List<UsuarioEmpresaModel>>(UsuarioEmpresasList);
+        }
+        
 
 
 

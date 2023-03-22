@@ -26,6 +26,7 @@ namespace api_public_backOffice.Controllers
     {
         private readonly ILogger _logger;
         private readonly IEmpresaService _EmpresaService;
+        private readonly IPerfilService _PerfilService;
         private readonly IEmailHelper _emailHelper;
         private readonly ISecurityHelper _securityHelper;
         private readonly Helpers.IUrlHelper _urlHelper;
@@ -34,6 +35,7 @@ namespace api_public_backOffice.Controllers
 
         public EmpresaController(
             EmpresaService EmpresaService,
+            PerfilService PerfilService,
             ILogger<EmpresaController> logger,
             EmailHelper emailHelper,
             SecurityHelper securityHelper,
@@ -42,6 +44,7 @@ namespace api_public_backOffice.Controllers
         {
             _logger = logger;
             _EmpresaService = EmpresaService;
+            _PerfilService = PerfilService;
             _emailHelper = emailHelper;
             Configuration = configuration;
             _securityHelper = securityHelper;
@@ -203,16 +206,61 @@ namespace api_public_backOffice.Controllers
             }
         }
 
-        [HttpPost("GetEmpresasByEvaluacionId")]
+        [HttpGet("GetEmpresasByEvaluacionId")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<EmpresaModel>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundResult))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
-        public async Task<ActionResult<List<EmpresaModel>>> GetEmpresasByEvaluacionId(EvaluacionModel evaluacionModel)
+        public async Task<ActionResult<List<EmpresaModel>>> GetEmpresasByEvaluacionId(Guid evaluacionId)
         {
             try
             {
-                List<EmpresaModel> retorno = await _EmpresaService.GetEmpresasByEvaluacionId(evaluacionModel);
+                List<EmpresaModel> retorno = await _EmpresaService.GetEmpresasByEvaluacionId(evaluacionId);
+                if (retorno == null) return NotFound();
+                return Ok(retorno);
+            }
+            catch (Exception e)
+            {
+                while (e.InnerException != null) e = e.InnerException;
+                _logger.LogError("Error  Source:{0}, Trace:{1} ", e.Source, e);
+                return Problem(detail: e.Message, title: "ERROR");
+            }
+            finally
+            {
+                _EmpresaService.Dispose();
+                // _controlTokenService.Dispose();
+            }
+        }
+
+        //[ApiKeyAuth]
+        [HttpPost("GetEmpresasFilter")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<EmpresaModel>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundResult))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+        public async Task<ActionResult<List<EmpresaModel>>> GetEmpresasFilter(Guid perfilId, [FromBody] UsuarioModel UsuarioModel)
+        {
+            try
+            {
+                List<EmpresaModel> retorno = new List<EmpresaModel> { };
+                if (string.IsNullOrEmpty(perfilId.ToString())) return BadRequest("Debe indicar perfilId");
+
+                PerfilModel perfil = new PerfilModel
+                {
+                    Id = perfilId
+                };
+
+                PerfilModel perfilModel = await _PerfilService.GetPerfilById(perfil);
+
+                if (perfilModel.Nombre == "Consultor")
+                {
+                    retorno = await _EmpresaService.GetEmpresasByUsuarioId(UsuarioModel);
+                }
+                else
+                {
+                    retorno = await _EmpresaService.GetEmpresas();
+                }
+
                 if (retorno == null) return NotFound();
                 return Ok(retorno);
             }

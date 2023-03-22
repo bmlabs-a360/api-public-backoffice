@@ -133,7 +133,71 @@ namespace api_public_backOffice.Controllers
             }
         }
 
+        //[ApiKeyAuth]
+        [HttpGet("GetPerfilsConsultor")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<PerfilModel>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundResult))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+        public async Task<ActionResult<List<PerfilModel>>> GetPerfilsConsultor()
+        {
+            try
+            {
+                List<PerfilModel> retorno = await _PerfilService.GetPerfilsConsultor();
+                if (retorno == null) return NotFound();
+                return Ok(retorno);
+            }
+            catch (Exception e)
+            {
+                while (e.InnerException != null) e = e.InnerException;
+                _logger.LogError("Error  Source:{0}, Trace:{1} ", e.Source, e);
+                return Problem(detail: e.Message, title: "ERROR");
+            }
+            finally
+            {
+                _PerfilService.Dispose();
+                // _controlTokenService.Dispose();
+            }
+        }
 
+        //[ApiKeyAuth]
+        [HttpPost("GetPerfilByPerfilIdFilter")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PerfilModel))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundResult))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+        public async Task<ActionResult<List<PerfilModel>>> GetPerfilByPerfilIdFilter([FromBody] PerfilModel PerfilModel)
+
+        {
+            try
+            {
+                List<PerfilModel> retorno = null;
+                if (string.IsNullOrEmpty(PerfilModel.Id.ToString())) return BadRequest("Debe indicar PerfilModel.Id");
+                PerfilModel perfil = await _PerfilService.GetPerfilById(PerfilModel);
+
+                if (perfil.Nombre == "Consultor")
+                {
+                    retorno = await _PerfilService.GetPerfilsConsultor();
+                }
+                else 
+                {
+                    retorno = await _PerfilService.GetPerfils();
+                }
+                if (retorno == null) return NotFound();
+                return Ok(retorno);
+            }
+            catch (Exception e)
+            {
+                while (e.InnerException != null) e = e.InnerException;
+                _logger.LogError("Error  Source:{0}, Trace:{1} ", e.Source, e);
+                return Problem(detail: e.Message, title: "ERROR");
+            }
+            finally
+            {
+                _PerfilService.Dispose();
+                // _controlTokenService.Dispose();
+            }
+        }
     }
 
 

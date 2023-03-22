@@ -155,6 +155,59 @@ namespace api_public_backOffice.Controllers
                 // _controlTokenService.Dispose();
             }
         }
+        //[ApiKeyAuth]
+        [HttpPost("GetUsuarioEmpresasByUsuario")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<UsuarioEmpresaModel>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundResult))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+        public async Task<ActionResult<List<UsuarioEmpresaModel>>> GetUsuarioEmpresasByUsuario(UsuarioModel usuarioModel)
+        {
+            try
+            {
+                List<UsuarioEmpresaModel> retorno = await _UsuarioEmpresaService.GetUsuarioEmpresasByUsuario(usuarioModel);
+                if (retorno == null) return NotFound();
+                return Ok(retorno);
+            }
+            catch (Exception e)
+            {
+                while (e.InnerException != null) e = e.InnerException;
+                _logger.LogError("Error  Source:{0}, Trace:{1} ", e.Source, e);
+                return Problem(detail: e.Message, title: "ERROR");
+            }
+            finally
+            {
+                _UsuarioEmpresaService.Dispose();
+                // _controlTokenService.Dispose();
+            }
+        }
+
+        //[ApiKeyAuth]
+        [HttpPost("GetUsuarioEmpresasByEmpresaId")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<UsuarioEmpresaModel>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundResult))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+        public async Task<ActionResult<List<UsuarioEmpresaModel>>> GetUsuarioEmpresasByEmpresaId(Guid empresaId)
+        {
+            try
+            {
+                List<UsuarioEmpresaModel> retorno = await _UsuarioEmpresaService.GetUsuarioEmpresasByEmpresaId(empresaId);
+                if (retorno == null) return NotFound();
+                return Ok(retorno);
+            }
+            catch (Exception e)
+            {
+                while (e.InnerException != null) e = e.InnerException;
+                _logger.LogError("Error  Source:{0}, Trace:{1} ", e.Source, e);
+                return Problem(detail: e.Message, title: "ERROR");
+            }
+            finally
+            {
+                _UsuarioEmpresaService.Dispose();
+                // _controlTokenService.Dispose();
+            }
+        }
     }
 
 

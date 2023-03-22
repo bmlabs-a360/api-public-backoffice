@@ -104,6 +104,7 @@ namespace api_public_backOffice.Service
             foreach (EvaluacionEmpresaModel item in c)
             {
                 await _EvaluacionEmpresaRepository.InsertOrUpdate(_mapper.Map<EvaluacionEmpresa>(item));
+
             }
         }
 

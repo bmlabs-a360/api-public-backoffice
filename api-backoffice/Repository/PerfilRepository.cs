@@ -18,6 +18,8 @@ namespace api_public_backOffice.Repository
 
         Task<Perfil> GetPerfilById(Perfil Perfil);
         Task<IEnumerable<Perfil>> GetPerfils();
+        Task<IEnumerable<Perfil>> GetPerfilsConsultor();
+        
     }
     public class PerfilRepository : Repository<Perfil, Context>, IPerfilRepository
     {
@@ -45,8 +47,6 @@ namespace api_public_backOffice.Repository
             if (retorno == null) return null;
             return retorno;
         }
-
-
         public async Task<Perfil> GetPerfilById(Perfil Perfil)
         {
             if (string.IsNullOrEmpty(Perfil.Id.ToString())) throw new ArgumentNullException("PerfilId");
@@ -59,7 +59,20 @@ namespace api_public_backOffice.Repository
             return retorno; 
         }
 
-  
+        public async Task<IEnumerable<Perfil>> GetPerfilsConsultor()
+        {
+            var retorno = await Context()
+                            .Perfils.Include(x => x.PerfilPermisos)
+                            .AsNoTracking()
+                            .Where(x => x.Nombre == "Usuario básico" || x.Nombre == "Usuario pro (empresa)" || x.Nombre == "Gran empresa").ToListAsync();
+
+
+
+            if (retorno == null) return null;
+            return retorno;
+        }
+
+
 
 
 

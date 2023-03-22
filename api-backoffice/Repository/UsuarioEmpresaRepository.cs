@@ -9,6 +9,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using api_public_backOffice.Clients;
 
 namespace api_public_backOffice.Repository
 {
@@ -17,6 +18,9 @@ namespace api_public_backOffice.Repository
         Task<UsuarioEmpresa> GetUsuarioEmpresaById(UsuarioEmpresa usuarioEmpresa);
         Task<IEnumerable<UsuarioEmpresa>> GetUsuarioEmpresas();
         Task<IEnumerable<UsuarioEmpresa>> GetUsuarioEmpresasByUsuarioId(Usuario usuario);
+        Task<IEnumerable<UsuarioEmpresa>> GetUsuarioEmpresasByUsuario(Usuario usuario);
+        Task<IEnumerable<UsuarioEmpresa>> GetUsuarioEmpresasByEmpresaId(Guid empresaId);
+        
         Task<int> DeleteByUsuarioId(Usuario usuario);
 
     }
@@ -49,6 +53,29 @@ namespace api_public_backOffice.Repository
             var retorno = await Context()
                             .UsuarioEmpresas.Where(x => x.UsuarioId == usuario.Id && x.Activo.Value)
                             .ToListAsync();
+
+            if (retorno == null) return null;
+            return retorno;
+        }
+        public async Task<IEnumerable<UsuarioEmpresa>> GetUsuarioEmpresasByUsuario(Usuario usuario)
+        {
+            List<UsuarioEmpresa> retorno = new List<UsuarioEmpresa> { };
+            foreach (var u in usuario.UsuarioEmpresas)
+            {
+                    var query = await Context()
+                            .UsuarioEmpresas.Where(x => x.EmpresaId == u.EmpresaId)
+                            .ToListAsync();
+                    retorno.AddRange(query);
+            }
+
+            if (retorno == null) return null;
+            return retorno;
+        }
+        public async Task<IEnumerable<UsuarioEmpresa>> GetUsuarioEmpresasByEmpresaId(Guid empresaId)
+        {
+            var retorno = await Context()
+                         .UsuarioEmpresas.Where(x => x.EmpresaId == empresaId && x.Activo.Value)
+                         .ToListAsync();
 
             if (retorno == null) return null;
             return retorno;

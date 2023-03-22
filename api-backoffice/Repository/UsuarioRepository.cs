@@ -16,8 +16,10 @@ namespace api_public_backOffice.Repository
         Task<Usuario> GetUser(LoginModel loginModel);
        // Task<Usuario> GetUserByRut(string rut);
         Task<Usuario> FindByEmail(string email);
-        Task<Usuario> GetById(int? id);
+        Task<Usuario> GetById(Guid? id);
         Task<List<Usuario>> GetAll();
+        Task<List<Usuario>> GetAllConsultor();
+        
         Task<int> DeleteCascade(Usuario usuario);
     }
     /*(¯`·._.··¸.-~*´¨¯¨`*·~-.,-(IMPLEMENTACION)-,.-~*´¨¯¨`*·~-.¸··._.·´¯)*/
@@ -32,6 +34,8 @@ namespace api_public_backOffice.Repository
             //MD5 md5Hash = MD5.Create();
             var retorno = await Context()
                             .Usuarios
+                            .Include(x => x.UsuarioEmpresas)
+                            .Include(x => x.Perfil)
                             .AsNoTracking()
                             .FirstOrDefaultAsync(x => x.Email.Equals(loginModel.Email) && x.Password.Equals(loginModel.Password) && x.Activo.Value);
 
@@ -101,13 +105,13 @@ namespace api_public_backOffice.Repository
             return retorno;
         }
 
-        public async Task<Usuario> GetById(int? id)
+        public async Task<Usuario> GetById(Guid? id)
         {
             if (id == null) throw new ArgumentNullException("id");
             var retorno = await Context()
                                 .Usuarios
                                 .AsNoTracking()
-                                .FirstOrDefaultAsync(x => x.Id.Equals(id) && x.Activo.Value);
+                                .FirstOrDefaultAsync(x => x.Id.Equals(id));
             await maperPerfil(retorno);
             return retorno;
         }
@@ -118,12 +122,28 @@ namespace api_public_backOffice.Repository
                                 .Include(x => x.UsuarioEmpresas)
                                 .Include(x => x.UsuarioEvaluacions)
                                 .Include(x => x.UsuarioSuscripcions)
+                                .Include(x => x.Perfil)
                                 .OrderBy(x => x.Nombres)
                                // .Where(x =>  x.Activo.Value)
                                 .ToListAsync();
 
             return await maperUsuarioAreas(retorno);
         }
+        public async Task<List<Usuario>> GetAllConsultor()
+        {
+            var retorno = await Context()
+                                .Usuarios
+                                .Include(x => x.UsuarioEmpresas)
+                                .Include(x => x.UsuarioEvaluacions)
+                                .Include(x => x.UsuarioSuscripcions)
+                                .Include(x => x.Perfil)
+                                .OrderBy(x => x.Nombres)
+                                .Where(x =>  x.Perfil.Nombre == "Usuario pro (empresa)" || x.Perfil.Nombre == "Usuario básico" || x.Perfil.Nombre == "Gran empresa")
+                                .ToListAsync();
+
+            return await maperUsuarioAreas(retorno);
+        }
+        
         private async Task<List<Usuario>> maperUsuarioAreas(List<Usuario> retorno)
         {
             foreach (var re in retorno)

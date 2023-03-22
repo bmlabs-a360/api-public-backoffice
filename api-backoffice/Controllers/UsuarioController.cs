@@ -17,6 +17,8 @@ using ProblemDetails = Microsoft.AspNetCore.Mvc.ProblemDetails;
 using NotFoundResult = Microsoft.AspNetCore.Mvc.NotFoundResult;
 using System.Web;
 using System.Text.Json;
+using neva.entities;
+using Elastic.Apm.Api;
 
 namespace api_public_backOffice.Controllers
 {
@@ -27,6 +29,8 @@ namespace api_public_backOffice.Controllers
     {
         private readonly ILogger _logger;
         private readonly IUsuarioService _usuarioService;
+        private readonly IPerfilService _PerfilService;
+        private readonly IUsuarioEmpresaService _UsuarioEmpresaService;
         private readonly IMailService _mailService;
         private readonly ITokenService _tokenService;
         private readonly IEmailHelper _emailHelper;
@@ -38,6 +42,8 @@ namespace api_public_backOffice.Controllers
 
         public UsuarioController(
             UsuarioService usuarioService,
+            PerfilService PerfilService,
+            UsuarioEmpresaService UsuarioEmpresaService,
             ILogger<UsuarioController> logger,
             MailService mailService,
             EmailHelper emailHelper,
@@ -49,6 +55,8 @@ namespace api_public_backOffice.Controllers
         {
             _logger = logger;
             _usuarioService = usuarioService;
+            _PerfilService = PerfilService;
+            _UsuarioEmpresaService = UsuarioEmpresaService;
             _mailService = mailService;
             _emailHelper = emailHelper;
             _tokenService = tokenService;
@@ -526,6 +534,133 @@ namespace api_public_backOffice.Controllers
             {
                 _usuarioService.Dispose();
                 // _controlTokenService.Dispose();
+            }
+        }
+
+        //[ApiKeyAuth]
+        //[Authorize]
+        [HttpGet("GetAllConsultor")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<UsuarioModel>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundResult))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+        public async Task<ActionResult<List<UsuarioModel>>> GetAllConsultor()
+        {
+            try
+            {
+                List<UsuarioModel> retorno = await _usuarioService.GetAllConsultor();
+                if (retorno == null) return NotFound();
+                return Ok(retorno);
+            }
+            catch (Exception e)
+            {
+                while (e.InnerException != null) e = e.InnerException;
+                _logger.LogError("Error  Source:{0}, Trace:{1} ", e.Source, e);
+                return Problem(detail: e.Message, title: "ERROR");
+            }
+            finally
+            {
+                _usuarioService.Dispose();
+                _controlTokenService.Dispose();
+            }
+        }
+
+        //[ApiKeyAuth]
+        //[Authorize]
+        [HttpPost("GetAllFilter")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<UsuarioModel>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundResult))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+        public async Task<ActionResult<List<UsuarioModel>>> GetAllFilter(Guid perfilId, [FromBody] UsuarioModel UsuarioModel)
+        {
+            try
+            {
+                List<UsuarioModel> retorno = new List<UsuarioModel> { };
+                if (string.IsNullOrEmpty(perfilId.ToString())) return BadRequest("Debe indicar perfilId");
+
+                PerfilModel perfil = new PerfilModel
+                {
+                    Id = perfilId
+                };
+
+                PerfilModel perfilModel = await _PerfilService.GetPerfilById(perfil);
+
+                if (perfilModel.Nombre == "Consultor")
+                {
+                    List<UsuarioEmpresaModel> usuarioEmpresa = await _UsuarioEmpresaService.GetUsuarioEmpresasByUsuario(UsuarioModel);
+                    List<UsuarioModel> usuarios = await _usuarioService.GetAllConsultor();
+                    foreach (var ue in usuarioEmpresa)
+                    {
+                        foreach (var u in usuarios)
+                        {
+                            if (ue.UsuarioId == u.Id)
+                            {
+                                int indiceUsuario = retorno.IndexOf(u);
+                                if (indiceUsuario == -1)
+                                {
+                                    u.Password = "";
+                                    retorno.Add(u);
+                                }
+                            }
+                        }
+                    }
+                }
+                else 
+                {
+                    List<UsuarioModel> usuarios = await _usuarioService.GetAll();
+                    foreach (var u in usuarios)
+                    {
+                            u.Password = "";
+                            retorno.Add(u);
+                    }
+                }
+                if (retorno == null) return NotFound();
+                return Ok(retorno);
+            }
+            catch (Exception e)
+            {
+                while (e.InnerException != null) e = e.InnerException;
+                _logger.LogError("Error  Source:{0}, Trace:{1} ", e.Source, e);
+                return Problem(detail: e.Message, title: "ERROR");
+            }
+            finally
+            {
+                _usuarioService.Dispose();
+                _controlTokenService.Dispose();
+            }
+        }
+
+        [HttpPost("UpdateUser")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UsuarioModel))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundResult))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+        public async Task<ActionResult<UsuarioModel>> UpdateUser([FromBody] UsuarioModel usuarioModel)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(usuarioModel.Id.ToString())) return BadRequest("Debe indicar idusuario");
+                if (string.IsNullOrEmpty(usuarioModel.Nombres)) return BadRequest("Debe indicar nombres");
+                if (!string.IsNullOrEmpty(usuarioModel.Password)) //return BadRequest("Debe indicar Password");
+                    //if (usuarioModel.Password.Length < 8 || usuarioModel.Password.Length > 50) return BadRequest("Contraseña debe tener un mínimo de 8 y máximo 50 caracteres");
+                if (string.IsNullOrEmpty(usuarioModel.Email)) return BadRequest("Debe indicar Email");
+                if (string.IsNullOrEmpty(usuarioModel.Activo.ToString())) return BadRequest("Debe indicar Activo");
+
+                UsuarioModel retorno = await _usuarioService.UpdateUser(usuarioModel);
+                if (retorno == null) return NotFound();
+                return Ok(retorno);
+            }
+            catch (Exception e)
+            {
+                while (e.InnerException != null) e = e.InnerException;
+                _logger.LogError("Error  Source:{0}, Trace:{1} ", e.Source, e);
+                return Problem(detail: e.Message, title: "ERROR");
+            }
+            finally
+            {
+                _usuarioService.Dispose();
+                //_controlTokenService.Dispose();
             }
         }
     }

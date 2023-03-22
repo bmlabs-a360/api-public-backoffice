@@ -19,7 +19,7 @@ namespace api_public_backOffice.Repository
         Task<Empresa> GetEmpresaById(Empresa empresa);
         Task<IEnumerable<Empresa>> GetEmpresas();
         Task<IEnumerable<Empresa>> GetEmpresasByUsuarioId(Usuario usuario);
-        Task<IEnumerable<Empresa>> GetEmpresasByEvaluacionId(Evaluacion evaluacion);
+        Task<IEnumerable<Empresa>> GetEmpresasByEvaluacionId(Guid evaluacionId);
     }
     public class EmpresaRepository : Repository<Empresa, Context>, IEmpresaRepository
     {
@@ -78,17 +78,22 @@ namespace api_public_backOffice.Repository
         public async Task<IEnumerable<Empresa>> GetEmpresasByUsuarioId(Usuario usuario)
         {
             var retorno = await Context()
-                            .Empresas.Include(i => i.UsuarioEmpresas.Where(y => y.UsuarioId == usuario.Id)).AsNoTracking().ToListAsync();
+                            .Empresas
+                            .Include(x => x.EvaluacionEmpresas)
+                            .Include(i => i.UsuarioEmpresas.Where(y => y.UsuarioId == usuario.Id))
+                            .AsNoTracking().ToListAsync();
             retorno = retorno.Where(x => x.UsuarioEmpresas.Count() >=1 && x.Activo.Value).ToList();
+
+            await maperEvaluacionArea(retorno);
 
             if (retorno == null) return null;
             return retorno;
         }
 
-        public async Task<IEnumerable<Empresa>> GetEmpresasByEvaluacionId(Evaluacion evaluacion)
+        public async Task<IEnumerable<Empresa>> GetEmpresasByEvaluacionId(Guid evaluacionId)
         {
             var retorno = await Context()
-                            .Empresas.Include(i => i.EvaluacionEmpresas.Where(y => y.EvaluacionId == evaluacion.Id))
+                            .Empresas.Include(i => i.EvaluacionEmpresas.Where(y => y.EvaluacionId == evaluacionId))
                            // .Where(x => x.EvaluacionEmpresas.Count() >= 1)
                             .AsNoTracking().ToListAsync();
             retorno = retorno.Where(x => x.EvaluacionEmpresas.Count() >= 1 ).ToList();

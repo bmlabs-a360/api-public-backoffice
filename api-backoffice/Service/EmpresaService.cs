@@ -16,7 +16,7 @@ namespace api_public_backOffice.Service
         Task<EmpresaModel> InsertOrUpdate(EmpresaModel empresaModel);
         Task<List<EmpresaModel>> GetEmpresas();
         Task<List<EmpresaModel>> GetEmpresasByUsuarioId(UsuarioModel usuarioModel);
-        Task<List<EmpresaModel>> GetEmpresasByEvaluacionId(EvaluacionModel evaluacionModel);
+        Task<List<EmpresaModel>> GetEmpresasByEvaluacionId(Guid evaluacionId);
 
        void Dispose();
     }
@@ -78,10 +78,10 @@ namespace api_public_backOffice.Service
             var empresasList = await _EmpresaRepository.GetEmpresasByUsuarioId(_mapper.Map<Usuario>(usuarioModel));
             return _mapper.Map<List<EmpresaModel>>(empresasList);
         }
-        public async Task<List<EmpresaModel>> GetEmpresasByEvaluacionId(EvaluacionModel evaluacionModel)
+        public async Task<List<EmpresaModel>> GetEmpresasByEvaluacionId(Guid evaluacionId)
         {
-            if (string.IsNullOrEmpty(evaluacionModel.Id.ToString())) throw new ArgumentNullException("Debe indicar Id de evaluacion");
-            var empresasList = await _EmpresaRepository.GetEmpresasByEvaluacionId(_mapper.Map<Evaluacion>(evaluacionModel));
+            if (string.IsNullOrEmpty(evaluacionId.ToString())) throw new ArgumentNullException("Debe indicar Id de evaluacion");
+            var empresasList = await _EmpresaRepository.GetEmpresasByEvaluacionId(evaluacionId);
             return _mapper.Map<List<EmpresaModel>>(empresasList);
         }
 

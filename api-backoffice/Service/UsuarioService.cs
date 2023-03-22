@@ -19,7 +19,10 @@ namespace api_public_backOffice.Service
        // Task<UsuarioModel> GetUsuarioByRut(string rut);
         Task<UsuarioModel> GetUsuarioByEmail(string email);
         Task<List<UsuarioModel>> GetAll();
-        Task<UsuarioModel> GetById(int? id);
+        Task<List<UsuarioModel>> GetAllConsultor();
+        
+        Task<UsuarioModel> GetById(Guid? id);
+        Task<UsuarioModel> UpdateUser(UsuarioModel usuario);
         Task<int> DeleteCascade(UsuarioModel usuarioModel);
         void Dispose();
     }
@@ -122,6 +125,79 @@ namespace api_public_backOffice.Service
 
             return _mapper.Map<UsuarioModel>(retorno);
         }
+
+        public async Task<UsuarioModel> UpdateUser(UsuarioModel usuario)
+        {
+            if (string.IsNullOrEmpty(usuario.Nombres)) throw new ArgumentNullException("Nombre");
+            //if (string.IsNullOrEmpty(usuario.Password)) throw new ArgumentNullException("Contraseña");
+            if (string.IsNullOrEmpty(usuario.Email)) throw new ArgumentNullException("Email");
+            //if (string.IsNullOrEmpty(usuario.Telefono)) throw new ArgumentNullException("Telefono");
+            //if (string.IsNullOrEmpty(usuario.Empresa.RazonSocial)) throw new ArgumentNullException("Razón social");
+            // if (string.IsNullOrEmpty(usuario.Empresa.RutEmpresa)) throw new ArgumentNullException("Rut empresa");
+
+            if (!string.IsNullOrEmpty(usuario.Password))
+            {
+                usuario.Password = _securityHelper.EncryptPassword(usuario.Password);
+            }
+            else
+            {
+                var usuarioInfo = await _usuarioRepository.GetById(usuario.Id);
+                usuario.Password = usuarioInfo.Password;
+            }
+            if (usuario.PerfilId.Equals(Guid.Empty))
+            {
+                var perfil = await _perfilRepository.GetPerfilByName("Usuario pro (empresa)");
+                usuario.PerfilId = perfil.Id;
+            }
+
+            var retorno = await _usuarioRepository.InsertOrUpdate(_mapper.Map<Usuario>(usuario));
+            if (retorno.UsuarioEmpresas.Count > 0)
+            {
+                List<UsuarioEmpresa> UsuarioEmpresasNew = new List<UsuarioEmpresa>();
+
+                await _usuarioEmpresaRepository.DeleteByUsuarioId(_mapper.Map<Usuario>(usuario));
+
+                foreach (UsuarioEmpresa usuarioEmpresa in retorno.UsuarioEmpresas)
+                    UsuarioEmpresasNew.Add(await _usuarioEmpresaRepository.InsertOrUpdate(usuarioEmpresa));
+
+                retorno.UsuarioEmpresas = UsuarioEmpresasNew;
+            }
+            if (retorno.UsuarioEvaluacions.Count > 0)
+            {
+                List<UsuarioEvaluacion> usuarioEvaluacionsNew = new List<UsuarioEvaluacion>();
+
+                foreach (UsuarioEvaluacion usuarioEvaluacion in retorno.UsuarioEvaluacions)
+                {
+                    UsuarioEvaluacion salidaUsuarioEvaluacion = await _usuarioEvaluacionRepository.InsertOrUpdate(usuarioEvaluacion);
+                    if (usuarioEvaluacion.UsuarioAreas.Count > 0)
+                    {
+                        List<UsuarioArea> usuarioAreasNew = new List<UsuarioArea>();
+                        foreach (UsuarioArea usuarioArea in usuarioEvaluacion.UsuarioAreas)
+                        {
+                            UsuarioArea salidaUsuarioArea = await _usuarioAreaRepository.InsertOrUpdate(usuarioArea);
+                            usuarioAreasNew.Add(salidaUsuarioArea);
+                        }
+                        salidaUsuarioEvaluacion.UsuarioAreas = usuarioAreasNew;
+                    }
+                    usuarioEvaluacionsNew.Add(salidaUsuarioEvaluacion);
+                }
+                retorno.UsuarioEvaluacions = usuarioEvaluacionsNew;
+            }
+
+            if (retorno.UsuarioSuscripcions.Count > 0)
+            {
+                List<UsuarioSuscripcion> UsuarioSuscripciones = new List<UsuarioSuscripcion>();
+
+                foreach (UsuarioSuscripcion usuarioSuscripcion in retorno.UsuarioSuscripcions)
+                    UsuarioSuscripciones.Add(await _usuarioSuscripcionRepository.InsertOrUpdate(usuarioSuscripcion));
+
+                retorno.UsuarioSuscripcions = UsuarioSuscripciones;
+            }
+
+
+            return _mapper.Map<UsuarioModel>(retorno);
+        }
+
         public async Task<UsuarioModel> Update(UsuarioModel usuario)
         {
             var retorno = await _usuarioRepository.Update(_mapper.Map<Usuario>(usuario));
@@ -147,7 +223,7 @@ namespace api_public_backOffice.Service
             var retorno = await _usuarioRepository.FindByEmail(email);
             return _mapper.Map<UsuarioModel>(retorno);
         }
-        public async Task<UsuarioModel> GetById(int? id)
+        public async Task<UsuarioModel> GetById(Guid? id)
         {
             if (id == null) throw new ArgumentNullException("id");
             var retorno = await _usuarioRepository.GetById(id);
@@ -158,6 +234,12 @@ namespace api_public_backOffice.Service
             var retorno = await _usuarioRepository.GetAll();
             return _mapper.Map<List<UsuarioModel>>(retorno);
         }
+        public async Task<List<UsuarioModel>> GetAllConsultor()
+        {
+            var retorno = await _usuarioRepository.GetAllConsultor();
+            return _mapper.Map<List<UsuarioModel>>(retorno);
+        }
+        
 
         public async Task<int> DeleteCascade(UsuarioModel usuarioModel)
         {

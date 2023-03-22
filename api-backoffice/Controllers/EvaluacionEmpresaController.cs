@@ -540,9 +540,13 @@ namespace api_public_backOffice.Controllers
 
             }
 
-            if (correos == null) return NotFound();
+            List<string> allCorreos = new();
+            allCorreos.AddRange(correos);
+            allCorreos.AddRange(correosPro);
+
+            if (allCorreos == null) return NotFound();
             _EvaluacionEmpresaService.Dispose();
-            return Ok(correos);
+            return Ok(allCorreos);
         }
     }
 

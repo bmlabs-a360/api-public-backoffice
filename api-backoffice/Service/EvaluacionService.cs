@@ -19,6 +19,7 @@ namespace api_public_backOffice.Service
         Task<List<EvaluacionModel>> GetEvaluacionsByEmpresaId(EmpresaModel EmpresaMode);
         Task<EvaluacionModel> InsertOrUpdate(EvaluacionModel EvaluacionModel);
         Task<int> InsertOrUpdateDefault(EvaluacionModel EvaluacionModel);
+        Task<EvaluacionModel> GetEvaluacionByDefecto();
         void Dispose();
     }
     public class EvaluacionService : IEvaluacionService, IDisposable
@@ -108,6 +109,12 @@ namespace api_public_backOffice.Service
                     return 0;
                 }
             }
+        }
+
+        public async Task<EvaluacionModel> GetEvaluacionByDefecto()
+        {
+            var miEvaluacion = await _EvaluacionRepository.GetEvaluacionByDefecto();
+            return _mapper.Map<EvaluacionModel>(miEvaluacion);
         }
         public void Dispose() 
         { 

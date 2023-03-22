@@ -25,6 +25,8 @@ namespace api_public_backOffice.Repository
         Task<IEnumerable<Evaluacion>> GetEvaluacions();
         Task<IEnumerable<Evaluacion>> GetEvaluacionsByUsuarioId(Usuario usuario);
         Task<IEnumerable<Evaluacion>> GetEvaluacionsByEmpresaId(Empresa empresa);
+        Task<Evaluacion> GetEvaluacionByDefecto();
+        
     }
     public class EvaluacionRepository : Repository<Evaluacion, Context>, IEvaluacionRepository
     {
@@ -175,6 +177,17 @@ namespace api_public_backOffice.Repository
             if (retorno == null) return null;
             return retorno;
         }
+        public async Task<Evaluacion> GetEvaluacionByDefecto()
+        {
+            var retorno = await Context()
+                            .Evaluacions
+                            .AsNoTracking()
+                            .FirstOrDefaultAsync(x => x.Default == true);
+
+            if (retorno == null) return null;
+            return retorno;
+        }
+        
 
     }
 }
