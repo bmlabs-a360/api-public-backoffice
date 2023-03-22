@@ -460,15 +460,15 @@ namespace api_public_backOffice.Controllers
                                             throw new Exception(response.StatusCode + " " + response.StatusDescription);
                                         }
                                     }
-                                    catch (Exception e)
+                                    catch (Exception ex)
                                     {
-
-                                        throw new Exception(e.Message);
+                                        throw new Exception(ex.Message,ex);
                                     }
 
                                 }
                                 catch (Exception e)
                                 {
+                                    
                                     while (e.InnerException != null) e = e.InnerException;
                                     _logger.LogError("Error  Source:{0}, Trace:{1} ", e.Source, e);
                                     return Problem(detail: e.Message, title: "ERROR");
