@@ -404,15 +404,17 @@ namespace api_public_backOffice.Controllers
             List<string> correos = new();
             List<string> correosPro = new();
 
-            foreach (PorcentajeEvaluacionDto item in porcentajes)
-            {
-                if (item == null) return NotFound();
+            //foreach (PorcentajeEvaluacionDto item in porcentajes)
+            //{
+            //    if (item == null) return NotFound();
 
-                if (item.RespuestaPorcentaje != "100%")
-                {
-                    List<EnvioMailTiempoLimiteDto> infousuario = _EvaluacionEmpresaService.GetCorreoTiempoLimite(item.SegmentacionAreaId, empresaId);
+            //    if (item.RespuestaPorcentaje != "100%")
+            //    {
+                   // List<EnvioMailTiempoLimiteDto> infousuario = _EvaluacionEmpresaService.GetCorreoTiempoLimite(item.SegmentacionAreaId, empresaId);
 
-                    foreach (EnvioMailTiempoLimiteDto info in infousuario)
+            List<EnvioMailTiempoLimiteDto> infousuario = _EvaluacionEmpresaService.GetCorreoTiempoLimite( empresaId);
+
+            foreach (EnvioMailTiempoLimiteDto info in infousuario)
                     {
                         if (info.NombrePerfil == "Usuario básico")
                         {
@@ -535,8 +537,8 @@ namespace api_public_backOffice.Controllers
                                 }
                             }
                         } 
-                    }
-                }
+                //    }
+                //}
 
             }
 

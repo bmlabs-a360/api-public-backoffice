@@ -25,6 +25,7 @@ namespace api_public_backOffice.Service
         
         List<PorcentajeEvaluacionDto> GetPorcentajeEvaluacion(Guid evaluacionId, Guid empresaId);
         List<EnvioMailTiempoLimiteDto> GetCorreoTiempoLimite(Guid SegmentacionAreaId, Guid empresaId);
+        List<EnvioMailTiempoLimiteDto> GetCorreoTiempoLimite( Guid empresaId);
 
         Task DeleteList(List<EvaluacionEmpresaModel> c);
           Task InsertOrUpdateList(List<EvaluacionEmpresaModel> c);
@@ -127,6 +128,10 @@ namespace api_public_backOffice.Service
             return _EvaluacionEmpresaRepository.GetCorreoTiempoLimite(SegmentacionAreaId, empresaId);
         }
 
+        public List<EnvioMailTiempoLimiteDto> GetCorreoTiempoLimite(Guid empresaId)
+        {
+            return _EvaluacionEmpresaRepository.GetCorreoTiempoLimite(empresaId);
+        }
 
         public void Dispose() 
         { 

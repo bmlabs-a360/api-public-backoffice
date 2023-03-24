@@ -32,6 +32,7 @@ namespace api_public_backOffice.Repository
         List<SeguimientoPlanMejoraModelDto> GetPlanMejorasReporteSubscripcionOBasico(Guid evaluacionId, List<Guid> areas);
         List<PorcentajeEvaluacionDto> GetPorcentajeEvaluacion(Guid evaluacionId, Guid empresaId);
         List<EnvioMailTiempoLimiteDto> GetCorreoTiempoLimite(Guid SegmentacionAreaId, Guid empresaId);
+        List<EnvioMailTiempoLimiteDto> GetCorreoTiempoLimite(  Guid empresaId);
 
 
 
@@ -562,7 +563,52 @@ namespace api_public_backOffice.Repository
                                                      public.perfil p 
                                                      on (p.id = u.perfil_id)
                                                      where 
-                                                      ua.segmentacion_area_id = '{0}' and ue.empresa_id = '{1}'", SegmentacionAreaId, empresaId);
+                                                      ua.segmentacion_area_id = '{0}' and ue.empresa_id = '{1}'
+                                                    union 
+                                                    select u.email, u.nombres , p.nombre as perfilnombre
+                                                    from 
+                                                        public.usuario u join 
+                                                    public.perfil p on (p.id = u.perfil_id) join
+                                                        public.usuario_empresa ue on (ue.usuario_id = u.id)
+                                                        where 
+                                                    ue.empresa_id ='{1}'", SegmentacionAreaId, empresaId);
+
+                Context().Database.OpenConnection();
+
+                using (var result = command.ExecuteReader())
+                {
+                    if (result.HasRows)
+                    {
+                        while (result.Read())
+                        {
+                            EnvioMailTiempoLimiteDto item = new EnvioMailTiempoLimiteDto();
+
+                            item.Email = (result["email"].ToString());
+                            item.Nombre = (result["nombres"].ToString());
+                            item.NombrePerfil = (result["perfilnombre"].ToString());
+
+                            lista.Add(item);
+                        }
+                    }
+                }
+            }
+
+            return lista;
+        }
+
+        public List<EnvioMailTiempoLimiteDto> GetCorreoTiempoLimite( Guid empresaId)
+        {
+            List<EnvioMailTiempoLimiteDto> lista = new List<EnvioMailTiempoLimiteDto>();
+            using (var command = Context().Database.GetDbConnection().CreateCommand())
+            {
+                command.CommandText = string.Format(@"
+                                                    select u.email, u.nombres , p.nombre as perfilnombre
+                                                    from 
+                                                        public.usuario u join 
+                                                    public.perfil p on (p.id = u.perfil_id) join
+                                                        public.usuario_empresa ue on (ue.usuario_id = u.id)
+                                                        where 
+                                                    ue.empresa_id ='{0}'",  empresaId);
 
                 Context().Database.OpenConnection();
 
