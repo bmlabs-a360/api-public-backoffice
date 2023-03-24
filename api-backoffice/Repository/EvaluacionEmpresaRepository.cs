@@ -33,6 +33,8 @@ namespace api_public_backOffice.Repository
         List<SeguimientoPlanMejoraModelDto> GetPlanMejorasReporteSubscripcionOBasico(Guid evaluacionId, List<Guid> areas);
         List<PorcentajeEvaluacionDto> GetPorcentajeEvaluacion(Guid evaluacionId, Guid empresaId);
         List<EnvioMailTiempoLimiteDto> GetCorreoTiempoLimite(Guid SegmentacionAreaId, Guid empresaId);
+        List<EnvioMailUsuarioAreaDto> GetEnvioMailUsuario(Guid EvaluacionId, Guid empresaId);
+        
         List<EnvioMailTiempoLimiteDto> GetCorreoTiempoLimite(  Guid empresaId);
 
 
@@ -724,6 +726,46 @@ namespace api_public_backOffice.Repository
                             item.Email = (result["email"].ToString());
                             item.Nombre = (result["nombres"].ToString());
                             item.NombrePerfil = (result["perfilnombre"].ToString());
+
+                            lista.Add(item);
+                        }
+                    }
+                }
+            }
+
+            return lista;
+        }
+        public List<EnvioMailUsuarioAreaDto> GetEnvioMailUsuario(Guid EvaluacionId, Guid empresaId)
+        {
+            List<EnvioMailUsuarioAreaDto> lista = new List<EnvioMailUsuarioAreaDto>();
+            using (var command = Context().Database.GetDbConnection().CreateCommand())
+            {
+                command.CommandText = string.Format(
+                    @"select distinct  u.email, u.nombres , p.nombre as perfilnombre
+                                                            from 
+                                                             public.usuario u join 
+                                                             public.usuario_evaluacion ue on (ue.usuario_id = u.id)  join 
+                                                             public.usuario_area ua on (ua.usuario_evaluacion_id = ue.id) join 
+                                                             public.perfil p on (p.id = u.perfil_id) left join 
+                                                              public.usuario_empresa uue on (uue.usuario_id = u.id and uue.empresa_id = ue.empresa_id)
+                                                             where 
+                                                             ue.evaluacion_id  = '{0}' and
+                                                              ue.empresa_id = '{1}'", EvaluacionId, empresaId);
+
+                Context().Database.OpenConnection();
+
+                using (var result = command.ExecuteReader())
+                {
+                    if (result.HasRows)
+                    {
+                        while (result.Read())
+                        {
+                            EnvioMailUsuarioAreaDto item = new EnvioMailUsuarioAreaDto();
+
+                            item.Email = (result["email"].ToString());
+                            item.Nombre = (result["nombres"].ToString());
+                            item.NombrePerfil = (result["perfilnombre"].ToString());
+                           // item.SegmentacionAreaId = Guid.Parse(result["segmentacion_area_id"].ToString());
 
                             lista.Add(item);
                         }

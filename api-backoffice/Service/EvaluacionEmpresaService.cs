@@ -25,6 +25,7 @@ namespace api_public_backOffice.Service
         List<SeguimientoPlanMejoraModelDto> GetPlanMejorasReporteSubscripcionOBasico(Guid evaluacionEmpresaId, List<Guid> areas);
         List<PorcentajeEvaluacionDto> GetPorcentajeEvaluacion(Guid evaluacionId, Guid empresaId);
         List<EnvioMailTiempoLimiteDto> GetCorreoTiempoLimite(Guid SegmentacionAreaId, Guid empresaId);
+        List<EnvioMailUsuarioAreaDto> GetEnvioMailUsuario(Guid EvalaucionId, Guid empresaId);
         List<EnvioMailTiempoLimiteDto> GetCorreoTiempoLimite( Guid empresaId);
 
         Task DeleteList(List<EvaluacionEmpresaModel> c);
@@ -130,6 +131,10 @@ namespace api_public_backOffice.Service
         public List<EnvioMailTiempoLimiteDto> GetCorreoTiempoLimite(Guid SegmentacionAreaId, Guid empresaId)
         {
             return _EvaluacionEmpresaRepository.GetCorreoTiempoLimite(SegmentacionAreaId, empresaId);
+        }
+        public List<EnvioMailUsuarioAreaDto> GetEnvioMailUsuario(Guid EvaluacionId, Guid empresaId)
+        {
+            return _EvaluacionEmpresaRepository.GetEnvioMailUsuario(EvaluacionId, empresaId);
         }
 
         public List<EnvioMailTiempoLimiteDto> GetCorreoTiempoLimite(Guid empresaId)
