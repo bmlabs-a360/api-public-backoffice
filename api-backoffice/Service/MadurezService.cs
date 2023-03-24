@@ -85,9 +85,23 @@ namespace api_public_backOffice.Service
             }
 
             var miPerfil = await _PerfilRepository.GetPerfilById(_mapper.Map<Perfil>(perfil));
-
-
-            if (miPerfil.Nombre != "Usuario pro (empresa)")
+            if (miPerfil.Nombre == "Gran empresa" || miPerfil.Nombre == "Administrador" || miPerfil.Nombre == "Consultor")
+            {
+                retorno = _madurezRepository.GetIMAByAreasUsuarioBasico(evaluacionId, empresaId, areas, true);
+            }
+            else if (miPerfil.Nombre == "Usuario pro (empresa)")
+            {
+                var usuarioSubscripcion = await _UsuarioSuscripcionRepository.GetUsuarioSuscripcionsByUsuarioId(_mapper.Map<Usuario>(usuario));
+                if (usuarioSubscripcion == null || usuarioSubscripcion.Activo == false)
+                {
+                    retorno = _madurezRepository.GetIMAByAreasUsuarioBasico(evaluacionId, empresaId, areas, false);
+                }
+                else
+                {
+                    retorno = _madurezRepository.GetIMAByAreasUsuarioBasico(evaluacionId, empresaId, areas, true);
+                }
+            }
+            else 
             {
                 var miPerfilPro = await _PerfilRepository.GetPerfilsUsuarioPro();
                 var perfilId = miPerfilPro.Id;
@@ -109,18 +123,6 @@ namespace api_public_backOffice.Service
                     retorno = _madurezRepository.GetIMAByAreasUsuarioBasico(evaluacionId, empresaId, areas, false);
                 }
                 
-            }
-            else 
-            {
-                var usuarioSubscripcion = await _UsuarioSuscripcionRepository.GetUsuarioSuscripcionsByUsuarioId(_mapper.Map<Usuario>(usuario));
-                if (usuarioSubscripcion == null || usuarioSubscripcion.Activo == false)
-                {
-                    retorno = _madurezRepository.GetIMAByAreasUsuarioBasico(evaluacionId, empresaId, areas, false);
-                }
-                else 
-                {
-                    retorno = _madurezRepository.GetIMAByAreasUsuarioBasico(evaluacionId, empresaId, areas, true);
-                }
             }
 
             return retorno;
