@@ -257,7 +257,31 @@ namespace api_public_backOffice.Controllers
             }
         }
 
-
+        [HttpPost("GetFeedback")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<SeguimientoPlanMejoraModelDto>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundResult))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+        public async Task<ActionResult<List<SeguimientoPlanMejoraModelDto>>> GetFeedback(EvaluacionEmpresa evaluacionEmpresa, Guid evaluacionId)
+        {
+            try
+            {
+                List<SeguimientoPlanMejoraModelDto> retorno = _EvaluacionEmpresaService.GetFeedback(evaluacionEmpresa, evaluacionId);
+                if (retorno == null) return NotFound();
+                return Ok(retorno);
+            }
+            catch (Exception e)
+            {
+                while (e.InnerException != null) e = e.InnerException;
+                _logger.LogError("Error  Source:{0}, Trace:{1} ", e.Source, e);
+                return Problem(detail: e.Message, title: "ERROR");
+            }
+            finally
+            {
+                _EvaluacionEmpresaService.Dispose();
+                // _controlTokenService.Dispose();
+            }
+        }
 
         //[ApiKeyAuth]
         [HttpPost("GetEvaluacionEmpresasByEvaluacionId")]

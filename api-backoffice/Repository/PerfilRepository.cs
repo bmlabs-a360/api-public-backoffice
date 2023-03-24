@@ -19,7 +19,9 @@ namespace api_public_backOffice.Repository
         Task<Perfil> GetPerfilById(Perfil Perfil);
         Task<IEnumerable<Perfil>> GetPerfils();
         Task<IEnumerable<Perfil>> GetPerfilsConsultor();
+        Task<Perfil> GetPerfilsUsuarioPro();
         
+
     }
     public class PerfilRepository : Repository<Perfil, Context>, IPerfilRepository
     {
@@ -72,9 +74,16 @@ namespace api_public_backOffice.Repository
             return retorno;
         }
 
+        public async Task<Perfil> GetPerfilsUsuarioPro()
+        {
+            var retorno = await Context()
+                            .Perfils
+                            .AsNoTracking()
+                            .FirstOrDefaultAsync(x => x.Nombre == "Usuario pro (empresa)");
 
-
-
+            if (retorno == null) return null;
+            return retorno;
+        }
 
     }
 }

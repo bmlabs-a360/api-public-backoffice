@@ -15,12 +15,13 @@ namespace api_public_backOffice.Service
         List<MadurezCapacidadSubAreaDto> GetCapacidadSubAreas(MadurezCapacidadSubAreaDto madurezCapacidadSubAreaDto);
         List<IMSADto> GetIMSA(MadurezCapacidadSubAreaDto madurezCapacidadSubAreasDto);
         List<IMADto> GetIMA(MadurezCapacidadSubAreaDto madurezCapacidadSubAreasDto);
-        List<IMADto> GetIMAByAreasUsuarioBasico(Guid evaluacionId, Guid empresaId, List<Guid> areas);
         List<IMDto> GetIM(MadurezCapacidadSubAreaDto madurezCapacidadSubAreasDto);
         List<MadurezCapacidadSubAreaDto> GetAllCapacidadSubAreas();
         List<IMSADto> GetAllIMSA();
         List<IMADto> GetAllIMA();
         List<IMDto> GetAllIM();
+        Task<List<IMADto>> GetIMAReporteSubscripcionOBasico(UsuarioModel usuario, Guid evaluacionId, Guid empresaId);
+        
         void Dispose();
     }
     public class MadurezService : IMadurezService, IDisposable
@@ -28,12 +29,20 @@ namespace api_public_backOffice.Service
         private readonly IMapper _mapper;
         private IMemoryCache _cache;
         private IMadurezRepository _madurezRepository;
+        private IUsuarioRepository _usuarioRepository;
+        private IPerfilRepository _PerfilRepository;
+        private IUsuarioSuscripcionRepository _UsuarioSuscripcionRepository;
+        private IReporteRepository _ReporteRepository;
         private ISecurityHelper _securityHelper;
-        public MadurezService(IMapper mapper, IMemoryCache memoryCache, MadurezRepository madurezRepository, SecurityHelper securityHelper)
+        public MadurezService(IMapper mapper, IMemoryCache memoryCache, ReporteRepository ReporteRepository, UsuarioSuscripcionRepository UsuarioSuscripcionRepository, UsuarioRepository usuarioRepository, PerfilRepository PerfilRepository, MadurezRepository madurezRepository, SecurityHelper securityHelper)
         {
             _mapper = mapper;
             _cache = memoryCache;
             _madurezRepository = madurezRepository;
+            _usuarioRepository = usuarioRepository;
+            _PerfilRepository = PerfilRepository;
+            _UsuarioSuscripcionRepository = UsuarioSuscripcionRepository;
+            _ReporteRepository = ReporteRepository;
             _securityHelper = securityHelper;
         }
         
@@ -51,9 +60,72 @@ namespace api_public_backOffice.Service
         {
             return _madurezRepository.GetIMA(madurezCapacidadSubAreasDto);
         }
-        public List<IMADto> GetIMAByAreasUsuarioBasico(Guid evaluacionId, Guid empresaId, List<Guid> areas)
+        public async Task<List<IMADto>> GetIMAReporteSubscripcionOBasico(UsuarioModel usuario, Guid evaluacionId, Guid empresaId)
         {
-            return _madurezRepository.GetIMAByAreasUsuarioBasico(evaluacionId, empresaId, areas);
+            List<IMADto> retorno = null;
+            PerfilModel perfil = new PerfilModel
+            {
+                Id = usuario.PerfilId
+            };
+
+            EvaluacionModel evaluacion = new EvaluacionModel
+            {
+                Id = evaluacionId
+            };
+            var reporteRetorno = await _ReporteRepository.GetReportesByEvaluacionId(_mapper.Map<Evaluacion>(evaluacion));
+
+            List<Guid> areas = new();
+            foreach (var rr in reporteRetorno)
+            {
+                foreach (var ra in rr.ReporteAreas)
+                {
+                    //if (ra.Activo == true)
+                    areas.Add(ra.SegmentacionAreaId);
+                }
+            }
+
+            var miPerfil = await _PerfilRepository.GetPerfilById(_mapper.Map<Perfil>(perfil));
+
+
+            if (miPerfil.Nombre != "Usuario pro (empresa)")
+            {
+                var miPerfilPro = await _PerfilRepository.GetPerfilsUsuarioPro();
+                var perfilId = miPerfilPro.Id;
+                var usuarioPro = await _usuarioRepository.GetUsuarioByPerfilIdEmpresaId(perfilId, empresaId);
+                if (usuarioPro != null)
+                {
+                    var usuarioSubscripcion = await _UsuarioSuscripcionRepository.GetUsuarioSuscripcionsByUsuarioId(usuarioPro);
+                    if (usuarioSubscripcion == null || usuarioSubscripcion.Activo == false)
+                    {
+                        retorno = _madurezRepository.GetIMAByAreasUsuarioBasico(evaluacionId, empresaId, areas, false);
+                    }
+                    else
+                    {
+                        retorno = _madurezRepository.GetIMAByAreasUsuarioBasico(evaluacionId, empresaId, areas, true);
+                    }
+                }
+                else 
+                {
+                    retorno = _madurezRepository.GetIMAByAreasUsuarioBasico(evaluacionId, empresaId, areas, false);
+                }
+                
+            }
+            else 
+            {
+                var usuarioSubscripcion = await _UsuarioSuscripcionRepository.GetUsuarioSuscripcionsByUsuarioId(_mapper.Map<Usuario>(usuario));
+                if (usuarioSubscripcion == null || usuarioSubscripcion.Activo == false)
+                {
+                    retorno = _madurezRepository.GetIMAByAreasUsuarioBasico(evaluacionId, empresaId, areas, false);
+                }
+                else 
+                {
+                    retorno = _madurezRepository.GetIMAByAreasUsuarioBasico(evaluacionId, empresaId, areas, true);
+                }
+            }
+
+            return retorno;
+            //UsuarioSuscripcionModel usuarioRetorno = await _usuarioSubscripcionService.GetUsuarioSuscripcionsByUsuarioId(usuario);
+            //return _madurezRepository.GetIMAByAreasUsuarioBasico(evaluacionId, empresaId, areas);
         }
         public List<IMDto> GetIM(MadurezCapacidadSubAreaDto madurezCapacidadSubAreasDto)
         {

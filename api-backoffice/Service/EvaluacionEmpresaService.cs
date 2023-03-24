@@ -21,8 +21,8 @@ namespace api_public_backOffice.Service
 
         List<SeguimientoEvaluacionEmpresaDto> GetSeguimiento();
         List<SeguimientoPlanMejoraModelDto> GetPlanMejoras(EvaluacionEmpresa evaluacionEmpresa);
+        List<SeguimientoPlanMejoraModelDto> GetFeedback(EvaluacionEmpresa evaluacionEmpresa, Guid evaluacionId);
         List<SeguimientoPlanMejoraModelDto> GetPlanMejorasReporteSubscripcionOBasico(Guid evaluacionEmpresaId, List<Guid> areas);
-        
         List<PorcentajeEvaluacionDto> GetPorcentajeEvaluacion(Guid evaluacionId, Guid empresaId);
         List<EnvioMailTiempoLimiteDto> GetCorreoTiempoLimite(Guid SegmentacionAreaId, Guid empresaId);
 
@@ -64,6 +64,10 @@ namespace api_public_backOffice.Service
         public List<SeguimientoPlanMejoraModelDto> GetPlanMejoras(EvaluacionEmpresa evaluacionEmpresa)
         {
             return _EvaluacionEmpresaRepository.GetPlanMejoras(evaluacionEmpresa);
+        }
+        public List<SeguimientoPlanMejoraModelDto> GetFeedback(EvaluacionEmpresa evaluacionEmpresa, Guid evaluacionId)
+        {
+            return _EvaluacionEmpresaRepository.GetFeedback(evaluacionEmpresa, evaluacionId);
         }
         public List<SeguimientoPlanMejoraModelDto> GetPlanMejorasReporteSubscripcionOBasico(Guid evaluacionEmpresaId, List<Guid> areas)
         {

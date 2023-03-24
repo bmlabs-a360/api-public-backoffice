@@ -24,6 +24,8 @@ namespace api_public_backOffice.Service
         Task<UsuarioModel> GetById(Guid? id);
         Task<UsuarioModel> UpdateUser(UsuarioModel usuario);
         Task<int> DeleteCascade(UsuarioModel usuarioModel);
+        Task<UsuarioModel> GetUsuarioByPerfilIdEmpresaId(Guid perfilId, Guid empresaId);
+
         void Dispose();
     }
     public class UsuarioService : IUsuarioService, IDisposable
@@ -47,7 +49,7 @@ namespace api_public_backOffice.Service
             _cache = memoryCache;
             _usuarioRepository = usuarioRepository;
             _securityHelper = securityHelper;
-            _usuarioEmpresaRepository = usuarioEmpresaRepository;  //Empresa al agregar usuario agregar empresa ******
+            _usuarioEmpresaRepository = usuarioEmpresaRepository; 
             _empresaRepository = empresaRepository;
             _perfilRepository = perfilRepository;
             _usuarioEvaluacionRepository = usuarioEvaluacionRepository;
@@ -248,6 +250,12 @@ namespace api_public_backOffice.Service
             return await _usuarioRepository.DeleteCascade(_mapper.Map<Usuario>(usuarioModel));
 
         }
+        public async Task<UsuarioModel> GetUsuarioByPerfilIdEmpresaId(Guid perfilId, Guid empresaId)
+        {
+            var retorno = await _usuarioRepository.GetUsuarioByPerfilIdEmpresaId(perfilId, empresaId);
+            return _mapper.Map<UsuarioModel>(retorno);
+        }
+        
         public void Dispose() 
         { 
             if (_usuarioRepository != null)

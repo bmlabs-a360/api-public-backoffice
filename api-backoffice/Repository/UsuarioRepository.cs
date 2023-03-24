@@ -19,7 +19,8 @@ namespace api_public_backOffice.Repository
         Task<Usuario> GetById(Guid? id);
         Task<List<Usuario>> GetAll();
         Task<List<Usuario>> GetAllConsultor();
-        
+        Task<Usuario> GetUsuarioByPerfilIdEmpresaId(Guid perfilId, Guid empresaId);
+
         Task<int> DeleteCascade(Usuario usuario);
     }
     /*(¯`·._.··¸.-~*´¨¯¨`*·~-.,-(IMPLEMENTACION)-,.-~*´¨¯¨`*·~-.¸··._.·´¯)*/
@@ -180,6 +181,13 @@ namespace api_public_backOffice.Repository
             }
             
         }
+        public async Task<Usuario> GetUsuarioByPerfilIdEmpresaId(Guid perfilId, Guid empresaId)
+        {
+            var retorno = await Context()
+                            .Usuarios.AsNoTracking().FirstOrDefaultAsync(x => x.PerfilId.Equals(perfilId) && x.EmpresaId.Equals(empresaId) && x.Activo.Value);
+            return retorno;
+        }
+        
 
     }
 }
