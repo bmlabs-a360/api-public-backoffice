@@ -16,9 +16,10 @@ namespace api_public_backOffice.Service
         Task<PerfilModel> InsertOrUpdate(PerfilModel PerfilModel);
         Task<List<PerfilModel>> GetPerfils();
         Task<List<PerfilModel>> GetPerfilsConsultor();
-        
+        Task<PerfilModel> GetPerfilsUsuarioPro();
 
-       void Dispose();
+
+        void Dispose();
     }
     public class PerfilService : IPerfilService, IDisposable
     {
@@ -59,6 +60,11 @@ namespace api_public_backOffice.Service
         {
             var PerfilsList = await _PerfilRepository.GetPerfilsConsultor();
             return _mapper.Map<List<PerfilModel>>(PerfilsList);
+        }
+        public async Task<PerfilModel> GetPerfilsUsuarioPro()
+        {
+            var miPerfil = await _PerfilRepository.GetPerfilsUsuarioPro();
+            return _mapper.Map<PerfilModel>(miPerfil);
         }
 
 

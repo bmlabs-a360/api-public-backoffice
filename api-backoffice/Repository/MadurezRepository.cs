@@ -24,7 +24,7 @@ namespace api_public_backOffice.Repository
 		List<IMSADto> GetAllIMSA();
 
         List<IMADto> GetIMA(MadurezCapacidadSubAreaDto madurezCapacidadSubArea);
-        List<IMADto> GetIMAByAreasUsuarioBasico(Guid evaluacionId, Guid empresaId, List<Guid> areas);
+        List<IMADto> GetIMAByAreasUsuarioBasico(Guid evaluacionId, Guid empresaId, List<Guid> areas, bool activarAllAreas);
         List<IMADto> GetAllIMA();
 
         List<IMDto> GetIM(MadurezCapacidadSubAreaDto madurezCapacidadSubArea);
@@ -554,7 +554,7 @@ namespace api_public_backOffice.Repository
             return lista;
         }
 
-		public List<IMADto> GetIMAByAreasUsuarioBasico(Guid evaluacionId, Guid empresaId, List<Guid> areas)
+		public List<IMADto> GetIMAByAreasUsuarioBasico(Guid evaluacionId, Guid empresaId, List<Guid> areas, bool activarAllAreas)
 		{
 			List<IMADto> lista = new List<IMADto>();
 			using (var command = Context().Database.GetDbConnection().CreateCommand())
@@ -689,13 +689,26 @@ namespace api_public_backOffice.Repository
                           .Include(a => a.ReporteAreas)
                           .Where(y => y.EvaluacionId == evaluacion.Id && y.Activo.Value).AsNoTracking();
 
-            foreach (var rr in reporteRetorno)
-				foreach (var ra in rr.ReporteAreas)
-					listaRetono.ForEach(r => { 
-						if (r.SegmentacionAreaId== ra.SegmentacionAreaId && ra.Activo == true) 
-							r.ActivaArea = true;
-						 });
-               
+			if (activarAllAreas)
+			{
+                foreach (var rr in reporteRetorno)
+                    foreach (var ra in rr.ReporteAreas)
+                        listaRetono.ForEach(r =>
+                        {
+                            if (r.SegmentacionAreaId == ra.SegmentacionAreaId)
+                                r.ActivaArea = true;
+                        });
+            }
+			else
+			{
+				foreach (var rr in reporteRetorno)
+					foreach (var ra in rr.ReporteAreas)
+						listaRetono.ForEach(r =>
+						{
+							if (r.SegmentacionAreaId == ra.SegmentacionAreaId && ra.Activo == true)
+								r.ActivaArea = true;
+						});
+			}  
  
 
             return listaRetono;
