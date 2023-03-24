@@ -85,9 +85,11 @@ namespace api_public_backOffice.Service
             }
 
             var miPerfil = await _PerfilRepository.GetPerfilById(_mapper.Map<Perfil>(perfil));
+
             if (miPerfil.Nombre == "Gran empresa" || miPerfil.Nombre == "Administrador" || miPerfil.Nombre == "Consultor")
             {
                 retorno = _madurezRepository.GetIMAByAreasUsuarioBasico(evaluacionId, empresaId, areas, true);
+                return retorno;
             }
             else if (miPerfil.Nombre == "Usuario pro (empresa)")
             {
@@ -100,6 +102,7 @@ namespace api_public_backOffice.Service
                 {
                     retorno = _madurezRepository.GetIMAByAreasUsuarioBasico(evaluacionId, empresaId, areas, true);
                 }
+                return retorno;
             }
             else 
             {
@@ -122,10 +125,9 @@ namespace api_public_backOffice.Service
                 {
                     retorno = _madurezRepository.GetIMAByAreasUsuarioBasico(evaluacionId, empresaId, areas, false);
                 }
-                
-            }
+                return retorno;
 
-            return retorno;
+            }
             //UsuarioSuscripcionModel usuarioRetorno = await _usuarioSubscripcionService.GetUsuarioSuscripcionsByUsuarioId(usuario);
             //return _madurezRepository.GetIMAByAreasUsuarioBasico(evaluacionId, empresaId, areas);
         }
