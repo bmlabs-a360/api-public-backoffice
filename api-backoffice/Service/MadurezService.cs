@@ -79,7 +79,6 @@ namespace api_public_backOffice.Service
             {
                 foreach (var ra in rr.ReporteAreas)
                 {
-                    //if (ra.Activo == true)
                     areas.Add(ra.SegmentacionAreaId);
                 }
             }
@@ -104,32 +103,12 @@ namespace api_public_backOffice.Service
                 }
                 return retorno;
             }
-            else 
+            else
             {
-                var miPerfilPro = await _PerfilRepository.GetPerfilsUsuarioPro();
-                var perfilId = miPerfilPro.Id;
-                var usuarioPro = await _usuarioRepository.GetUsuarioByPerfilIdEmpresaId(perfilId, empresaId);
-                if (usuarioPro != null)
-                {
-                    var usuarioSubscripcion = await _UsuarioSuscripcionRepository.GetUsuarioSuscripcionsByUsuarioId(usuarioPro);
-                    if (usuarioSubscripcion == null || usuarioSubscripcion.Activo == false)
-                    {
-                        retorno = _madurezRepository.GetIMAByAreasUsuarioBasico(evaluacionId, empresaId, areas, false);
-                    }
-                    else
-                    {
-                        retorno = _madurezRepository.GetIMAByAreasUsuarioBasico(evaluacionId, empresaId, areas, true);
-                    }
-                }
-                else 
-                {
-                    retorno = _madurezRepository.GetIMAByAreasUsuarioBasico(evaluacionId, empresaId, areas, false);
-                }
+                retorno = _madurezRepository.GetIMAByAreasUsuarioBasico(evaluacionId, empresaId, areas, false);
                 return retorno;
 
             }
-            //UsuarioSuscripcionModel usuarioRetorno = await _usuarioSubscripcionService.GetUsuarioSuscripcionsByUsuarioId(usuario);
-            //return _madurezRepository.GetIMAByAreasUsuarioBasico(evaluacionId, empresaId, areas);
         }
         public List<IMDto> GetIM(MadurezCapacidadSubAreaDto madurezCapacidadSubAreasDto)
         {

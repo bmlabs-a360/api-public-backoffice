@@ -280,44 +280,6 @@ namespace api_public_backOffice.Controllers
                 List<IMADto> retorno = await _madurezService.GetIMAReporteSubscripcionOBasico(usuario, evaluacionId, empresaId);
                 if (retorno == null) return NotFound();
                 return Ok(retorno);
-
-                /* List<IMADto> retorno = null;
-                 UsuarioModel usuario = new UsuarioModel
-                 {
-                     Id = usuarioId
-                 };
-                 UsuarioSuscripcionModel usuarioRetorno = await _usuarioSubscripcionService.GetUsuarioSuscripcionsByUsuarioId(usuario);
-
-                 if (usuarioRetorno == null)
-                 {
-                     EvaluacionModel evaluacion = new EvaluacionModel
-                     {
-                         Id = evaluacionId
-                     };
-                     List<ReporteModel> reporteRetorno = await _reporteService.GetReportesByEvaluacionId(evaluacion);
-
-                     List<Guid> areas = new();
-                     foreach (var rr in reporteRetorno)
-                     {
-                         foreach (var ra in rr.ReporteAreas)
-                         {
-                             //if (ra.Activo == true)
-                                 areas.Add(ra.SegmentacionAreaId);
-                         }
-                     }
-                     retorno = _madurezService.GetIMAByAreasUsuarioBasico(evaluacionId, empresaId, areas);
-                 }
-                 else
-                 {
-                     MadurezCapacidadSubAreaDto madurezCapacidadSubArea = new MadurezCapacidadSubAreaDto
-                     {
-                         EvaluacionId = evaluacionId,
-                         EmpresaId = empresaId
-                     };
-                     retorno = _madurezService.GetIMA(madurezCapacidadSubArea);
-                 }
-                 if (retorno == null) return NotFound();
-                 return Ok(retorno);*/
             }
             catch (Exception e)
             {
