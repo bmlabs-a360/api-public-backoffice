@@ -29,7 +29,6 @@ namespace api_public_backOffice.Repository
        // Task<IEnumerable<EvaluacionEmpresaModel>> GetSeguimiento();
         List<SeguimientoEvaluacionEmpresaDto> GetSeguimiento();
         List<SeguimientoPlanMejoraModelDto> GetPlanMejoras(EvaluacionEmpresa evaluacionEmpresa);
-        List<SeguimientoPlanMejoraModelDto> GetFeedback(EvaluacionEmpresa evaluacionEmpresa, Guid evaluacionId);
         List<SeguimientoPlanMejoraModelDto> GetPlanMejorasReporteSubscripcionOBasico(Guid evaluacionId, List<Guid> areas);
         List<PorcentajeEvaluacionDto> GetPorcentajeEvaluacion(Guid evaluacionId, Guid empresaId);
         List<EnvioMailTiempoLimiteDto> GetCorreoTiempoLimite(Guid SegmentacionAreaId, Guid empresaId);
@@ -228,106 +227,6 @@ namespace api_public_backOffice.Repository
                             item.Estado=result["plan_mejora_id"].ToString() != string.Empty;
                             item.TipoImportanciaNombre = (result["tipo_importancia_nombre"].ToString()) == string.Empty ? "s/d" : (result["tipo_importancia_nombre"].ToString());  
                             item.TipoDiferenciaRelacionadaNombre = (result["tipo_diferencia_relacionada_nombre"].ToString()) == string.Empty ? "s/d" : (result["tipo_diferencia_relacionada_nombre"].ToString()); 
-                            item.ImportanciaDetalle = (result["importancia_detalle"].ToString());
-
-                            lista.Add(item);
-                        }
-                    }
-                }
-            }
-
-            return lista;
-        }
-
-        public List<SeguimientoPlanMejoraModelDto> GetFeedback(EvaluacionEmpresa evaluacionEmpresa, Guid evaluacionId)
-        {
-            List<SeguimientoPlanMejoraModelDto> lista = new List<SeguimientoPlanMejoraModelDto>();
-            using (var command = Context().Database.GetDbConnection().CreateCommand())
-            {
-                command.CommandText = string.Format(@"select  
-	                                        ee.id as evaluacion_empresa_id,
-	                                        ee.evaluacion_id ,
-	                                        ee.empresa_id ,
-	                                        ee.fecha_inicio_tiempo_limite  ,
-	                                        pr.id  as pregunta_id,
-	                                        pr.segmentacion_area_id,
-	                                        pr.segmentacion_sub_area_id ,
-	                                        pr.detalle as pr_detalle ,
-	                                        pr.orden as pr_orden,
-	                                        pr.capacidad as pr_capacidad,
-	                                        al.id as alternativa_id ,
-	                                        al.detalle as  al_detalle,
-	                                        al.valor as al_valor,
-	                                        re.tipo_importancia_id ,
-	                                        re.tipo_diferencia_relacionada_id ,
-	                                        re.valor as re_valor ,
-	                                        re.realimentacion ,
-	                                        pm.id as plan_mejora_id,
-	                                        pm.mejora ,
-	                                        sa.nombre_area ,
-	                                        ssa.nombre_sub_area,
-	                                        ti.nombre as tipo_importancia_nombre,
-	                                        tdr.nombre as tipo_diferencia_relacionada_nombre,
-                                            ti.detalle as importancia_detalle
-                                        from
-	                                        public.evaluacion_empresa ee join 
-	                                        public.pregunta pr on
-	                                        pr.evaluacion_id  = ee.evaluacion_id left join 
-	                                        public.respuesta re on
-	                                        re.pregunta_id  = pr.id and re.evaluacion_empresa_id =ee.id  left join 
-	                                        public.alternativa al on
-	                                        al.id =re.alternativa_id and al.pregunta_id =pr.id left join
-	                                        public.plan_mejora pm on
-	                                        pm.evaluacion_empresa_id = ee.id and pm.pregunta_id =pr.id and pm.segmentacion_area_id =pr.segmentacion_area_id 
-	                                        and pm.segmentacion_sub_area_id =pr.segmentacion_sub_area_id and pm.alternativa_id =al.id  join 
-	                                        public.segmentacion_area sa on
-	                                        sa.id =pr.segmentacion_area_id and sa.evaluacion_id = ee.evaluacion_id join 
-	                                        public.segmentacion_sub_area ssa on
-	                                        ssa.id = pr.segmentacion_sub_area_id and ssa.segmentacion_area_id =sa.id left join
-	                                        public.tipo_importancia ti on
-	                                        ti.id = re.tipo_importancia_id left join 
-	                                        public.tipo_diferencia_relacionada tdr on
-	                                        tdr.id  = re.tipo_diferencia_relacionada_id 
-                                        where ee.id = '{0}' ", evaluacionEmpresa.Id.ToString());
-
-                Context().Database.OpenConnection();
-
-                using (var result = command.ExecuteReader())
-                {
-                    if (result.HasRows)
-                    {
-                        while (result.Read())
-                        {
-                            SeguimientoPlanMejoraModelDto item = new SeguimientoPlanMejoraModelDto();
-                            item.EvaluacionEmpresaId = Guid.Parse(result["evaluacion_empresa_id"].ToString());
-                            item.EvaluacionId = Guid.Parse(result["evaluacion_id"].ToString());
-                            item.EmpresaId = Guid.Parse(result["empresa_id"].ToString());
-                            item.FechaInicioTiempoLimite = (result["fecha_inicio_tiempo_limite"].ToString());
-                            item.PreguntaId = Guid.Parse(result["pregunta_id"].ToString());
-                            item.SegmentacionAreaId = Guid.Parse(result["segmentacion_area_id"].ToString());
-                            item.SegmentacionSubAreaId = Guid.Parse(result["segmentacion_sub_area_id"].ToString());
-                            item.PreguntaDetalle = (result["pr_detalle"].ToString());
-                            item.PreguntaOrden = (result["pr_orden"].ToString());
-                            item.PreguntaCapacidad = (result["pr_capacidad"].ToString());
-                            if (result["alternativa_id"].ToString() != string.Empty)
-                                item.AlternativaId = Guid.Parse(result["alternativa_id"].ToString());
-                            item.AlternativaDetalle = (result["al_detalle"].ToString()) == string.Empty ? "s/r" : (result["al_detalle"].ToString());
-                            item.AlternativaValor = (result["al_valor"].ToString()) == string.Empty ? "s/r" : (result["al_valor"].ToString());
-                            if (result["tipo_importancia_id"].ToString() != string.Empty)
-                                item.TipoImportanciaId = Guid.Parse(result["tipo_importancia_id"].ToString());
-                            if (result["tipo_diferencia_relacionada_id"].ToString() != string.Empty)
-                                item.TipoDiferenciaRelacionadaId = Guid.Parse(result["tipo_diferencia_relacionada_id"].ToString());
-                            item.RespuestaValor = (result["re_valor"].ToString()) == string.Empty ? "s/v" : (result["re_valor"].ToString());
-                            item.RespuestaRealimentacion = (result["realimentacion"].ToString());
-                            if (result["plan_mejora_id"].ToString() != string.Empty)
-                                item.PlanMejoraId = Guid.Parse(result["plan_mejora_id"].ToString());
-                            item.Mejora = (result["mejora"].ToString());
-                            item.NombreArea = (result["nombre_area"].ToString());
-                            item.NombreSubArea = (result["nombre_sub_area"].ToString());
-                            item.Accion = result["re_valor"].ToString() != string.Empty;
-                            item.Estado = result["plan_mejora_id"].ToString() != string.Empty;
-                            item.TipoImportanciaNombre = (result["tipo_importancia_nombre"].ToString()) == string.Empty ? "s/d" : (result["tipo_importancia_nombre"].ToString());
-                            item.TipoDiferenciaRelacionadaNombre = (result["tipo_diferencia_relacionada_nombre"].ToString()) == string.Empty ? "s/d" : (result["tipo_diferencia_relacionada_nombre"].ToString());
                             item.ImportanciaDetalle = (result["importancia_detalle"].ToString());
 
                             lista.Add(item);

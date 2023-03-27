@@ -22,6 +22,7 @@ namespace api_public_backOffice.Models
         public virtual ICollection<ReporteItemNivelBasicoModel> ReporteItemNivelBasicos { get; set; }
         public virtual ICollection<ReporteAreaModel> ReporteAreas { get; set; }
         public virtual ICollection<ReporteItemModel> ReporteItems { get; set; }
+        public virtual ICollection<ReporteRecomendacionAreaModel> ReporteRecomendacionArea { get; set; }
         /*public virtual Evaluacion Evaluacion { get; set; }
         public virtual ICollection<ReporteArea> ReporteAreas { get; set; }
         public virtual ICollection<ReporteItem> ReporteItems { get; set; }*/

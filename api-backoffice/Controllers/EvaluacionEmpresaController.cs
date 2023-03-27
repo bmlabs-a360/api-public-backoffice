@@ -31,6 +31,7 @@ namespace api_public_backOffice.Controllers
         private readonly IEvaluacionEmpresaService _EvaluacionEmpresaService;
         private readonly IUsuarioSuscripcionService _usuarioSubscripcionService;
         private readonly IReporteService _reporteService;
+        private readonly IReporteRecomendacionAreaService _ReporteRecomendacionAreaService;
         private readonly IMailService _mailService;
         private readonly IEmailHelper _emailHelper;
         private readonly ISecurityHelper _securityHelper;
@@ -42,6 +43,7 @@ namespace api_public_backOffice.Controllers
             EvaluacionEmpresaService EvaluacionEmpresaService,
             UsuarioSuscripcionService usuarioSuscripcionService,
             ReporteService reporteService,
+            ReporteRecomendacionAreaService ReporteRecomendacionAreaService,
             MailService mailService,
             ILogger<EvaluacionEmpresaController> logger,
             EmailHelper emailHelper,
@@ -53,6 +55,7 @@ namespace api_public_backOffice.Controllers
             _EvaluacionEmpresaService = EvaluacionEmpresaService;
             _usuarioSubscripcionService = usuarioSuscripcionService;
             _reporteService = reporteService;
+            _ReporteRecomendacionAreaService = ReporteRecomendacionAreaService;
             _mailService = mailService;
             _emailHelper = emailHelper;
             Configuration = configuration;
@@ -195,41 +198,30 @@ namespace api_public_backOffice.Controllers
             }
         }
 
-        [HttpGet("GetPlanMejorasReporteSubscripcionOBasico")]
+        [HttpPost("GetPlanMejorasReporteSubscripcionOBasico")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<SeguimientoPlanMejoraModelDto>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundResult))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
-        public async Task<ActionResult<List<SeguimientoPlanMejoraModelDto>>> GetPlanMejorasReporteSubscripcionOBasico(Guid evaluacionEmpresaId, Guid usuarioId, Guid evaluacionId)
+        public async Task<ActionResult<List<SeguimientoPlanMejoraModelDto>>> GetPlanMejorasReporteSubscripcionOBasico([FromBody] UsuarioModel usuario, Guid evaluacionEmpresaId, Guid reporteId)
         {
             try
             {
 
                 List<SeguimientoPlanMejoraModelDto> retorno = null;
-                UsuarioModel usuario = new UsuarioModel
-                {
-                    Id = usuarioId
-                };
                 UsuarioSuscripcionModel usuarioRetorno = await _usuarioSubscripcionService.GetUsuarioSuscripcionsByUsuarioId(usuario);
 
                 if (usuarioRetorno == null)
                 {
-                    EvaluacionModel evaluacion = new EvaluacionModel
-                    {
-                        Id = evaluacionId
-                    };
-                    List<ReporteModel> reporteRetorno = await _reporteService.GetReportesByEvaluacionId(evaluacion);
+
+                    List<ReporteRecomendacionAreaModel> reporteRetorno = await _ReporteRecomendacionAreaService.GetReporteFeedbackAreasByReporteId(usuario, reporteId);
 
                     List<Guid> areas = new();
                     foreach (var rr in reporteRetorno)
                     {
-                        foreach (var ra in rr.ReporteAreas)
-                        {
-                            if (ra.Activo == true)
-                            {
-                                areas.Add(ra.SegmentacionAreaId);
-                            }
-                        }
+                        if (rr.Activo == true) 
+                            areas.Add(rr.SegmentacionAreaId);
+                            
                     }
                     retorno = _EvaluacionEmpresaService.GetPlanMejorasReporteSubscripcionOBasico(evaluacionEmpresaId, areas);
                 }
@@ -241,32 +233,6 @@ namespace api_public_backOffice.Controllers
                     };
                     retorno = _EvaluacionEmpresaService.GetPlanMejoras(seguimientoplanmejora);
                 }
-                if (retorno == null) return NotFound();
-                return Ok(retorno);
-            }
-            catch (Exception e)
-            {
-                while (e.InnerException != null) e = e.InnerException;
-                _logger.LogError("Error  Source:{0}, Trace:{1} ", e.Source, e);
-                return Problem(detail: e.Message, title: "ERROR");
-            }
-            finally
-            {
-                _EvaluacionEmpresaService.Dispose();
-                // _controlTokenService.Dispose();
-            }
-        }
-
-        [HttpPost("GetFeedback")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<SeguimientoPlanMejoraModelDto>))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
-        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundResult))]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
-        public async Task<ActionResult<List<SeguimientoPlanMejoraModelDto>>> GetFeedback(EvaluacionEmpresa evaluacionEmpresa, Guid evaluacionId)
-        {
-            try
-            {
-                List<SeguimientoPlanMejoraModelDto> retorno = _EvaluacionEmpresaService.GetFeedback(evaluacionEmpresa, evaluacionId);
                 if (retorno == null) return NotFound();
                 return Ok(retorno);
             }

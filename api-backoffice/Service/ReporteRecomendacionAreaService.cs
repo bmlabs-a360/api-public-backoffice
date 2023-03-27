@@ -17,6 +17,8 @@ namespace api_public_backOffice.Service
         Task<List<ReporteRecomendacionAreaModel>> GetReporteRecomendacionAreasByReporteId(ReporteModel reporteModel);
         Task<List<ReporteRecomendacionAreaModel>> GetReporteRecomendacionAreasBySegmentacionAreaId(SegmentacionAreaModel segmentacionAreaModel);
         Task<ReporteRecomendacionAreaModel> InsertOrUpdate(ReporteRecomendacionAreaModel ReporteRecomendacionAreaModel);
+        Task<List<ReporteRecomendacionAreaModel>> GetReporteFeedbackAreasByReporteId(UsuarioModel usuario, Guid reporteId);
+        
         void Dispose();
     }
     public class ReporteRecomendacionAreaService : IReporteRecomendacionAreaService, IDisposable
@@ -24,12 +26,14 @@ namespace api_public_backOffice.Service
         private readonly IMapper _mapper;
         private IMemoryCache _cache;
         private IReporteRecomendacionAreaRepository _ReporteRecomendacionAreaRepository;
+        private IPerfilRepository _PerfilRepository;
         private ISecurityHelper _securityHelper;
-        public ReporteRecomendacionAreaService(IMapper mapper, IMemoryCache memoryCache, ReporteRecomendacionAreaRepository ReporteRecomendacionAreaRepository, SecurityHelper securityHelper)
+        public ReporteRecomendacionAreaService(IMapper mapper, IMemoryCache memoryCache,PerfilRepository PerfilRepository, ReporteRecomendacionAreaRepository ReporteRecomendacionAreaRepository, SecurityHelper securityHelper)
         {
             _mapper = mapper;
             _cache = memoryCache;
             _ReporteRecomendacionAreaRepository = ReporteRecomendacionAreaRepository;
+            _PerfilRepository = PerfilRepository;
             _securityHelper = securityHelper;
         }
         public async Task<ReporteRecomendacionAreaModel> GetReporteRecomendacionAreaById(ReporteRecomendacionAreaModel ReporteRecomendacionAreaModel)
@@ -70,6 +74,32 @@ namespace api_public_backOffice.Service
 
             var retorno = await _ReporteRecomendacionAreaRepository.InsertOrUpdate(_mapper.Map<ReporteRecomendacionArea>(ReporteRecomendacionAreaModel));
             return _mapper.Map<ReporteRecomendacionAreaModel>(retorno);
+        }
+        public async Task<List<ReporteRecomendacionAreaModel>> GetReporteFeedbackAreasByReporteId(UsuarioModel usuario, Guid reporteId)
+        {
+            if (string.IsNullOrEmpty(reporteId.ToString())) throw new ArgumentNullException("Id");
+
+            ReporteModel reporte = new ReporteModel()
+            {
+                Id = reporteId
+            };
+            var miReporteRecomendacionArea = await _ReporteRecomendacionAreaRepository.GetReporteRecomendacionAreasByReporteId(_mapper.Map<Reporte>(reporte));
+
+            PerfilModel perfil = new PerfilModel()
+            {
+                Id = usuario.PerfilId
+            };
+            var miPerfil = await _PerfilRepository.GetPerfilById(_mapper.Map<Perfil>(perfil));
+
+            if (miPerfil.Nombre == "Gran empresa" || miPerfil.Nombre == "Administrador" || miPerfil.Nombre == "Consultor")
+            {
+                foreach (var rra in miReporteRecomendacionArea)
+                {
+                    rra.Activo = true;
+                }
+            }
+
+            return _mapper.Map<List<ReporteRecomendacionAreaModel>>(miReporteRecomendacionArea);
         }
         public void Dispose()
         {

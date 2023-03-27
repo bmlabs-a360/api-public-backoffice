@@ -66,12 +66,6 @@ namespace api_public_backOffice.Service
             var miPerfil = await _PerfilRepository.GetPerfilsUsuarioPro();
             return _mapper.Map<PerfilModel>(miPerfil);
         }
-
-
-
-
-
-
         public void Dispose() 
         { 
             if (_PerfilRepository != null)

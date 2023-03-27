@@ -16,6 +16,7 @@ using api_public_backOffice.Interceptors;
 using ProblemDetails = Microsoft.AspNetCore.Mvc.ProblemDetails;
 using NotFoundResult = Microsoft.AspNetCore.Mvc.NotFoundResult;
 using System.Web;
+using neva.entities;
 
 namespace api_public_backOffice.Controllers
 {
@@ -140,6 +141,32 @@ namespace api_public_backOffice.Controllers
             try
             {
                 List<ReporteRecomendacionAreaModel> retorno = await _ReporteRecomendacionAreaService.GetReporteRecomendacionAreasByReporteId(reporteModel);
+                if (retorno == null) return NotFound();
+                return Ok(retorno);
+            }
+            catch (Exception e)
+            {
+                while (e.InnerException != null) e = e.InnerException;
+                _logger.LogError("Error  Source:{0}, Trace:{1} ", e.Source, e);
+                return Problem(detail: e.Message, title: "ERROR");
+            }
+            finally
+            {
+                _ReporteRecomendacionAreaService.Dispose();
+                // _controlTokenService.Dispose();
+            }
+        }
+
+        [HttpPost("GetReporteFeedbackAreasByReporteId")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<ReporteRecomendacionAreaModel>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundResult))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+        public async Task<ActionResult<List<ReporteRecomendacionAreaModel>>> GetReporteFeedbackAreasByReporteId(UsuarioModel usuario, Guid reporteId)
+        {
+            try
+            {
+                List<ReporteRecomendacionAreaModel> retorno = await _ReporteRecomendacionAreaService.GetReporteFeedbackAreasByReporteId(usuario, reporteId);
                 if (retorno == null) return NotFound();
                 return Ok(retorno);
             }

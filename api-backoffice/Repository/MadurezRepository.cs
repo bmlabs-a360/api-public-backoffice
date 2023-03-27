@@ -24,7 +24,7 @@ namespace api_public_backOffice.Repository
 		List<IMSADto> GetAllIMSA();
 
         List<IMADto> GetIMA(MadurezCapacidadSubAreaDto madurezCapacidadSubArea);
-        List<IMADto> GetIMAByAreasUsuarioBasico(Guid evaluacionId, Guid empresaId, List<Guid> areas, bool activarAllAreas);
+        List<IMADto> GetIMAByAreas(Guid evaluacionId, Guid empresaId, List<Guid> areas, bool activarAllAreas);
         List<IMADto> GetAllIMA();
 
         List<IMDto> GetIM(MadurezCapacidadSubAreaDto madurezCapacidadSubArea);
@@ -554,7 +554,7 @@ namespace api_public_backOffice.Repository
             return lista;
         }
 
-		public List<IMADto> GetIMAByAreasUsuarioBasico(Guid evaluacionId, Guid empresaId, List<Guid> areas, bool activarAllAreas)
+		public List<IMADto> GetIMAByAreas(Guid evaluacionId, Guid empresaId, List<Guid> areas, bool activarAllAreas)
 		{
 			List<IMADto> lista = new List<IMADto>();
 			using (var command = Context().Database.GetDbConnection().CreateCommand())
