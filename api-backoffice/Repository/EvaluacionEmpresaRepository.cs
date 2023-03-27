@@ -741,16 +741,24 @@ namespace api_public_backOffice.Repository
             using (var command = Context().Database.GetDbConnection().CreateCommand())
             {
                 command.CommandText = string.Format(
-                    @"select distinct  u.email, u.nombres , p.nombre as perfilnombre
+                       //@"select distinct  u.email, u.nombres , p.nombre as perfilnombre
+                       //                                        from 
+                       //                                         public.usuario u join 
+                       //                                         public.usuario_evaluacion ue on (ue.usuario_id = u.id)  join 
+                       //                                         public.usuario_area ua on (ua.usuario_evaluacion_id = ue.id) join 
+                       //                                         public.perfil p on (p.id = u.perfil_id) left join 
+                       //                                          public.usuario_empresa uue on (uue.usuario_id = u.id and uue.empresa_id = ue.empresa_id)
+                       //                                         where 
+                       //                                         ue.evaluacion_id  = '{0}' and
+                       //                                          ue.empresa_id = '{1}'", EvaluacionId, empresaId);
+
+                       @"select distinct  u.email, u.nombres , p.nombre as perfilnombre
                                                             from 
                                                              public.usuario u join 
-                                                             public.usuario_evaluacion ue on (ue.usuario_id = u.id)  join 
-                                                             public.usuario_area ua on (ua.usuario_evaluacion_id = ue.id) join 
                                                              public.perfil p on (p.id = u.perfil_id) left join 
-                                                              public.usuario_empresa uue on (uue.usuario_id = u.id and uue.empresa_id = ue.empresa_id)
+                                                              public.usuario_empresa uue on (uue.usuario_id = u.id)
                                                              where 
-                                                             ue.evaluacion_id  = '{0}' and
-                                                              ue.empresa_id = '{1}'", EvaluacionId, empresaId);
+                                                              uue.empresa_id = '{0}'",  empresaId);
 
                 Context().Database.OpenConnection();
 
