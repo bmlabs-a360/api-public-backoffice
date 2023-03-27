@@ -191,7 +191,10 @@ namespace api_public_backOffice.Service
                 List<UsuarioSuscripcion> UsuarioSuscripciones = new List<UsuarioSuscripcion>();
 
                 foreach (UsuarioSuscripcion usuarioSuscripcion in retorno.UsuarioSuscripcions)
+                {
+                    usuarioSuscripcion.UsuarioId = retorno.Id;
                     UsuarioSuscripciones.Add(await _usuarioSuscripcionRepository.InsertOrUpdate(usuarioSuscripcion));
+                }
 
                 retorno.UsuarioSuscripcions = UsuarioSuscripciones;
             }
