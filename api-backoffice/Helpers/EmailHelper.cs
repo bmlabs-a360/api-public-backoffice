@@ -135,14 +135,7 @@ namespace api_public_backOffice.Helpers
             string templateBody = "";
             string urlTemplate = "wwwroot/htmlEmail/BodyCompletaEvaluacionUsuarioPro.html";
 
-            string porentajesAresHtlm = "<div style='display:inline-block;width:100%;max-width:60px;border:1px solid #143B40;border-radius: 15px;' max-width: 23% !important;>" +
-                                            "<p class='niveltexto-movil' style='margin:0;text-align: center;margin-bottom: 15px;font-size: 22px;padding-top: 25px;font-weight: 600;color: #15AFC0;'>" +
-                                                "[PORCENTAJEAREA]%" +
-                                            "</p>" +
-                                            "<p style='margin:0;text-align: center;margin-bottom: 15px;font-size: 16px;color: #283252;font-weight: 500;'>" +
-                                                "Área [NOMBREAREA] " +
-                                            "</p>" +
-                                         "</div>";
+            string porentajesAresHtlm = "<div class='col-sml' style='display:inline-block;width:100%;max-width:60px;border:1px solid #143B40;border-radius: 15px;'><p class='niveltexto-movil' style='margin:0;text-align: center;margin-bottom: 15px;font-size: 22px;padding-top: 25px;font-weight: 600;color: #15AFC0;'>[PORCENTAJEAREA]%</p><p style='margin:0;text-align: center;margin-bottom: 15px;font-size: 16px;color: #283252;font-weight: 500;'>Área [NOMBREAREA] </p></div>";
             
             try{
                 string divHtlm = "";

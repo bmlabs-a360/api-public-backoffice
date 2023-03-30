@@ -497,7 +497,7 @@ namespace api_public_backOffice.Controllers
                                         // From = Configuration["Mail:FromConfirmacion"], //CONFIGURAR FROM
                                         //From = "miloandres7@gmail.com", //CONFIGURAR FROM
                                         From = Configuration["MAIL:FromConfirmacion"],
-                                        FromAlias = "Evaluacion",
+                                        FromAlias = "NEVA 360 – Evaluación",,
                                         To = new string[] { info.Email },
                                         ToAlias = new string[] { info.Nombre },
                                         IsHtml = true,
