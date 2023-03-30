@@ -20,6 +20,9 @@ namespace api_public_backOffice.Repository
         Task<List<Usuario>> GetAll();
         Task<List<Usuario>> GetAllConsultor();
         Task<Usuario> GetUsuarioByPerfilIdEmpresaId(Guid perfilId, Guid empresaId);
+        Task<List<Usuario>> GetAllConAllAreas();
+        Task<List<Usuario>> GetAllConsultorConAllAreas();
+
 
         Task<int> DeleteCascade(Usuario usuario);
     }
@@ -122,6 +125,7 @@ namespace api_public_backOffice.Repository
                                 .Usuarios
                                 .Include(x => x.UsuarioEmpresas)
                                 .Include(x => x.UsuarioEvaluacions)
+                                    .ThenInclude(y => y.UsuarioAreas)
                                 .Include(x => x.UsuarioSuscripcions)
                                 .Include(x => x.Perfil)
                                 .OrderBy(x => x.Nombres)
@@ -136,6 +140,7 @@ namespace api_public_backOffice.Repository
                                 .Usuarios
                                 .Include(x => x.UsuarioEmpresas)
                                 .Include(x => x.UsuarioEvaluacions)
+                                    .ThenInclude(y => y.UsuarioAreas)
                                 .Include(x => x.UsuarioSuscripcions)
                                 .Include(x => x.Perfil)
                                 .OrderBy(x => x.Nombres)
@@ -144,7 +149,6 @@ namespace api_public_backOffice.Repository
 
             return await maperUsuarioAreas(retorno);
         }
-        
         private async Task<List<Usuario>> maperUsuarioAreas(List<Usuario> retorno)
         {
             foreach (var re in retorno)
@@ -154,6 +158,51 @@ namespace api_public_backOffice.Repository
                     item.UsuarioAreas = await Context()
                         .UsuarioAreas
                         .Where(x => x.UsuarioEvaluacionId == item.Id && x.Activo.Value).ToArrayAsync();
+                }
+            }
+            return retorno;
+        }
+
+        public async Task<List<Usuario>> GetAllConAllAreas()
+        {
+            var retorno = await Context()
+                                .Usuarios
+                                .Include(x => x.UsuarioEmpresas)
+                                .Include(x => x.UsuarioEvaluacions)
+                                    .ThenInclude(y => y.UsuarioAreas)
+                                .Include(x => x.UsuarioSuscripcions)
+                                .Include(x => x.Perfil)
+                                .OrderBy(x => x.Nombres)
+                                // .Where(x =>  x.Activo.Value)
+                                .ToListAsync();
+
+            return await maperUsuarioAllAreas(retorno);
+        }
+        public async Task<List<Usuario>> GetAllConsultorConAllAreas()
+        {
+            var retorno = await Context()
+                                .Usuarios
+                                .Include(x => x.UsuarioEmpresas)
+                                .Include(x => x.UsuarioEvaluacions)
+                                    .ThenInclude(y => y.UsuarioAreas)
+                                .Include(x => x.UsuarioSuscripcions)
+                                .Include(x => x.Perfil)
+                                .OrderBy(x => x.Nombres)
+                                .Where(x => x.Perfil.Nombre == "Usuario pro (empresa)" || x.Perfil.Nombre == "Usuario básico" || x.Perfil.Nombre == "Gran empresa")
+                                .ToListAsync();
+
+            return await maperUsuarioAllAreas(retorno);
+        }
+
+        private async Task<List<Usuario>> maperUsuarioAllAreas(List<Usuario> retorno)
+        {
+            foreach (var re in retorno)
+            {
+                foreach (var item in re.UsuarioEvaluacions)
+                {
+                    item.UsuarioAreas = await Context()
+                        .UsuarioAreas
+                        .Where(x => x.UsuarioEvaluacionId == item.Id).ToArrayAsync();
                 }
             }
             return retorno;

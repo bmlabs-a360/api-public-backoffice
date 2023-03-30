@@ -589,7 +589,7 @@ namespace api_public_backOffice.Controllers
                 if (perfilModel.Nombre == "Consultor")
                 {
                     List<UsuarioEmpresaModel> usuarioEmpresa = await _UsuarioEmpresaService.GetUsuarioEmpresasByUsuario(UsuarioModel);
-                    List<UsuarioModel> usuarios = await _usuarioService.GetAllConsultor();
+                    List<UsuarioModel> usuarios = await _usuarioService.GetAllConsultorConAllAreas();
                     foreach (var ue in usuarioEmpresa)
                     {
                         foreach (var u in usuarios)
@@ -608,7 +608,7 @@ namespace api_public_backOffice.Controllers
                 }
                 else 
                 {
-                    List<UsuarioModel> usuarios = await _usuarioService.GetAll();
+                    List<UsuarioModel> usuarios = await _usuarioService.GetAllConAllAreas();
                     foreach (var u in usuarios)
                     {
                             u.Password = "";

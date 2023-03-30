@@ -135,14 +135,34 @@ namespace api_public_backOffice.Helpers
             string templateBody = "";
             string urlTemplate = "wwwroot/htmlEmail/BodyCompletaEvaluacionUsuarioPro.html";
 
-            string porentajesAresHtlm = "<div class='col-sml' style='display:inline-block;width:100%;max-width:60px;border:1px solid #143B40;border-radius: 15px;'><p class='niveltexto-movil' style='margin:0;text-align: center;margin-bottom: 15px;font-size: 22px;padding-top: 25px;font-weight: 600;color: #15AFC0;'>[PORCENTAJEAREA]%</p><p style='margin:0;text-align: center;margin-bottom: 15px;font-size: 16px;color: #283252;font-weight: 500;'>Área [NOMBREAREA] </p></div>";
+
+            string porentajesAresHtlm = "<div class='col-sml' style='display:inline-block;margin:8px;width:100%;max-width:60px;border:1px solid #143B40;border-radius: 15px;'>" +
+                                                "<p class='niveltexto-movil' style='margin:0;text-align: center;margin-bottom: 15px;font-size: 22px;padding-top: 25px;font-weight: 600;color: #15AFC0;'>" +
+                                                    "[PORCENTAJEAREA]%" +
+                                                "</p>" +
+                                                "<p style='margin:0;text-align: center;margin-bottom: 15px;font-size: 16px;color: #283252;font-weight: 500;'>" +
+                                                    "Área [NOMBREAREA] " +
+                                                "</p>" +
+                                        "</div> ";
             
             try{
-                string divHtlm = "";
+                string divHtlm = "<td style='padding:20px 30px 11px 30px;font-size:0;background-color:#ffffff;display: flex;gap: 8px;'>";
+                int contador = 0;
                 foreach (PorcentajeEvaluacionDto item in porcentajes)
                 {
-                    divHtlm += porentajesAresHtlm.Replace("[NOMBREAREA]", item.NombreArea).Replace("[PORCENTAJEAREA]", item.RespuestaPorcentaje);
+                    if (contador == 4)
+                    {
+                        divHtlm += "</td><td style='padding:20px 30px 11px 30px;font-size:0;background-color:#ffffff;display: flex;gap: 8px;'>";
+                        divHtlm += porentajesAresHtlm.Replace("[NOMBREAREA]", item.NombreArea).Replace("[PORCENTAJEAREA]", item.RespuestaPorcentaje);
+                        contador = 0;
+                    }
+                    else 
+                    {
+                        divHtlm += porentajesAresHtlm.Replace("[NOMBREAREA]", item.NombreArea).Replace("[PORCENTAJEAREA]", item.RespuestaPorcentaje);
+                    }
+                    contador++;
                 }
+                divHtlm += "</td>";
                 templateBody = File.ReadAllText(urlTemplate);
                 //[]
                 templateBody = templateBody.Replace("[PORCENTAJE]", porcentajeRespuesta).Replace("[NOMBRE_USUARIO]", nombre).Replace("[DIV_PORCENTAJE_AREAS]", divHtlm); ;

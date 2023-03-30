@@ -20,7 +20,9 @@ namespace api_public_backOffice.Service
         Task<UsuarioModel> GetUsuarioByEmail(string email);
         Task<List<UsuarioModel>> GetAll();
         Task<List<UsuarioModel>> GetAllConsultor();
-        
+        Task<List<UsuarioModel>> GetAllConAllAreas();
+        Task<List<UsuarioModel>> GetAllConsultorConAllAreas();
+
         Task<UsuarioModel> GetById(Guid? id);
         Task<UsuarioModel> UpdateUser(UsuarioModel usuario);
         Task<int> DeleteCascade(UsuarioModel usuarioModel);
@@ -254,7 +256,18 @@ namespace api_public_backOffice.Service
             var retorno = await _usuarioRepository.GetAllConsultor();
             return _mapper.Map<List<UsuarioModel>>(retorno);
         }
-        
+
+        public async Task<List<UsuarioModel>> GetAllConAllAreas()
+        {
+            var retorno = await _usuarioRepository.GetAllConAllAreas();
+            return _mapper.Map<List<UsuarioModel>>(retorno);
+        }
+        public async Task<List<UsuarioModel>> GetAllConsultorConAllAreas()
+        {
+            var retorno = await _usuarioRepository.GetAllConsultorConAllAreas();
+            return _mapper.Map<List<UsuarioModel>>(retorno);
+        }
+
 
         public async Task<int> DeleteCascade(UsuarioModel usuarioModel)
         {
