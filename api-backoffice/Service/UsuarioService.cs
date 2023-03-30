@@ -34,7 +34,7 @@ namespace api_public_backOffice.Service
         private IMemoryCache _cache;
         private IUsuarioRepository _usuarioRepository;
   
-            private IEmpresaRepository _empresaRepository;
+       private IEmpresaRepository _empresaRepository;
         private ISecurityHelper _securityHelper;
         private IUsuarioEmpresaRepository _usuarioEmpresaRepository;
         private IUsuarioSuscripcionRepository _usuarioSuscripcionRepository;
@@ -146,13 +146,23 @@ namespace api_public_backOffice.Service
                 var usuarioInfo = await _usuarioRepository.GetById(usuario.Id);
                 usuario.Password = usuarioInfo.Password;
             }
+
             if (usuario.PerfilId.Equals(Guid.Empty))
             {
                 var perfil = await _perfilRepository.GetPerfilByName("Usuario pro (empresa)");
                 usuario.PerfilId = perfil.Id;
             }
 
+          
+            Perfil perfilModel = new Perfil() { 
+                Id = usuario.PerfilId,
+            };
+            var perfilUsuario = await _perfilRepository.GetPerfilById(perfilModel);
+
             var retorno = await _usuarioRepository.InsertOrUpdate(_mapper.Map<Usuario>(usuario));
+            if (perfilUsuario.Nombre == "Usuario pro (empresa)") { 
+               Empresa empresa = await _empresaRepository.InsertOrUpdate(_mapper.Map<Empresa>(usuario.Empresa));
+            }
             if (retorno.UsuarioEmpresas.Count > 0)
             {
                 List<UsuarioEmpresa> UsuarioEmpresasNew = new List<UsuarioEmpresa>();
