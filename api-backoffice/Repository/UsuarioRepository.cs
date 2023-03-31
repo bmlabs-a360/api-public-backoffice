@@ -14,7 +14,8 @@ namespace api_public_backOffice.Repository
     public interface IUsuarioRepository : IRepository<Usuario>
     {
         Task<Usuario> GetUser(LoginModel loginModel);
-       // Task<Usuario> GetUserByRut(string rut);
+        Task<Usuario> GetUserLogin(LoginModel loginModel);
+        // Task<Usuario> GetUserByRut(string rut);
         Task<Usuario> FindByEmail(string email);
         Task<Usuario> GetById(Guid? id);
         Task<List<Usuario>> GetAll();
@@ -46,6 +47,23 @@ namespace api_public_backOffice.Repository
             if (retorno == null) return null;
             await maperPerfil(retorno);
             return retorno; 
+        }
+
+        public async Task<Usuario> GetUserLogin(LoginModel loginModel)
+        {
+            if (string.IsNullOrEmpty(loginModel.Email)) throw new ArgumentNullException("Email");
+            if (string.IsNullOrEmpty(loginModel.Password)) throw new ArgumentNullException("Password");
+            //MD5 md5Hash = MD5.Create();
+            var retorno = await Context()
+                            .Usuarios
+                            .Include(x => x.UsuarioEmpresas)
+                            .Include(x => x.Perfil)
+                            .AsNoTracking()
+                            .FirstOrDefaultAsync(x => x.Email.Equals(loginModel.Email) && x.Password.Equals(loginModel.Password) && x.Activo.Value && (x.Perfil.Nombre == "Administrador" || x.Perfil.Nombre == "Consultor"));
+
+            if (retorno == null) return null;
+            await maperPerfil(retorno);
+            return retorno;
         }
 
         private async Task maperPerfil(Usuario retorno)

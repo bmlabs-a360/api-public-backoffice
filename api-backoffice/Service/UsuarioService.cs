@@ -13,6 +13,7 @@ namespace api_public_backOffice.Service
     public interface IUsuarioService
     {
         Task<UsuarioModel> GetUser(LoginModel loginModel);
+        Task<UsuarioModel> GetUserLogin(LoginModel loginModel);
         Task<UsuarioModel> InsertOrUpdate(UsuarioModel usuario);
         Task<UsuarioModel> Update(UsuarioModel usuario);
         Task<UsuarioModel> ConfirmarUsuario(string email);
@@ -65,6 +66,14 @@ namespace api_public_backOffice.Service
             if (string.IsNullOrEmpty(loginModel.Password)) throw new ArgumentNullException("Password");
             loginModel.Password = _securityHelper.EncryptPassword(loginModel.Password);
             var usuario = await _usuarioRepository.GetUser(loginModel);
+            return _mapper.Map<UsuarioModel>(usuario);
+        }
+        public async Task<UsuarioModel> GetUserLogin(LoginModel loginModel)
+        {
+            if (string.IsNullOrEmpty(loginModel.Email)) throw new ArgumentNullException("Email");
+            if (string.IsNullOrEmpty(loginModel.Password)) throw new ArgumentNullException("Password");
+            loginModel.Password = _securityHelper.EncryptPassword(loginModel.Password);
+            var usuario = await _usuarioRepository.GetUserLogin(loginModel);
             return _mapper.Map<UsuarioModel>(usuario);
         }
         public async Task<UsuarioModel> InsertOrUpdate(UsuarioModel usuario)

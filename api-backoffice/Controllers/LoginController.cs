@@ -58,7 +58,7 @@ namespace api_public_backOffice.Controllers
             {
                 if (string.IsNullOrEmpty(loginModel.Email)) return BadRequest("Debe indicar Email");
                 if (string.IsNullOrEmpty(loginModel.Password)) return BadRequest("Debe indicar Password");
-                UsuarioModel userModel = await _usuarioService.GetUser(loginModel);
+                UsuarioModel userModel = await _usuarioService.GetUserLogin(loginModel);
                 if (userModel == null) return Unauthorized();
                 userModel.FechaUltimoAcceso = DateTime.Now;
                 _ = await _usuarioService.Update(userModel);
