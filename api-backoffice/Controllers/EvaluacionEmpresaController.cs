@@ -460,7 +460,8 @@ namespace api_public_backOffice.Controllers
                                         Console.WriteLine(response.Content);
                                         if (!response.Content.ToUpper().Contains("OK"))
                                         {
-                                            throw new Exception(response.StatusCode + " " + response.StatusDescription);
+                                            correos = correos.Where(val => val != info.Email).ToList();
+                                            continue;
                                         }
                                     }
                                     catch (Exception ex)
