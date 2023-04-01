@@ -23,7 +23,8 @@ jobs:
           registry: registry.digitalocean.com
           username: ${{ secrets.REGISTRY_SECRET }}
           password: ${{ secrets.REGISTRY_SECRET }}    
-      - if: github.ref == 'refs/heads/develop'
+      - name: Docker Build
+        if: github.ref == 'refs/heads/develop'
         run: |
           docker build . -t  registry.digitalocean.com/bmlabs/neva/api-public-backoffice:dev-latest
           docker push registry.digitalocean.com/bmlabs/neva/api-public-backoffice:dev-latest      
