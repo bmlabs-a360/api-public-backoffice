@@ -230,15 +230,37 @@ namespace api_public_backOffice.Repository
         {
             try
             {
-                var usuariosEvaluacion =  Context().UsuarioEvaluacions.Where(x => x.UsuarioId == usuario.Id).ToList();
+                var miUsuario = await Context().Usuarios.AsNoTracking()
+                               .FirstOrDefaultAsync(x => x.Id.Equals(usuario.Id));
+
+                var usuariosEvaluacion =  Context().UsuarioEvaluacions.Where(x => x.UsuarioId == miUsuario.Id).ToList();
+
+                var evaluacionEmpresa = Context().EvaluacionEmpresas.Where(x => x.EmpresaId == miUsuario.EmpresaId).ToList();
+                var respuestas = Context().Respuesta.Where(x => x.EvaluacionEmpresaId == evaluacionEmpresa[0].Id && x.UsuarioId == miUsuario.Id).ToList();
 
                 foreach (UsuarioEvaluacion item in usuariosEvaluacion)
                     await Context().UsuarioAreas.Where(x => x.UsuarioEvaluacionId == item.Id).DeleteFromQueryAsync();
 
-                await Context().UsuarioEvaluacions.Where(x => x.UsuarioId == usuario.Id).DeleteFromQueryAsync();
-                await Context().UsuarioSuscripcions.Where(x => x.UsuarioId == usuario.Id).DeleteFromQueryAsync();
-                await Context().UsuarioEmpresas.Where(x => x.UsuarioId == usuario.Id).DeleteFromQueryAsync();
-                return await Context().Usuarios.Where(x => x.Id == usuario.Id).DeleteFromQueryAsync();
+                await Context().UsuarioEvaluacions.Where(x => x.UsuarioId == miUsuario.Id).DeleteFromQueryAsync();
+                await Context().UsuarioSuscripcions.Where(x => x.UsuarioId == miUsuario.Id).DeleteFromQueryAsync();
+                await Context().UsuarioEmpresas.Where(x => x.UsuarioId == miUsuario.Id).DeleteFromQueryAsync();
+
+
+                /*var empresa = await Context().Empresas.AsNoTracking()
+                                .FirstOrDefaultAsync(x => x.Id.Equals(miUsuario.EmpresaId));*/
+                if (/*(bool)!empresa.DatosCompletados &&*/ 
+                   ((bool)!miUsuario.EmailVerificado) ||
+                        (evaluacionEmpresa.Count == 1 && respuestas.Count == 0))
+                {
+                    await Context().EvaluacionEmpresas.Where(x => x.EmpresaId == miUsuario.EmpresaId).DeleteFromQueryAsync();
+                    //await Context().UsuarioEmpresas.Where(x => x.UsuarioId == miUsuario.Id).DeleteFromQueryAsync();
+                    await Context().Usuarios.Where(x => x.Id == miUsuario.Id).DeleteFromQueryAsync();
+                    return await Context().Empresas.Where(x => x.Id == miUsuario.EmpresaId).DeleteFromQueryAsync();
+                }
+
+
+                else
+                    return await Context().Usuarios.Where(x => x.Id == miUsuario.Id).DeleteFromQueryAsync();
 
             }
             catch (Exception ex)

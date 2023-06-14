@@ -83,12 +83,20 @@ namespace api_public_backOffice.Service
         }
         public async Task<EvaluacionModel> InsertOrUpdate(EvaluacionModel EvaluacionModel)
         {
-            if (string.IsNullOrEmpty(EvaluacionModel.Nombre.ToString())) throw new ArgumentNullException("Nombre");
-            if (string.IsNullOrEmpty(EvaluacionModel.TiempoLimite.ToString())) throw new ArgumentNullException("TiempoLimite");
-            if (string.IsNullOrEmpty(EvaluacionModel.Activo.ToString())) throw new ArgumentNullException("Activo");
+            try
+            {
+                if (string.IsNullOrEmpty(EvaluacionModel.Nombre.ToString())) throw new ArgumentNullException("Nombre");
+                if (string.IsNullOrEmpty(EvaluacionModel.TiempoLimite.ToString())) throw new ArgumentNullException("TiempoLimite");
+                if (string.IsNullOrEmpty(EvaluacionModel.Activo.ToString())) throw new ArgumentNullException("Activo");
 
-            var retorno = await _EvaluacionRepository.InsertOrUpdate(_mapper.Map<Evaluacion>(EvaluacionModel));
-            return _mapper.Map<EvaluacionModel>(retorno);
+                var retorno = await _EvaluacionRepository.InsertOrUpdate(_mapper.Map<Evaluacion>(EvaluacionModel));
+                return _mapper.Map<EvaluacionModel>(retorno);
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
         }
 
         public async Task<int>  InsertOrUpdateDefault(EvaluacionModel evaluacionModel)

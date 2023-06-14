@@ -42,8 +42,8 @@
     <Folder Include="Enums\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\cl.bms.neva.core\cl.bms.neva.core.csproj" />
-    <ProjectReference Include="..\cl.bms.neva.entitylayer\cl.bms.neva.entitylayer.csproj" />
+    <ProjectReference Include="..\..\cl.bms.neva.core\cl.bms.neva.core.csproj" />
+    <ProjectReference Include="..\..\cl.bms.neva.entitylayer\cl.bms.neva.entitylayer.csproj" />
   </ItemGroup>
   <ProjectExtensions>
     <VisualStudio>

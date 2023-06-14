@@ -22,6 +22,7 @@ namespace api_public_backOffice.Models
         public string Telefono { get; set; }
         public DateTime? FechaUltimoAcceso { get; set; }
         public DateTime? FechaCreacion { get; set; }
+        public bool? EmailVerificado { get; set; }
         public bool? Activo { get; set; }
 
        public virtual EmpresaModel Empresa { get; set; }
